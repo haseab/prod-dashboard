@@ -16,7 +16,7 @@ const MetricComponent = ({
     <Text>{metric}</Text>
     <Metric>{`${score.toLocaleString()}`}</Metric>
     <Flex className="mt-4">
-      <Text>{`${percentageOfTarget}% of annual target`}</Text>
+      <Text>{`${percentageOfTarget}% of target`}</Text>
       <Text>{`${targetScore.toLocaleString()}`}</Text>
     </Flex>
     <ProgressBar value={percentageOfTarget} className="mt-2" />
