@@ -254,8 +254,10 @@ export default function Component() {
       timeLeftRef.current += 1;
       setTimeLeft(timeLeftRef.current);
       // console.log(`${timeLeftRef.current} second passed`);
-      if (timeLeftRef.current === refreshTime) {
+      if (timeLeftRef.current === refreshTime - 2) {
         fetchData();
+      }
+      if (timeLeftRef.current === refreshTime) {
         timeLeftRef.current = 0;
         setTimeLeft(timeLeftRef.current);
       }
