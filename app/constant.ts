@@ -15,12 +15,26 @@ export declare interface EfficiencyData {
   hoursFree: number | null;
 }
 
+type MetricKey =
+  | "hoursFree"
+  | "adhocTime"
+  | "oneHUT"
+  | "p1HUT"
+  | "n1HUT"
+  | "nw1HUT"
+  | "w1HUT"
+  | "productiveTime"
+  | "oneHUTEfficiency"
+  | "efficiency"
+  | "distraction_count";
+
 export declare interface MetricData {
-  metric: string;
-  score: string;
+  metric: MetricNames;
+  prevScore: number;
+  score: number;
   percentageOfTarget: number;
   targetScore: string;
-  color: string;
+  color: TremorColors;
 }
 
 export declare interface MetricsResponse {
@@ -62,3 +76,31 @@ export type TremorColors =
   | "pink"
   | "rose"
   | undefined;
+
+export const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+export enum MetricNames {
+  HOURS_FREE = "Hours Free",
+  ONE_HUT = "1HUT Time",
+  AD_HOC_TIME = "Ad Hoc Time",
+  DISTRACTION_COUNT = "Distraction #",
+  P1HUT = "p1HUT",
+  N1HUT = "n1HUT",
+  W1HUT = "w1HUT",
+  ONE_HUT_EFFICIENCY = "1HUT Efficiency",
+  EFFICIENCY = "Efficiency",
+  PRODUCTIVITY = "Productivity",
+}
+
+export const metrics: MetricNames[] = [
+  MetricNames.HOURS_FREE,
+  MetricNames.ONE_HUT,
+  MetricNames.AD_HOC_TIME,
+  MetricNames.DISTRACTION_COUNT,
+  MetricNames.P1HUT,
+  MetricNames.N1HUT,
+  MetricNames.W1HUT,
+  MetricNames.ONE_HUT_EFFICIENCY,
+  MetricNames.EFFICIENCY,
+  MetricNames.PRODUCTIVITY,
+];
