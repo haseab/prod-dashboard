@@ -415,11 +415,13 @@ export default function Component() {
               />
               <AreaGraph
                 chartData={chartData}
+                title={"p1HUT vs 1HUT"}
                 categories={["p1HUT", "oneHUT"]}
                 colors={["blue", "gray"]}
               />
               <AreaGraph
                 efficiencyData={efficiencyData}
+                title={"Productive vs Hours Free"}
                 categories={["productiveTime", "hoursFree"]}
                 colors={["blue", "gray"]}
               />

@@ -9,11 +9,13 @@ import { AreaChart, Card, Title } from "@tremor/react";
 export default function AreaGraph({
   chartData = [],
   efficiencyData = [],
+  title,
   categories, // Add a new prop for categories
   colors,
 }: {
   chartData?: ChartData[];
   efficiencyData?: EfficiencyData[];
+  title: string;
   categories: string[]; // Define the type for categories
   colors: string[];
 }) {
@@ -21,7 +23,7 @@ export default function AreaGraph({
 
   return (
     <Card>
-      <Title>1HUT vs Hours Free</Title>
+      <Title>{title}</Title>
       <AreaChart
         className="h-80 mt-4"
         data={data}
