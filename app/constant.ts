@@ -93,14 +93,14 @@ export enum MetricNames {
 }
 
 export const metrics: MetricNames[] = [
-  MetricNames.HOURS_FREE,
-  MetricNames.ONE_HUT,
-  MetricNames.AD_HOC_TIME,
-  MetricNames.DISTRACTION_COUNT,
-  MetricNames.P1HUT,
-  MetricNames.N1HUT,
-  MetricNames.W1HUT,
-  MetricNames.ONE_HUT_EFFICIENCY,
-  MetricNames.EFFICIENCY,
   MetricNames.PRODUCTIVITY,
+  MetricNames.HOURS_FREE,
+  MetricNames.EFFICIENCY,
+  MetricNames.W1HUT,
+  MetricNames.AD_HOC_TIME,
+  MetricNames.P1HUT,
+  MetricNames.ONE_HUT,
+  MetricNames.ONE_HUT_EFFICIENCY,
+  MetricNames.N1HUT,
+  MetricNames.DISTRACTION_COUNT,
 ];
