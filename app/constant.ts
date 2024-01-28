@@ -37,3 +37,28 @@ export declare interface MetricsResponse {
   flow: boolean;
   // efficiencyList: (presumably an array of numbers or a specific object structure)
 }
+
+export type TremorColors =
+  | "slate"
+  | "gray"
+  | "zinc"
+  | "neutral"
+  | "stone"
+  | "red"
+  | "orange"
+  | "amber"
+  | "yellow"
+  | "lime"
+  | "green"
+  | "emerald"
+  | "teal"
+  | "cyan"
+  | "sky"
+  | "blue"
+  | "indigo"
+  | "violet"
+  | "purple"
+  | "fuchsia"
+  | "pink"
+  | "rose"
+  | undefined;
