@@ -2,6 +2,7 @@
 import { MetricData, MetricsResponse } from "@/app/constant";
 import AreaGraph from "@/components/area";
 import BarGraph from "@/components/bar";
+import { FlowImg } from "@/components/flowicon";
 import MetricComponent from "@/components/metric";
 import { cn } from "@/lib/utils";
 import { Title } from "@tremor/react";
@@ -83,7 +84,7 @@ export default function Component() {
       "w1HUT",
     ].map((metric) => ({
       metric,
-      score: 0,
+      score: "0",
       percentageOfTarget: 0,
       targetScore: "100",
       color: "blue",
@@ -237,70 +238,71 @@ export default function Component() {
       const newMetricsData = [
         {
           metric: "Productivity",
-          score: productiveTime,
+          score: roundToThree(productiveTime).toString(),
           percentageOfTarget: productivePercentage,
           targetScore: targets.productiveTime,
           color: getColorForPercentage(productivePercentage),
         },
         {
           metric: "Hours Free",
-          score: hoursFree,
+          score: roundToThree(hoursFree).toString(),
           percentageOfTarget: hoursFreePercentage,
           targetScore: targets.hoursFree,
           color: getColorForPercentage(hoursFreePercentage),
         },
         {
           metric: "Efficiency",
-          score: roundToThree((productiveTime / hoursFree) * 100),
+          score:
+            roundToThree((productiveTime / hoursFree) * 100).toString() + "%",
           percentageOfTarget: efficiencyPercentage,
           targetScore: targets.efficiency,
           color: getColorForPercentage(efficiencyPercentage),
         },
         {
           metric: "w1HUT",
-          score: w1HUT,
+          score: roundToThree(w1HUT).toString(),
           percentageOfTarget: w1HUTPercentage,
           targetScore: targets.w1HUT,
           color: getColorForPercentage(w1HUTPercentage),
         },
         {
           metric: "Ad Hoc Time",
-          score: adhocTime,
+          score: roundToThree(adhocTime).toString(),
           percentageOfTarget: adhocTimePercentage,
           targetScore: targets.adhocTime,
           color: getColorForPercentage(adhocTimePercentage),
         },
         {
           metric: "p1HUT Time",
-          score: p1HUT,
+          score: roundToThree(p1HUT).toString(),
           percentageOfTarget: p1HUTPercentage,
           targetScore: targets.p1HUT,
           color: getColorForPercentage(p1HUTPercentage),
         },
         {
           metric: "1HUT Time",
-          score: p1HUT + n1HUT + nw1HUT + w1HUT,
+          score: roundToThree(p1HUT + n1HUT + nw1HUT + w1HUT).toString(),
           percentageOfTarget: oneHUTPercentage,
           targetScore: targets.oneHUT,
           color: getColorForPercentage(oneHUTPercentage),
         },
         {
           metric: "1HUT Efficiency",
-          score: roundToThree((p1HUT / hoursFree) * 100),
+          score: roundToThree((p1HUT / hoursFree) * 100).toString() + "%",
           percentageOfTarget: oneHUTEfficiencyPercentage,
           targetScore: targets.oneHUTEfficiency,
           color: getColorForPercentage(oneHUTEfficiencyPercentage),
         },
         {
           metric: "n1HUT",
-          score: n1HUT,
+          score: roundToThree(n1HUT).toString(),
           percentageOfTarget: n1HUTPercentage,
           targetScore: targets.n1HUT,
           color: getColorForPercentage(n1HUTPercentage),
         },
         {
           metric: "Distraction #",
-          score: distraction_count,
+          score: distraction_count.toString(),
           percentageOfTarget: distractionCountPercentage,
           targetScore: targets.distraction_count,
           color: getColorForPercentage(distractionCountPercentage),
@@ -392,6 +394,15 @@ export default function Component() {
           )}
         >
           <div className="container mx-auto px-6 py-8">
+            {inFlow && (
+              <>
+                <FlowImg top="20%" left="18%" />
+                <FlowImg top="16%" left="82%" />
+                <FlowImg top="16%" left="35%" />
+                <FlowImg top="16%" left="65%" />
+                <FlowImg top="16%" left="82%" />
+              </>
+            )}
             <Title className="grid gap-6 mb-8 text-center">
               Refreshing in {refreshTime - timeLeftRef.current} seconds
             </Title>
@@ -400,7 +411,7 @@ export default function Component() {
                 <MetricComponent
                   key={index}
                   metric={data.metric}
-                  score={data.score}
+                  score={data.score.toString()}
                   percentageOfTarget={data.percentageOfTarget}
                   targetScore={data.targetScore}
                   color={data.color}
