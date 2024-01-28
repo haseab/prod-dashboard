@@ -12,8 +12,8 @@ const MetricComponent = ({
   color,
 }: {
   metric: string;
-  prevScore: string;
-  score: string;
+  prevScore: number;
+  score: number;
   percentageOfTarget: number;
   targetScore: string;
   color: TremorColors;
@@ -21,7 +21,7 @@ const MetricComponent = ({
   <Card className="max-w-xs mx-auto">
     <Text>{metric}</Text>
     <Metric>
-      <Number num={parseFloat(prevScore)} newNum={parseFloat(score)} />
+      <Number num={prevScore} newNum={score} />
     </Metric>
     <Flex className="mt-4">
       <Text>{`${percentageOfTarget}% of target`}</Text>

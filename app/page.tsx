@@ -1,5 +1,11 @@
 "use client";
-import { MetricData, MetricsResponse } from "@/app/constant";
+import {
+  MetricData,
+  MetricsResponse,
+  TremorColors,
+  metrics,
+  weekdays,
+} from "@/app/constant";
 import AreaGraph from "@/components/area";
 import BarGraph from "@/components/bar";
 import { FlowImg } from "@/components/flowicon";
@@ -7,36 +13,34 @@ import MetricComponent from "@/components/metric";
 import { cn } from "@/lib/utils";
 import { Title } from "@tremor/react";
 import { useEffect, useRef, useState } from "react";
-import { BarData, ChartData, EfficiencyData } from "./constant";
+import { BarData, ChartData, EfficiencyData, MetricNames } from "./constant";
 import { roundToThree } from "./utils";
 
 const refreshTime = 30;
 const pollingInterval = 1000;
 
 const targets = {
-  hoursFree: "N/A",
-  adhocTime: "20",
-  oneHUT: "50",
-  p1HUT: "40",
-  n1HUT: "N/A",
-  nw1HUT: "N/A",
-  w1HUT: "2.5",
-  productiveTime: "50",
-  oneHUTEfficiency: "45",
-  efficiency: "45",
-  distraction_count: "1500",
+  [MetricNames.HOURS_FREE]: "N/A",
+  [MetricNames.AD_HOC_TIME]: "20",
+  [MetricNames.ONE_HUT]: "50",
+  [MetricNames.P1HUT]: "40",
+  [MetricNames.N1HUT]: "N/A",
+  [MetricNames.W1HUT]: "2.5",
+  [MetricNames.PRODUCTIVITY]: "50",
+  [MetricNames.ONE_HUT_EFFICIENCY]: "45",
+  [MetricNames.EFFICIENCY]: "45",
+  [MetricNames.DISTRACTION_COUNT]: "1500",
 };
 
-function getColorForPercentage(percentage: number) {
+function getColorForPercentage(percentage: number): TremorColors {
   if (percentage >= 95) return "purple";
   if (percentage >= 80 && percentage < 95) return "indigo";
   if (percentage >= 60 && percentage < 80) return "cyan";
   if (percentage >= 40 && percentage < 60) return "yellow";
   if (percentage >= 10 && percentage < 40) return "orange";
+  if (percentage === -1) return "gray";
   return "red"; // For less than 10%
 }
-
-const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export default function Component() {
   const [data, setData] = useState();
@@ -44,6 +48,7 @@ export default function Component() {
   const [error, setError] = useState(null);
   const [timeLeft, setTimeLeft] = useState(refreshTime);
   const [inFlow, setInFlow] = useState(false);
+  const [prevScore, setPrevScore] = useState(0);
   const timeLeftRef = useRef(0);
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
     weekdays.map((day) => ({
@@ -72,19 +77,12 @@ export default function Component() {
       p1HUT: null,
     }))
   );
+
   const [metricsData, setMetricsData] = useState<MetricData[]>(
-    [
-      "Hours Free",
-      "1HUT Time",
-      "Ad Hoc Time",
-      "Distraction #",
-      "p1HUT Time",
-      "n1HUT",
-      "nw1HUT",
-      "w1HUT",
-    ].map((metric) => ({
+    metrics.map((metric) => ({
       metric,
-      score: "0",
+      prevScore: 0,
+      score: 0,
       percentageOfTarget: 0,
       targetScore: "100",
       color: "blue",
@@ -179,131 +177,136 @@ export default function Component() {
       setEfficiencyData(newEfficiencyData);
       const productivePercentage = roundToThree(
         Math.min(
-          (productiveTime / parseFloat(targets.productiveTime)) * 100,
+          (productiveTime / parseFloat(targets[MetricNames.PRODUCTIVITY])) *
+            100,
           100
         )
       );
       const hoursFreePercentage = roundToThree(
-        Math.min((hoursFree / parseFloat(targets.hoursFree)) * 100, 100)
+        Math.min(
+          (hoursFree / parseFloat(targets[MetricNames.HOURS_FREE])) * 100,
+          100
+        )
       );
       const efficiencyPercentage = roundToThree(
         Math.min(
           (roundToThree((productiveTime / hoursFree) * 100) /
-            parseFloat(targets.efficiency)) *
+            parseFloat(targets[MetricNames.EFFICIENCY])) *
             100,
           100
         )
       );
       const adhocTimePercentage = roundToThree(
-        Math.min((parseFloat(targets.adhocTime) / adhocTime) * 100, 100)
+        Math.min(
+          (parseFloat(targets[MetricNames.AD_HOC_TIME]) / adhocTime) * 100,
+          100
+        )
       );
       const p1HUTPercentage = roundToThree(
-        Math.min((p1HUT / parseFloat(targets.p1HUT)) * 100, 100)
+        Math.min((p1HUT / parseFloat(targets[MetricNames.P1HUT])) * 100, 100)
       );
       const n1HUTPercentage = roundToThree(
-        Math.min((n1HUT / parseFloat(targets.n1HUT)) * 100, 100)
-      );
-      const nw1HUTPercentage = roundToThree(
-        Math.min((nw1HUT / parseFloat(targets.nw1HUT)) * 100, 100)
+        Math.min((n1HUT / parseFloat(targets[MetricNames.N1HUT])) * 100, 100)
       );
       const w1HUTPercentage = roundToThree(
-        Math.min((parseFloat(targets.w1HUT) / w1HUT) * 100, 100)
+        Math.min((parseFloat(targets[MetricNames.W1HUT]) / w1HUT) * 100, 100)
       );
       const oneHUTPercentage = roundToThree(
         Math.min(
-          ((p1HUT + n1HUT + nw1HUT + w1HUT) / parseFloat(targets.oneHUT)) * 100,
+          ((p1HUT + n1HUT + nw1HUT + w1HUT) /
+            parseFloat(targets[MetricNames.ONE_HUT])) *
+            100,
           100
         )
       );
       const oneHUTEfficiencyPercentage = roundToThree(
         Math.min(
           (roundToThree((p1HUT / hoursFree) * 100) /
-            parseFloat(targets.oneHUTEfficiency)) *
+            parseFloat(targets[MetricNames.ONE_HUT_EFFICIENCY])) *
             100,
           100
         )
       );
       const distractionCountPercentage = roundToThree(
         Math.min(
-          (parseFloat(targets.distraction_count) / distraction_count) * 100,
+          (parseFloat(targets[MetricNames.DISTRACTION_COUNT]) /
+            distraction_count) *
+            100,
           100
         )
       );
 
-      const newMetricsData = [
-        {
-          metric: "Productivity",
-          score: roundToThree(productiveTime).toString(),
-          percentageOfTarget: productivePercentage,
-          targetScore: targets.productiveTime,
-          color: getColorForPercentage(productivePercentage),
-        },
-        {
-          metric: "Hours Free",
-          score: roundToThree(hoursFree).toString(),
-          percentageOfTarget: 100,
-          targetScore: targets.hoursFree,
-          color: "gray",
-        },
-        {
-          metric: "Efficiency",
-          score: roundToThree((productiveTime / hoursFree) * 100).toString(),
-          percentageOfTarget: efficiencyPercentage,
-          targetScore: targets.efficiency,
-          color: getColorForPercentage(efficiencyPercentage),
-        },
-        {
-          metric: "w1HUT",
-          score: roundToThree(w1HUT).toString(),
-          percentageOfTarget: w1HUTPercentage,
-          targetScore: targets.w1HUT,
-          color: getColorForPercentage(w1HUTPercentage),
-        },
-        {
-          metric: "Ad Hoc Time",
-          score: roundToThree(adhocTime).toString(),
-          percentageOfTarget: adhocTimePercentage,
-          targetScore: targets.adhocTime,
-          color: getColorForPercentage(adhocTimePercentage),
-        },
-        {
-          metric: "p1HUT Time",
-          score: roundToThree(p1HUT).toString(),
-          percentageOfTarget: p1HUTPercentage,
-          targetScore: targets.p1HUT,
-          color: getColorForPercentage(p1HUTPercentage),
-        },
-        {
-          metric: "1HUT Time",
-          score: roundToThree(p1HUT + n1HUT + nw1HUT + w1HUT).toString(),
-          percentageOfTarget: oneHUTPercentage,
-          targetScore: targets.oneHUT,
-          color: getColorForPercentage(oneHUTPercentage),
-        },
-        {
-          metric: "1HUT Efficiency",
-          score: roundToThree((p1HUT / hoursFree) * 100).toString(),
-          percentageOfTarget: oneHUTEfficiencyPercentage,
-          targetScore: targets.oneHUTEfficiency,
-          color: getColorForPercentage(oneHUTEfficiencyPercentage),
-        },
-        {
-          metric: "n1HUT",
-          score: roundToThree(n1HUT).toString(),
-          percentageOfTarget: 100,
-          targetScore: targets.n1HUT,
-          color: getColorForPercentage(100),
-        },
-        {
-          metric: "Distraction #",
-          score: distraction_count.toString(),
-          percentageOfTarget: distractionCountPercentage,
-          targetScore: targets.distraction_count,
-          color: getColorForPercentage(distractionCountPercentage),
-        },
-      ];
+      const newMetricsData = metricsData.map((data, index) => {
+        return {
+          metric: data.metric,
+          prevScore: data.score,
+          score:
+            data.metric === "Hours Free"
+              ? hoursFree
+              : data.metric === "1HUT Time"
+              ? p1HUT + n1HUT + nw1HUT + w1HUT
+              : data.metric === "Ad Hoc Time"
+              ? adhocTime
+              : data.metric === "Distraction #"
+              ? distraction_count
+              : data.metric === "p1HUT"
+              ? p1HUT
+              : data.metric === "n1HUT"
+              ? n1HUT
+              : data.metric === "w1HUT"
+              ? w1HUT
+              : data.metric === "1HUT Efficiency"
+              ? roundToThree((p1HUT / hoursFree) * 100)
+              : data.metric === "Efficiency"
+              ? roundToThree((productiveTime / hoursFree) * 100)
+              : roundToThree(productiveTime),
+          percentageOfTarget:
+            data.metric === "Hours Free"
+              ? 100
+              : data.metric === "1HUT Time"
+              ? oneHUTPercentage
+              : data.metric === "Ad Hoc Time"
+              ? adhocTimePercentage
+              : data.metric === "Distraction #"
+              ? distractionCountPercentage
+              : data.metric === "p1HUT"
+              ? p1HUTPercentage
+              : data.metric === "n1HUT"
+              ? 100
+              : data.metric === "w1HUT"
+              ? w1HUTPercentage
+              : data.metric === "1HUT Efficiency"
+              ? oneHUTEfficiencyPercentage
+              : data.metric === "Efficiency"
+              ? efficiencyPercentage
+              : productivePercentage,
+          targetScore: targets[data.metric],
+          color: getColorForPercentage(
+            data.metric === "Hours Free"
+              ? -1
+              : data.metric === "1HUT Time"
+              ? oneHUTPercentage
+              : data.metric === "Ad Hoc Time"
+              ? adhocTimePercentage
+              : data.metric === "Distraction #"
+              ? distractionCountPercentage
+              : data.metric === "p1HUT"
+              ? p1HUTPercentage
+              : data.metric === "n1HUT"
+              ? 100
+              : data.metric === "w1HUT"
+              ? w1HUTPercentage
+              : data.metric === "1HUT Efficiency"
+              ? oneHUTEfficiencyPercentage
+              : data.metric === "Efficiency"
+              ? efficiencyPercentage
+              : productivePercentage
+          ),
+        };
+      });
 
       setMetricsData(newMetricsData);
+      console.log(newMetricsData);
 
       setData(result);
     } catch (err: any) {
@@ -405,7 +408,8 @@ export default function Component() {
                 <MetricComponent
                   key={index}
                   metric={data.metric}
-                  score={data.score.toString()}
+                  prevScore={data.prevScore}
+                  score={data.score}
                   percentageOfTarget={data.percentageOfTarget}
                   targetScore={data.targetScore}
                   color={data.color}
