@@ -9,7 +9,7 @@ const MetricComponent = ({
   color,
 }: {
   metric: string;
-  score: number;
+  score: string;
   percentageOfTarget: number;
   targetScore: string;
   color: string;

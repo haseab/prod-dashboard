@@ -17,7 +17,7 @@ export declare interface EfficiencyData {
 
 export declare interface MetricData {
   metric: string;
-  score: number;
+  score: string;
   percentageOfTarget: number;
   targetScore: string;
   color: string;
