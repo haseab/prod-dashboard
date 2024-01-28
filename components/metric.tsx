@@ -6,11 +6,13 @@ const MetricComponent = ({
   score,
   percentageOfTarget,
   targetScore,
+  color,
 }: {
   metric: string;
   score: number;
   percentageOfTarget: number;
   targetScore: string;
+  color: string;
 }) => (
   <Card className="max-w-xs mx-auto">
     <Text>{metric}</Text>
@@ -19,7 +21,7 @@ const MetricComponent = ({
       <Text>{`${percentageOfTarget}% of target`}</Text>
       <Text>{`${targetScore.toLocaleString()}`}</Text>
     </Flex>
-    <ProgressBar value={percentageOfTarget} className="mt-2" />
+    <ProgressBar value={percentageOfTarget} color={color} className="mt-2" />
   </Card>
 );
 

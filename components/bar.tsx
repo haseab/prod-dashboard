@@ -4,9 +4,11 @@ import { BarChart, Card, Subtitle, Title } from "@tremor/react";
 const BarGraph = ({
   barData,
   category,
+  color,
 }: {
   barData: BarData[];
   category: string;
+  color: string;
 }) => (
   <Card>
     <Title>{category}</Title>
@@ -16,7 +18,7 @@ const BarGraph = ({
       data={barData}
       index="date"
       categories={["value"]}
-      colors={["blue"]}
+      colors={[color]}
       yAxisWidth={20}
     />
   </Card>
