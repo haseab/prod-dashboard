@@ -19,7 +19,7 @@ const BarGraph = ({
       index="date"
       categories={["value"]}
       colors={[color]}
-      yAxisWidth={20}
+      yAxisWidth={30}
     />
   </Card>
 );

@@ -14,12 +14,12 @@ const refreshTime = 30;
 const pollingInterval = 1000;
 
 const targets = {
-  hoursFree: "80.5",
-  adhocTime: "0",
+  hoursFree: "N/A",
+  adhocTime: "20",
   oneHUT: "50",
   p1HUT: "40",
-  n1HUT: "15",
-  nw1HUT: "15",
+  n1HUT: "N/A",
+  nw1HUT: "N/A",
   w1HUT: "2.5",
   productiveTime: "50",
   oneHUTEfficiency: "45",
@@ -195,12 +195,7 @@ export default function Component() {
         )
       );
       const adhocTimePercentage = roundToThree(
-        Math.min(
-          ((parseFloat(targets.hoursFree) - adhocTime) /
-            parseFloat(targets.hoursFree)) *
-            100,
-          100
-        )
+        Math.min((parseFloat(targets.adhocTime) / adhocTime) * 100, 100)
       );
       const p1HUTPercentage = roundToThree(
         Math.min((p1HUT / parseFloat(targets.p1HUT)) * 100, 100)
@@ -212,7 +207,7 @@ export default function Component() {
         Math.min((nw1HUT / parseFloat(targets.nw1HUT)) * 100, 100)
       );
       const w1HUTPercentage = roundToThree(
-        Math.min((w1HUT / parseFloat(targets.w1HUT)) * 100, 100)
+        Math.min((parseFloat(targets.w1HUT) / w1HUT) * 100, 100)
       );
       const oneHUTPercentage = roundToThree(
         Math.min(
@@ -230,7 +225,7 @@ export default function Component() {
       );
       const distractionCountPercentage = roundToThree(
         Math.min(
-          (distraction_count / parseFloat(targets.distraction_count)) * 100,
+          (parseFloat(targets.distraction_count) / distraction_count) * 100,
           100
         )
       );
@@ -246,14 +241,13 @@ export default function Component() {
         {
           metric: "Hours Free",
           score: roundToThree(hoursFree).toString(),
-          percentageOfTarget: hoursFreePercentage,
+          percentageOfTarget: 100,
           targetScore: targets.hoursFree,
-          color: getColorForPercentage(hoursFreePercentage),
+          color: "gray",
         },
         {
           metric: "Efficiency",
-          score:
-            roundToThree((productiveTime / hoursFree) * 100).toString() + "%",
+          score: roundToThree((productiveTime / hoursFree) * 100).toString(),
           percentageOfTarget: efficiencyPercentage,
           targetScore: targets.efficiency,
           color: getColorForPercentage(efficiencyPercentage),
@@ -288,7 +282,7 @@ export default function Component() {
         },
         {
           metric: "1HUT Efficiency",
-          score: roundToThree((p1HUT / hoursFree) * 100).toString() + "%",
+          score: roundToThree((p1HUT / hoursFree) * 100).toString(),
           percentageOfTarget: oneHUTEfficiencyPercentage,
           targetScore: targets.oneHUTEfficiency,
           color: getColorForPercentage(oneHUTEfficiencyPercentage),
@@ -296,9 +290,9 @@ export default function Component() {
         {
           metric: "n1HUT",
           score: roundToThree(n1HUT).toString(),
-          percentageOfTarget: n1HUTPercentage,
+          percentageOfTarget: 100,
           targetScore: targets.n1HUT,
-          color: getColorForPercentage(n1HUTPercentage),
+          color: getColorForPercentage(100),
         },
         {
           metric: "Distraction #",
