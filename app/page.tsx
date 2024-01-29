@@ -243,19 +243,19 @@ export default function Component() {
           score:
             data.metric === "Hours Free"
               ? hoursFree
-              : data.metric === "1HUT Time"
+              : data.metric === "Total Flow Time"
               ? p1HUT + n1HUT + nw1HUT + w1HUT
               : data.metric === "Ad Hoc Time"
               ? adhocTime
               : data.metric === "Distraction #"
               ? distraction_count
-              : data.metric === "p1HUT"
+              : data.metric === "Productive Flow"
               ? p1HUT
-              : data.metric === "n1HUT"
+              : data.metric === "Neutral Flow"
               ? n1HUT
-              : data.metric === "w1HUT"
+              : data.metric === "Unproductive Flow"
               ? w1HUT
-              : data.metric === "1HUT Efficiency"
+              : data.metric === "Productive Flow Efficiency"
               ? roundToThree((p1HUT / hoursFree) * 100)
               : data.metric === "Efficiency"
               ? roundToThree((productiveTime / hoursFree) * 100)
@@ -263,19 +263,19 @@ export default function Component() {
           percentageOfTarget:
             data.metric === "Hours Free"
               ? 100
-              : data.metric === "1HUT Time"
+              : data.metric === "Total Flow Time"
               ? oneHUTPercentage
               : data.metric === "Ad Hoc Time"
               ? adhocTimePercentage
               : data.metric === "Distraction #"
               ? distractionCountPercentage
-              : data.metric === "p1HUT"
+              : data.metric === "Productive Flow"
               ? p1HUTPercentage
-              : data.metric === "n1HUT"
+              : data.metric === "Neutral Flow"
               ? 100
-              : data.metric === "w1HUT"
+              : data.metric === "Unproductive Flow"
               ? w1HUTPercentage
-              : data.metric === "1HUT Efficiency"
+              : data.metric === "Productive Flow Efficiency"
               ? oneHUTEfficiencyPercentage
               : data.metric === "Efficiency"
               ? efficiencyPercentage
@@ -284,19 +284,19 @@ export default function Component() {
           color: getColorForPercentage(
             data.metric === "Hours Free"
               ? -1
-              : data.metric === "1HUT Time"
+              : data.metric === "Total Flow Time"
               ? oneHUTPercentage
               : data.metric === "Ad Hoc Time"
               ? adhocTimePercentage
               : data.metric === "Distraction #"
               ? distractionCountPercentage
-              : data.metric === "p1HUT"
+              : data.metric === "Productive Flow"
               ? p1HUTPercentage
-              : data.metric === "n1HUT"
+              : data.metric === "Neutral Flow"
               ? 100
-              : data.metric === "w1HUT"
+              : data.metric === "Unproductive Flow"
               ? w1HUTPercentage
-              : data.metric === "1HUT Efficiency"
+              : data.metric === "Productive Flow Efficiency"
               ? oneHUTEfficiencyPercentage
               : data.metric === "Efficiency"
               ? efficiencyPercentage
@@ -424,13 +424,13 @@ export default function Component() {
               />
               <AreaGraph
                 chartData={chartData}
-                title={"p1HUT vs 1HUT"}
+                title={"Prod. Flow vs Total Flow"}
                 categories={["p1HUT", "oneHUT"]}
                 colors={["blue", "gray"]}
               />
               <AreaGraph
                 efficiencyData={efficiencyData}
-                title={"Productive vs Hours Free"}
+                title={"Productive vs Free Hours"}
                 categories={["productiveTime", "hoursFree"]}
                 colors={["blue", "gray"]}
               />
