@@ -81,13 +81,13 @@ export const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export enum MetricNames {
   HOURS_FREE = "Hours Free",
-  ONE_HUT = "1HUT Time",
+  ONE_HUT = "Total Flow Time",
   AD_HOC_TIME = "Ad Hoc Time",
   DISTRACTION_COUNT = "Distraction #",
-  P1HUT = "p1HUT",
-  N1HUT = "n1HUT",
-  W1HUT = "w1HUT",
-  ONE_HUT_EFFICIENCY = "1HUT Efficiency",
+  P1HUT = "Productive Flow",
+  N1HUT = "Neutral Flow",
+  W1HUT = "Unproductive Flow",
+  ONE_HUT_EFFICIENCY = "Productive Flow Efficiency",
   EFFICIENCY = "Efficiency",
   PRODUCTIVITY = "Productivity",
 }
