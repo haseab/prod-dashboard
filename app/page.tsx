@@ -47,7 +47,7 @@ export default function Component() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [timeLeft, setTimeLeft] = useState(refreshTime);
-  const [inFlow, setInFlow] = useState(false);
+  const [flow, setFlow] = useState(0);
   const [prevScore, setPrevScore] = useState(0);
   const timeLeftRef = useRef(0);
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
@@ -113,7 +113,7 @@ export default function Component() {
         flow,
       } = data as MetricsResponse;
 
-      setInFlow(flow);
+      setFlow(flow);
 
       const sumValues = (obj: Record<string, number>) =>
         Object.values(obj).reduce((a, b) => a + b, 0);
@@ -386,12 +386,12 @@ export default function Component() {
         <main
           className={cn(
             "flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900",
-            inFlow &&
+            flow > 0.8 &&
               "dark:bg-gradient-to-t dark:from-purple-800 dark:via-gray-900 dark:to-gray-900"
           )}
         >
           <div className="container mx-auto px-6 py-8">
-            {inFlow && (
+            {flow > 0.8 && (
               <>
                 <FlowImg top="20%" left="18%" />
                 <FlowImg top="16%" left="82%" />
@@ -441,6 +441,9 @@ export default function Component() {
               />
             </div>
             <br></br>
+            <Title className="grid gap-6 mb-8 text-center">
+              Need {roundToThree((0.8 - flow) * 60)} more min until flow
+            </Title>
           </div>
         </main>
       </div>

@@ -48,7 +48,7 @@ export declare interface MetricsResponse {
   distractionCountList: { [key: string]: number };
   efficiencyList: { [key: string]: number };
   productiveList: { [key: string]: number };
-  flow: boolean;
+  flow: number;
   // efficiencyList: (presumably an array of numbers or a specific object structure)
 }
 
