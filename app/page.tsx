@@ -442,7 +442,8 @@ export default function Component() {
             </div>
             <br></br>
             <Title className="grid gap-6 mb-8 text-center">
-              Need {roundToThree((0.8 - flow) * 60)} more min until flow
+              {flow < 0.8 &&
+                `Need ${roundToThree((0.8 - flow) * 60)} more min until flow`}
             </Title>
           </div>
         </main>
