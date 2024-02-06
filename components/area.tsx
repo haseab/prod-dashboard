@@ -28,7 +28,7 @@ export default function AreaGraph({
         className="h-80 mt-4"
         data={data}
         index="date"
-        yAxisWidth={20}
+        yAxisWidth={30}
         categories={categories}
         colors={colors}
         // valueFormatter={valueFormatter}

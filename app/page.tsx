@@ -27,7 +27,7 @@ const targets = {
   [MetricNames.P1HUT]: "50",
   [MetricNames.ONE_HUT]: "60",
   [MetricNames.W1HUT]: "2.5",
-  [MetricNames.AD_HOC_TIME]: "15",
+  [MetricNames.UNPLANNED_TIME]: "15",
   [MetricNames.ONE_HUT_EFFICIENCY]: "50",
   [MetricNames.DISTRACTION_COUNT]: "1500",
 };
@@ -100,7 +100,7 @@ export default function Component() {
       const result = await response.json();
       const data = result.data;
       const {
-        adhocTimeList,
+        unplannedTimeList,
         oneHUTList,
         p1HUTList,
         n1HUTList,
@@ -124,7 +124,7 @@ export default function Component() {
       const w1HUT = sumValues(w1HUTList);
       const hoursFree = sumValues(hoursFreeList);
       const distraction_count = sumValues(distractionCountList);
-      const adhocTime = sumValues(adhocTimeList);
+      const unplannedTime = sumValues(unplannedTimeList);
       const productiveTime = sumValues(productiveList);
       const efficiency = sumValues(efficiencyList);
 
@@ -142,10 +142,10 @@ export default function Component() {
       setDistractionData(newDistractionData);
 
       const newBarData = barData.map((item, index) => {
-        const adhocTimeValue = Object.values(adhocTimeList)[index];
+        const unplannedTimeValue = Object.values(unplannedTimeList)[index];
         return {
           ...item,
-          value: adhocTimeValue || item["value"],
+          value: unplannedTimeValue || item["value"],
         };
       });
 
@@ -196,9 +196,10 @@ export default function Component() {
           100
         )
       );
-      const adhocTimePercentage = roundToThree(
+      const unplannedTimePercentage = roundToThree(
         Math.min(
-          (parseFloat(targets[MetricNames.AD_HOC_TIME]) / adhocTime) * 100,
+          (parseFloat(targets[MetricNames.UNPLANNED_TIME]) / unplannedTime) *
+            100,
           100
         )
       );
@@ -245,8 +246,8 @@ export default function Component() {
               ? hoursFree
               : data.metric === "Total Flow Time"
               ? p1HUT + n1HUT + nw1HUT + w1HUT
-              : data.metric === "Ad Hoc Time"
-              ? adhocTime
+              : data.metric === "Unplanned Time"
+              ? unplannedTime
               : data.metric === "Distraction #"
               ? distraction_count
               : data.metric === "Productive Flow"
@@ -265,8 +266,8 @@ export default function Component() {
               ? 100
               : data.metric === "Total Flow Time"
               ? oneHUTPercentage
-              : data.metric === "Ad Hoc Time"
-              ? adhocTimePercentage
+              : data.metric === "Unplanned Time"
+              ? unplannedTimePercentage
               : data.metric === "Distraction #"
               ? distractionCountPercentage
               : data.metric === "Productive Flow"
@@ -286,8 +287,8 @@ export default function Component() {
               ? -1
               : data.metric === "Total Flow Time"
               ? oneHUTPercentage
-              : data.metric === "Ad Hoc Time"
-              ? adhocTimePercentage
+              : data.metric === "Unplanned Time"
+              ? unplannedTimePercentage
               : data.metric === "Distraction #"
               ? distractionCountPercentage
               : data.metric === "Productive Flow"
@@ -419,7 +420,7 @@ export default function Component() {
             <div className="grid gap-6 lg:grid-cols-4">
               <BarGraph
                 barData={barData}
-                category="Ad Hoc Time"
+                category="Unplanned Time"
                 color={"blue"}
               />
               <AreaGraph
