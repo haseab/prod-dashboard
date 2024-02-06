@@ -11,7 +11,7 @@ export default function Number({
     number: newNum,
     delay: 200,
     from: { number: num },
-    config: { mass: 1, tension: 20, friction: 10, duration: 1000 },
+    config: { mass: 1, tension: 20, friction: 10, duration: 5000 },
   });
   return <animated.div>{number.to((num) => num.toFixed(3))}</animated.div>;
 }
