@@ -17,7 +17,7 @@ export declare interface EfficiencyData {
 
 type MetricKey =
   | "hoursFree"
-  | "adhocTime"
+  | "unplannedTime"
   | "oneHUT"
   | "p1HUT"
   | "n1HUT"
@@ -38,7 +38,7 @@ export declare interface MetricData {
 }
 
 export declare interface MetricsResponse {
-  adhocTimeList: { [key: string]: number };
+  unplannedTimeList: { [key: string]: number };
   oneHUTList: { [key: string]: number };
   p1HUTList: { [key: string]: number };
   n1HUTList: { [key: string]: number };
@@ -82,7 +82,7 @@ export const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 export enum MetricNames {
   HOURS_FREE = "Hours Free",
   ONE_HUT = "Total Flow Time",
-  AD_HOC_TIME = "Ad Hoc Time",
+  UNPLANNED_TIME = "Unplanned Time",
   DISTRACTION_COUNT = "Distraction #",
   P1HUT = "Productive Flow",
   N1HUT = "Neutral Flow",
@@ -97,7 +97,7 @@ export const metrics: MetricNames[] = [
   MetricNames.HOURS_FREE,
   MetricNames.EFFICIENCY,
   MetricNames.W1HUT,
-  MetricNames.AD_HOC_TIME,
+  MetricNames.UNPLANNED_TIME,
   MetricNames.P1HUT,
   MetricNames.ONE_HUT,
   MetricNames.ONE_HUT_EFFICIENCY,
