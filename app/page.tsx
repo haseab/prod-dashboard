@@ -2,6 +2,7 @@
 import {
   MetricData,
   MetricsResponse,
+  MonthlyData,
   TremorColors,
   metrics,
   weekdays,
@@ -14,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { Title } from "@tremor/react";
 import { useEffect, useRef, useState } from "react";
 import { BarData, ChartData, EfficiencyData, MetricNames } from "./constant";
-import { roundToThree } from "./utils";
+import { p1HUTData, roundToThree } from "./utils";
 
 const refreshTime = 30;
 const pollingInterval = 1000;
@@ -88,6 +89,8 @@ export default function Component() {
       color: "blue",
     }))
   );
+
+  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>(p1HUTData);
 
   const fetchData = async () => {
     console.log("fetching data ...");
@@ -175,6 +178,17 @@ export default function Component() {
       });
 
       setEfficiencyData(newEfficiencyData);
+
+      const lastWeek = p1HUTData.length - 1;
+
+      setMonthlyData([
+        ...p1HUTData,
+        {
+          week: lastWeek + 1,
+          p1HUT: p1HUT,
+          // oneHUT: p1HUT + n1HUT + nw1HUT + w1HUT,
+        },
+      ]);
       const productivePercentage = roundToThree(
         Math.min(
           (productiveTime / parseFloat(targets[MetricNames.PRODUCTIVITY])) *
@@ -424,16 +438,18 @@ export default function Component() {
                 color={"blue"}
               />
               <AreaGraph
-                chartData={chartData}
+                data={chartData}
                 title={"Prod. Flow vs Total Flow"}
                 categories={["p1HUT", "oneHUT"]}
                 colors={["blue", "gray"]}
+                index={"date"}
               />
               <AreaGraph
-                efficiencyData={efficiencyData}
+                data={efficiencyData}
                 title={"Productive vs Free Hours"}
                 categories={["productiveTime", "hoursFree"]}
                 colors={["blue", "gray"]}
+                index={"date"}
               />
               <BarGraph
                 barData={distractionData}
@@ -441,11 +457,20 @@ export default function Component() {
                 color={"blue"}
               />
             </div>
+
             <br></br>
             <Title className="grid gap-6 mb-8 text-center">
               {flow < 0.8 &&
                 `Need ${roundToThree((0.8 - flow) * 60)} more min until flow`}
             </Title>
+            <br></br>
+            <AreaGraph
+              data={monthlyData}
+              title={"Productive vs Free Hours Yearly"}
+              categories={["p1HUT", "oneHUT"]}
+              colors={["blue", "gray"]}
+              index={"week"}
+            />
           </div>
         </main>
       </div>

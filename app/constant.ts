@@ -4,6 +4,12 @@ export declare interface ChartData {
   p1HUT: number | null;
 }
 
+export declare interface MonthlyData {
+  week: string | number;
+  // oneHUT: number;
+  p1HUT: number;
+}
+
 export declare interface BarData {
   date: string;
   value: number | null;
