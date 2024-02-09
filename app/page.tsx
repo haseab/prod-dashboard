@@ -256,64 +256,64 @@ export default function Component() {
           metric: data.metric,
           prevScore: data.score,
           score:
-            data.metric === "Hours Free"
+            data.metric === "Hours Free (h)"
               ? hoursFree
-              : data.metric === "Total Flow Time"
+              : data.metric === "Total Flow Time (h)"
               ? p1HUT + n1HUT + nw1HUT + w1HUT
-              : data.metric === "Unplanned Time"
+              : data.metric === "Unplanned Time (h)"
               ? unplannedTime
               : data.metric === "Distraction #"
               ? distraction_count
-              : data.metric === "Productive Flow"
+              : data.metric === "Productive Flow (h)"
               ? p1HUT
-              : data.metric === "Neutral Flow"
+              : data.metric === "Neutral Flow (h)"
               ? n1HUT
-              : data.metric === "Unproductive Flow"
+              : data.metric === "Unproductive Flow (h)"
               ? w1HUT
-              : data.metric === "Productive Flow Efficiency"
+              : data.metric === "Prod. Flow Efficiency (%)"
               ? roundToThree((p1HUT / hoursFree) * 100)
-              : data.metric === "Efficiency"
+              : data.metric === "Efficiency (%)"
               ? roundToThree((productiveTime / hoursFree) * 100)
               : roundToThree(productiveTime),
           percentageOfTarget:
-            data.metric === "Hours Free"
+            data.metric === "Hours Free (h)"
               ? 100
-              : data.metric === "Total Flow Time"
+              : data.metric === "Total Flow Time (h)"
               ? oneHUTPercentage
-              : data.metric === "Unplanned Time"
+              : data.metric === "Unplanned Time (h)"
               ? unplannedTimePercentage
               : data.metric === "Distraction #"
               ? distractionCountPercentage
-              : data.metric === "Productive Flow"
+              : data.metric === "Productive Flow (h)"
               ? p1HUTPercentage
-              : data.metric === "Neutral Flow"
+              : data.metric === "Neutral Flow (h)"
               ? 100
-              : data.metric === "Unproductive Flow"
+              : data.metric === "Unproductive Flow (h)"
               ? w1HUTPercentage
-              : data.metric === "Productive Flow Efficiency"
+              : data.metric === "Prod. Flow Efficiency (%)"
               ? oneHUTEfficiencyPercentage
-              : data.metric === "Efficiency"
+              : data.metric === "Efficiency (%)"
               ? efficiencyPercentage
               : productivePercentage,
           targetScore: targets[data.metric],
           color: getColorForPercentage(
-            data.metric === "Hours Free"
+            data.metric === "Hours Free (h)"
               ? -1
-              : data.metric === "Total Flow Time"
+              : data.metric === "Total Flow Time (h)"
               ? oneHUTPercentage
-              : data.metric === "Unplanned Time"
+              : data.metric === "Unplanned Time (h)"
               ? unplannedTimePercentage
               : data.metric === "Distraction #"
               ? distractionCountPercentage
-              : data.metric === "Productive Flow"
+              : data.metric === "Productive Flow (h)"
               ? p1HUTPercentage
-              : data.metric === "Neutral Flow"
+              : data.metric === "Neutral Flow (h)"
               ? 100
-              : data.metric === "Unproductive Flow"
+              : data.metric === "Unproductive Flow (h)"
               ? w1HUTPercentage
-              : data.metric === "Productive Flow Efficiency"
+              : data.metric === "Prod. Flow Efficiency (%)"
               ? oneHUTEfficiencyPercentage
-              : data.metric === "Efficiency"
+              : data.metric === "Efficiency (%)"
               ? efficiencyPercentage
               : productivePercentage
           ),
