@@ -1,5 +1,10 @@
 "use client";
-import { ChartData, EfficiencyData, MonthlyData } from "@/app/constant";
+import {
+  ChartData,
+  DailyData,
+  EfficiencyData,
+  MonthlyData,
+} from "@/app/constant";
 import { AreaChart, Card, Title } from "@tremor/react";
 
 // const valueFormatter = function (number: number) {
@@ -13,7 +18,7 @@ export default function AreaGraph({
   colors,
   index,
 }: {
-  data?: ChartData[] | EfficiencyData[] | MonthlyData[];
+  data?: ChartData[] | EfficiencyData[] | MonthlyData[] | DailyData[];
   title: string;
   categories: string[]; // Define the type for categories
   colors: string[];

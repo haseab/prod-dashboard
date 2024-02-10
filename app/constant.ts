@@ -10,6 +10,11 @@ export declare interface MonthlyData {
   p1HUT: number;
 }
 
+export declare interface DailyData {
+  day: string | number;
+  p1HUT: number;
+}
+
 export declare interface BarData {
   date: string;
   value: number | null;
