@@ -1,5 +1,6 @@
 "use client";
 import {
+  DailyData,
   MetricData,
   MetricsResponse,
   MonthlyData,
@@ -15,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { Title } from "@tremor/react";
 import { useEffect, useRef, useState } from "react";
 import { BarData, ChartData, EfficiencyData, MetricNames } from "./constant";
-import { p1HUTData, roundToThree } from "./utils";
+import { p1HUTDaily, p1HUTWeekly, roundToThree } from "./utils";
 
 const refreshTime = 30;
 const pollingInterval = 1000;
@@ -33,14 +34,41 @@ const targets = {
   [MetricNames.DISTRACTION_COUNT]: "1500",
 };
 
-function getColorForPercentage(percentage: number): TremorColors {
-  if (percentage >= 95) return "purple";
-  if (percentage >= 80 && percentage < 95) return "indigo";
-  if (percentage >= 60 && percentage < 80) return "cyan";
-  if (percentage >= 40 && percentage < 60) return "yellow";
-  if (percentage >= 10 && percentage < 40) return "orange";
-  if (percentage === -1) return "gray";
-  return "red"; // For less than 10%
+function getColorForPercentage(percentage: number, flow: number): TremorColors {
+  if (flow > 2.5) {
+    if (percentage >= 95) return "red";
+    if (percentage >= 80 && percentage < 95) return "orange";
+    if (percentage >= 60 && percentage < 80) return "yellow";
+    if (percentage >= 40 && percentage < 60) return "lime";
+    if (percentage >= 20 && percentage < 40) return "cyan";
+    if (percentage >= 0 && percentage < 20) return "blue";
+    if (percentage === -1) return "gray";
+  } else if (flow > 1.5) {
+    if (percentage >= 95) return "purple";
+    if (percentage >= 80 && percentage < 95) return "indigo";
+    if (percentage >= 60 && percentage < 80) return "cyan";
+    if (percentage >= 40 && percentage < 60) return "yellow";
+    if (percentage >= 10 && percentage < 40) return "orange";
+    if (percentage >= 0 && percentage < 10) return "red";
+    if (percentage === -1) return "gray";
+  } else if (flow > 0.8) {
+    if (percentage >= 95) return "emerald";
+    if (percentage >= 80 && percentage < 95) return "lime";
+    if (percentage >= 60 && percentage < 80) return "yellow";
+    if (percentage >= 40 && percentage < 60) return "amber";
+    if (percentage >= 15 && percentage < 40) return "orange";
+    if (percentage >= 0 && percentage < 15) return "red";
+    if (percentage === -1) return "gray";
+  } else {
+    if (percentage >= 95) return "purple";
+    if (percentage >= 80 && percentage < 95) return "indigo";
+    if (percentage >= 60 && percentage < 80) return "cyan";
+    if (percentage >= 40 && percentage < 60) return "yellow";
+    if (percentage >= 10 && percentage < 40) return "orange";
+    if (percentage >= 0 && percentage < 10) return "red";
+    if (percentage === -1) return "gray";
+  }
+  return "red";
 }
 
 export default function Component() {
@@ -90,7 +118,8 @@ export default function Component() {
     }))
   );
 
-  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>(p1HUTData);
+  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>(p1HUTWeekly);
+  const [dailyData, setDailyData] = useState<DailyData[]>();
 
   const fetchData = async () => {
     console.log("fetching data ...");
@@ -179,16 +208,30 @@ export default function Component() {
 
       setEfficiencyData(newEfficiencyData);
 
-      const lastWeek = p1HUTData.length - 1;
+      const lastWeek = p1HUTWeekly.length - 1;
 
       setMonthlyData([
-        ...p1HUTData,
+        ...p1HUTWeekly,
         {
           week: lastWeek + 1,
           p1HUT: p1HUT,
           // oneHUT: p1HUT + n1HUT + nw1HUT + w1HUT,
         },
       ]);
+
+      const lastDay = p1HUTDaily.length - 1;
+
+      let newDailyData: DailyData[] = [];
+
+      Object.values(p1HUTList).forEach((value, index) => {
+        // Create a new object with the next `day` index and the `p1HUT` value from `dic`
+        const newObj = { day: p1HUTDaily.length, p1HUT: value };
+        // Append the new object to `p1HUTDaily`
+        newDailyData.push(newObj);
+      });
+
+      setDailyData([...p1HUTDaily, ...newDailyData]);
+
       const productivePercentage = roundToThree(
         Math.min(
           (productiveTime / parseFloat(targets[MetricNames.PRODUCTIVITY])) *
@@ -315,7 +358,8 @@ export default function Component() {
               ? oneHUTEfficiencyPercentage
               : data.metric === "Efficiency (%)"
               ? efficiencyPercentage
-              : productivePercentage
+              : productivePercentage,
+            flow
           ),
         };
       });
@@ -402,17 +446,20 @@ export default function Component() {
           className={cn(
             "flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900",
             flow > 0.8 &&
-              "dark:bg-gradient-to-t dark:from-purple-800 dark:via-gray-900 dark:to-gray-900"
+              "dark:bg-gradient-to-t dark:from-green-800 dark:via-gray-900 dark:to-gray-900",
+            flow > 1.5 &&
+              "dark:bg-gradient-to-t dark:from-purple-800 dark:via-gray-900 dark:to-gray-900",
+            flow > 2.5 &&
+              "dark:bg-gradient-to-t dark:from-red-800 dark:via-gray-900 dark:to-gray-900"
           )}
         >
           <div className="container mx-auto px-6 py-8">
-            {flow > 0.8 && (
+            {flow > 1.5 && (
               <>
-                <FlowImg top="20%" left="18%" />
-                <FlowImg top="16%" left="82%" />
-                <FlowImg top="16%" left="35%" />
-                <FlowImg top="16%" left="65%" />
-                <FlowImg top="16%" left="82%" />
+                <FlowImg top="16%" left="18%" flow={flow} />
+                <FlowImg top="16%" left="35%" flow={flow} />
+                <FlowImg top="16%" left="65%" flow={flow} />
+                <FlowImg top="16%" left="82%" flow={flow} />
               </>
             )}
             <Title className="grid gap-6 mb-8 text-center">
@@ -435,26 +482,58 @@ export default function Component() {
               <BarGraph
                 barData={barData}
                 category="Unplanned Time"
-                color={"blue"}
+                color={
+                  flow > 2.5
+                    ? "red"
+                    : flow > 1.5
+                    ? "fuchsia"
+                    : flow > 0.8
+                    ? "emerald"
+                    : "slate"
+                }
               />
               <AreaGraph
                 data={chartData}
                 title={"Prod. Flow vs Total Flow"}
                 categories={["p1HUT", "oneHUT"]}
-                colors={["blue", "gray"]}
+                colors={
+                  flow > 2.5
+                    ? ["red", "gray"]
+                    : flow > 1.5
+                    ? ["fuchsia", "slate"]
+                    : flow > 0.8
+                    ? ["emerald", "slate"]
+                    : ["slate", "slate"]
+                }
                 index={"date"}
               />
               <AreaGraph
                 data={efficiencyData}
                 title={"Productive vs Free Hours"}
                 categories={["productiveTime", "hoursFree"]}
-                colors={["blue", "gray"]}
+                colors={
+                  flow > 2.5
+                    ? ["red", "gray"]
+                    : flow > 1.5
+                    ? ["fuchsia", "slate"]
+                    : flow > 0.8
+                    ? ["emerald", "slate"]
+                    : ["slate", "slate"]
+                }
                 index={"date"}
               />
               <BarGraph
                 barData={distractionData}
                 category="# Distractions"
-                color={"blue"}
+                color={
+                  flow > 2.5
+                    ? "red"
+                    : flow > 1.5
+                    ? "fuchsia"
+                    : flow > 0.8
+                    ? "emerald"
+                    : "slate"
+                }
               />
             </div>
 
@@ -465,8 +544,15 @@ export default function Component() {
             </Title>
             <br></br>
             <AreaGraph
+              data={dailyData}
+              title={"Productive Flow Daily for 3 Months"}
+              categories={["p1HUT", "oneHUT"]}
+              colors={["blue", "gray"]}
+              index={"day"}
+            />
+            <AreaGraph
               data={monthlyData}
-              title={"Productive vs Free Hours Yearly"}
+              title={"Productive Flow Weekly for Year"}
               categories={["p1HUT", "oneHUT"]}
               colors={["blue", "gray"]}
               index={"week"}
