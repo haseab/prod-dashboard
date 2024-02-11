@@ -53,7 +53,7 @@ function getColorForPercentage(percentage: number, flow: number): TremorColors {
     if (percentage === -1) return "gray";
   } else if (flow > 0.8) {
     if (percentage >= 95) return "emerald";
-    if (percentage >= 80 && percentage < 95) return "lime";
+    if (percentage >= 80 && percentage < 95) return "green";
     if (percentage >= 60 && percentage < 80) return "yellow";
     if (percentage >= 40 && percentage < 60) return "amber";
     if (percentage >= 15 && percentage < 40) return "orange";
