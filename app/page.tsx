@@ -489,7 +489,7 @@ export default function Component() {
                     ? "fuchsia"
                     : flow > 0.8
                     ? "emerald"
-                    : "slate"
+                    : "blue"
                 }
               />
               <AreaGraph
@@ -503,7 +503,7 @@ export default function Component() {
                     ? ["fuchsia", "slate"]
                     : flow > 0.8
                     ? ["emerald", "slate"]
-                    : ["slate", "slate"]
+                    : ["blue", "slate"]
                 }
                 index={"date"}
               />
@@ -518,7 +518,7 @@ export default function Component() {
                     ? ["fuchsia", "slate"]
                     : flow > 0.8
                     ? ["emerald", "slate"]
-                    : ["slate", "slate"]
+                    : ["blue", "slate"]
                 }
                 index={"date"}
               />
@@ -532,7 +532,7 @@ export default function Component() {
                     ? "fuchsia"
                     : flow > 0.8
                     ? "emerald"
-                    : "slate"
+                    : "blue"
                 }
               />
             </div>
@@ -547,14 +547,30 @@ export default function Component() {
               data={dailyData}
               title={"Productive Flow Daily for 3 Months"}
               categories={["p1HUT", "oneHUT"]}
-              colors={["blue", "gray"]}
+              colors={
+                flow > 2.5
+                  ? ["red", "gray"]
+                  : flow > 1.5
+                  ? ["fuchsia", "slate"]
+                  : flow > 0.8
+                  ? ["emerald", "slate"]
+                  : ["blue", "slate"]
+              }
               index={"day"}
             />
             <AreaGraph
               data={monthlyData}
               title={"Productive Flow Weekly for Year"}
               categories={["p1HUT", "oneHUT"]}
-              colors={["blue", "gray"]}
+              colors={
+                flow > 2.5
+                  ? ["red", "gray"]
+                  : flow > 1.5
+                  ? ["fuchsia", "slate"]
+                  : flow > 0.8
+                  ? ["emerald", "slate"]
+                  : ["blue", "slate"]
+              }
               index={"week"}
             />
           </div>
