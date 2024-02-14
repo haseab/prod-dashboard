@@ -24,14 +24,14 @@ const pollingInterval = 1000;
 const targets = {
   [MetricNames.HOURS_FREE]: "N/A",
   [MetricNames.N1HUT]: "N/A",
-  [MetricNames.PRODUCTIVITY]: "50",
+  [MetricNames.PRODUCTIVITY]: "60",
   [MetricNames.EFFICIENCY]: "70",
   [MetricNames.P1HUT]: "50",
-  [MetricNames.ONE_HUT]: "60",
+  [MetricNames.ONE_HUT]: "55",
   [MetricNames.W1HUT]: "2.5",
-  [MetricNames.UNPLANNED_TIME]: "15",
+  [MetricNames.UNPLANNED_TIME]: "10",
   [MetricNames.ONE_HUT_EFFICIENCY]: "50",
-  [MetricNames.DISTRACTION_COUNT]: "1500",
+  [MetricNames.DISTRACTION_COUNT]: "1000",
 };
 
 function getColorForPercentage(percentage: number, flow: number): TremorColors {
