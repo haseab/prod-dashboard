@@ -61,6 +61,7 @@ export const p1HUTWeekly = [
   { week: 56, p1HUT: 50.92 },
   { week: 57, p1HUT: 33.08 },
   { week: 58, p1HUT: 75.08 },
+  { week: 59, p1HUT: 53.073 },
 ];
 
 export const p1HUTDaily = [
@@ -162,4 +163,11 @@ export const p1HUTDaily = [
   { day: 95, p1HUT: 15.83 },
   { day: 96, p1HUT: 10.67 },
   { day: 97, p1HUT: 13.63 },
+  { day: 98, p1HUT: 8.542 },
+  { day: 99, p1HUT: 11.655 },
+  { day: 100, p1HUT: 7.69 },
+  { day: 101, p1HUT: 5.495 },
+  { day: 102, p1HUT: 9.308 },
+  { day: 103, p1HUT: 6.9 },
+  { day: 104, p1HUT: 3.483 },
 ];
