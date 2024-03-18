@@ -24,11 +24,11 @@ const pollingInterval = 1000;
 const targets = {
   [MetricNames.HOURS_FREE]: "N/A",
   [MetricNames.N1HUT]: "N/A",
-  [MetricNames.PRODUCTIVITY]: "60",
+  [MetricNames.PRODUCTIVITY]: "70",
   [MetricNames.EFFICIENCY]: "70",
   [MetricNames.P1HUT]: "50",
   [MetricNames.ONE_HUT]: "55",
-  [MetricNames.W1HUT]: "2.5",
+  [MetricNames.UNPRODUCTIVE]: "2.5",
   [MetricNames.UNPLANNED_TIME]: "14",
   [MetricNames.ONE_HUT_EFFICIENCY]: "50",
   [MetricNames.DISTRACTION_COUNT]: "900",
@@ -138,6 +138,7 @@ export default function Component() {
         n1HUTList,
         nw1HUTList,
         w1HUTList,
+        unproductiveList,
         hoursFreeList,
         distractionCountList,
         efficiencyList,
@@ -154,6 +155,7 @@ export default function Component() {
       const n1HUT = sumValues(n1HUTList);
       const nw1HUT = sumValues(nw1HUTList);
       const w1HUT = sumValues(w1HUTList);
+      const unproductiveTime = sumValues(unproductiveList);
       const hoursFree = sumValues(hoursFreeList);
       const distraction_count = sumValues(distractionCountList);
       const unplannedTime = sumValues(unplannedTimeList);
@@ -266,8 +268,12 @@ export default function Component() {
       const n1HUTPercentage = roundToThree(
         Math.min((n1HUT / parseFloat(targets[MetricNames.N1HUT])) * 100, 100)
       );
-      const w1HUTPercentage = roundToThree(
-        Math.min((parseFloat(targets[MetricNames.W1HUT]) / w1HUT) * 100, 100)
+      const unproductivePercentage = roundToThree(
+        Math.min(
+          (parseFloat(targets[MetricNames.UNPRODUCTIVE]) / unproductiveTime) *
+            100,
+          100
+        )
       );
       const oneHUTPercentage = roundToThree(
         Math.min(
@@ -311,8 +317,8 @@ export default function Component() {
               ? p1HUT
               : data.metric === "Neutral Flow (h)"
               ? n1HUT
-              : data.metric === "Unproductive Flow (h)"
-              ? w1HUT
+              : data.metric === "Unproductive Time (h)"
+              ? unproductiveTime
               : data.metric === "Prod. Flow Efficiency (%)"
               ? roundToThree((p1HUT / hoursFree) * 100)
               : data.metric === "Efficiency (%)"
@@ -331,8 +337,8 @@ export default function Component() {
               ? p1HUTPercentage
               : data.metric === "Neutral Flow (h)"
               ? 100
-              : data.metric === "Unproductive Flow (h)"
-              ? w1HUTPercentage
+              : data.metric === "Unproductive Time (h)"
+              ? unproductivePercentage
               : data.metric === "Prod. Flow Efficiency (%)"
               ? oneHUTEfficiencyPercentage
               : data.metric === "Efficiency (%)"
@@ -352,8 +358,8 @@ export default function Component() {
               ? p1HUTPercentage
               : data.metric === "Neutral Flow (h)"
               ? 100
-              : data.metric === "Unproductive Flow (h)"
-              ? w1HUTPercentage
+              : data.metric === "Unproductive Time (h)"
+              ? unproductivePercentage
               : data.metric === "Prod. Flow Efficiency (%)"
               ? oneHUTEfficiencyPercentage
               : data.metric === "Efficiency (%)"
