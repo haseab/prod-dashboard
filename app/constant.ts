@@ -34,6 +34,7 @@ type MetricKey =
   | "n1HUT"
   | "nw1HUT"
   | "w1HUT"
+  | "unproductiveTime"
   | "productiveTime"
   | "oneHUTEfficiency"
   | "efficiency"
@@ -55,6 +56,7 @@ export declare interface MetricsResponse {
   n1HUTList: { [key: string]: number };
   nw1HUTList: { [key: string]: number };
   w1HUTList: { [key: string]: number };
+  unproductiveList: { [key: string]: number };
   hoursFreeList: { [key: string]: number };
   distractionCountList: { [key: string]: number };
   efficiencyList: { [key: string]: number };
@@ -97,7 +99,7 @@ export enum MetricNames {
   DISTRACTION_COUNT = "Distraction #",
   P1HUT = "Productive Flow (h)",
   N1HUT = "Neutral Flow (h)",
-  W1HUT = "Unproductive Flow (h)",
+  UNPRODUCTIVE = "Unproductive Time (h)",
   ONE_HUT_EFFICIENCY = "Prod. Flow Efficiency (%)",
   EFFICIENCY = "Efficiency (%)",
   PRODUCTIVITY = "Productivity (h)",
@@ -107,7 +109,7 @@ export const metrics: MetricNames[] = [
   MetricNames.PRODUCTIVITY,
   MetricNames.HOURS_FREE,
   MetricNames.EFFICIENCY,
-  MetricNames.W1HUT,
+  MetricNames.UNPRODUCTIVE,
   MetricNames.UNPLANNED_TIME,
   MetricNames.P1HUT,
   MetricNames.ONE_HUT,
