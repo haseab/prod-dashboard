@@ -29,7 +29,7 @@ const targets = {
   [MetricNames.P1HUT]: "50",
   [MetricNames.ONE_HUT]: "55",
   [MetricNames.UNPRODUCTIVE]: "2.5",
-  [MetricNames.UNPLANNED_TIME]: "14",
+  [MetricNames.UNPLANNED_TIME]: "16.5",
   [MetricNames.ONE_HUT_EFFICIENCY]: "50",
   [MetricNames.DISTRACTION_COUNT]: "900",
 };
