@@ -487,7 +487,7 @@ export default function Component() {
             <div className="grid gap-6 lg:grid-cols-4">
               <BarGraph
                 barData={barData}
-                category="Unplanned Time"
+                category="Unplanned Time (h)"
                 color={
                   flow > 2.5
                     ? "red"
@@ -500,7 +500,7 @@ export default function Component() {
               />
               <AreaGraph
                 data={chartData}
-                title={"Prod. Flow vs Total Flow"}
+                title={"Prod. Flow vs Total Flow (h)"}
                 categories={["p1HUT", "oneHUT"]}
                 colors={
                   flow > 2.5
@@ -515,7 +515,7 @@ export default function Component() {
               />
               <AreaGraph
                 data={efficiencyData}
-                title={"Productive vs Free Hours"}
+                title={"Productive vs Free Hours (h)"}
                 categories={["productiveTime", "hoursFree"]}
                 colors={
                   flow > 2.5
@@ -551,7 +551,7 @@ export default function Component() {
             <br></br>
             <AreaGraph
               data={dailyData}
-              title={"Productive Flow Daily for 3 Months"}
+              title={"Productive Flow (h) Daily for 3 Months"}
               categories={["p1HUT", "oneHUT"]}
               colors={
                 flow > 2.5
@@ -566,7 +566,7 @@ export default function Component() {
             />
             <AreaGraph
               data={monthlyData}
-              title={"Productive Flow Weekly for Year"}
+              title={"Productive Flow (h) Weekly for Year"}
               categories={["p1HUT", "oneHUT"]}
               colors={
                 flow > 2.5
