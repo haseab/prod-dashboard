@@ -317,7 +317,7 @@ export default function Component() {
               ? p1HUT
               : data.metric === "Neutral Flow (h)"
               ? n1HUT
-              : data.metric === "Unproductive Time (h)"
+              : data.metric === "Unproductive Flow (h)"
               ? unproductiveTime
               : data.metric === "Prod. Flow Efficiency (%)"
               ? roundToThree((p1HUT / hoursFree) * 100)
@@ -337,7 +337,7 @@ export default function Component() {
               ? p1HUTPercentage
               : data.metric === "Neutral Flow (h)"
               ? 100
-              : data.metric === "Unproductive Time (h)"
+              : data.metric === "Unproductive Flow (h)"
               ? unproductivePercentage
               : data.metric === "Prod. Flow Efficiency (%)"
               ? oneHUTEfficiencyPercentage
@@ -358,7 +358,7 @@ export default function Component() {
               ? p1HUTPercentage
               : data.metric === "Neutral Flow (h)"
               ? 100
-              : data.metric === "Unproductive Time (h)"
+              : data.metric === "Unproductive Flow (h)"
               ? unproductivePercentage
               : data.metric === "Prod. Flow Efficiency (%)"
               ? oneHUTEfficiencyPercentage
@@ -551,7 +551,7 @@ export default function Component() {
             <br></br>
             <AreaGraph
               data={dailyData}
-              title={"Productive Flow (h) Daily for 3 Months"}
+              title={"Daily Productive Flow (h) over past 3 Months"}
               categories={["p1HUT", "oneHUT"]}
               colors={
                 flow > 2.5
@@ -566,7 +566,7 @@ export default function Component() {
             />
             <AreaGraph
               data={monthlyData}
-              title={"Productive Flow (h) Weekly for Year"}
+              title={"Weekly Productive Flow (h) over past Year"}
               categories={["p1HUT", "oneHUT"]}
               colors={
                 flow > 2.5
