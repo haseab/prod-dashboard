@@ -99,7 +99,7 @@ export enum MetricNames {
   DISTRACTION_COUNT = "Distraction #",
   P1HUT = "Productive Flow (h)",
   N1HUT = "Neutral Flow (h)",
-  UNPRODUCTIVE = "Unproductive Time (h)",
+  UNPRODUCTIVE = "Unproductive Flow (h)",
   ONE_HUT_EFFICIENCY = "Prod. Flow Efficiency (%)",
   EFFICIENCY = "Efficiency (%)",
   PRODUCTIVITY = "Productivity (h)",
