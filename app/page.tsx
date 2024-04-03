@@ -120,6 +120,8 @@ export default function Component() {
 
   const [monthlyData, setMonthlyData] = useState<MonthlyData[]>(p1HUTWeekly);
   const [dailyData, setDailyData] = useState<DailyData[]>();
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const fetchData = async () => {
     console.log("fetching data ...");
@@ -144,9 +146,13 @@ export default function Component() {
         efficiencyList,
         productiveList,
         flow,
+        startDate,
+        endDate,
       } = data as MetricsResponse;
 
       setFlow(flow);
+      setStartDate(startDate);
+      setEndDate(endDate);
 
       const sumValues = (obj: Record<string, number>) =>
         Object.values(obj).reduce((a, b) => a + b, 0);
@@ -270,8 +276,7 @@ export default function Component() {
       );
       const unproductivePercentage = roundToThree(
         Math.min(
-          (parseFloat(targets[MetricNames.UNPRODUCTIVE]) / unproductiveTime) *
-            100,
+          (parseFloat(targets[MetricNames.UNPRODUCTIVE]) / w1HUT) * 100,
           100
         )
       );
@@ -318,7 +323,7 @@ export default function Component() {
               : data.metric === "Neutral Flow (h)"
               ? n1HUT
               : data.metric === "Unproductive Flow (h)"
-              ? unproductiveTime
+              ? w1HUT
               : data.metric === "Prod. Flow Efficiency (%)"
               ? roundToThree((p1HUT / hoursFree) * 100)
               : data.metric === "Efficiency (%)"
@@ -447,6 +452,9 @@ export default function Component() {
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
             Dashboard
           </h2>
+          <div>
+            {startDate} to {endDate}
+          </div>
         </header>
         <main
           className={cn(
