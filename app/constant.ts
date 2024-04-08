@@ -5,8 +5,8 @@ export declare interface ChartData {
 }
 
 export declare interface MonthlyData {
-  week: string | number;
-  // oneHUT: number;
+  week: number;
+  date: string;
   p1HUT: number;
 }
 

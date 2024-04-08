@@ -222,6 +222,7 @@ export default function Component() {
         ...p1HUTWeekly,
         {
           week: lastWeek + 1,
+          date: Object.keys(p1HUTList)[0].slice(5),
           p1HUT: p1HUT,
           // oneHUT: p1HUT + n1HUT + nw1HUT + w1HUT,
         },
@@ -231,9 +232,13 @@ export default function Component() {
 
       let newDailyData: DailyData[] = [];
 
-      Object.values(p1HUTList).forEach((value, index) => {
+      Object.keys(p1HUTList).forEach((key, index) => {
         // Create a new object with the next `day` index and the `p1HUT` value from `dic`
-        const newObj = { day: p1HUTDaily.length, p1HUT: value };
+        const newObj = {
+          day: p1HUTDaily.length,
+          date: key.slice(5),
+          p1HUT: p1HUTList[key],
+        };
         // Append the new object to `p1HUTDaily`
         newDailyData.push(newObj);
       });
@@ -570,10 +575,11 @@ export default function Component() {
                   ? ["emerald", "slate"]
                   : ["blue", "slate"]
               }
-              index={"day"}
+              index={"date"}
             />
             <AreaGraph
               data={monthlyData}
+              className="h-[400px]"
               title={"Weekly Productive Flow (h) over past Year"}
               categories={["p1HUT", "oneHUT"]}
               colors={
@@ -585,7 +591,7 @@ export default function Component() {
                   ? ["emerald", "slate"]
                   : ["blue", "slate"]
               }
-              index={"week"}
+              index={"date"}
             />
           </div>
         </main>

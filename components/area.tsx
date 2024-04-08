@@ -17,12 +17,14 @@ export default function AreaGraph({
   categories, // Add a new prop for categories
   colors,
   index,
+  className,
 }: {
   data?: ChartData[] | EfficiencyData[] | MonthlyData[] | DailyData[];
   title: string;
   categories: string[]; // Define the type for categories
   colors: string[];
   index: string;
+  className?: string;
 }) {
   // const data = chartData.length === 0 ? efficiencyData : chartData;
 
@@ -30,10 +32,11 @@ export default function AreaGraph({
     <Card>
       <Title>{title}</Title>
       <AreaChart
-        className="h-80"
+        className={"h-80 " + className}
         data={data}
         index={index}
         yAxisWidth={30}
+        rotateLabelX={{ angle: 0 }}
         categories={categories}
         colors={colors}
         // valueFormatter={valueFormatter}
