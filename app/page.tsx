@@ -31,7 +31,7 @@ const targets = {
   [MetricNames.UNPRODUCTIVE]: "2.5",
   [MetricNames.UNPLANNED_TIME]: "16.5",
   [MetricNames.ONE_HUT_EFFICIENCY]: "50",
-  [MetricNames.DISTRACTION_COUNT]: "900",
+  [MetricNames.DISTRACTION_COUNT]: "500",
 };
 
 function getColorForPercentage(percentage: number, flow: number): TremorColors {
