@@ -26,7 +26,7 @@ const targets = {
   [MetricNames.N1HUT]: "N/A",
   [MetricNames.PRODUCTIVITY]: "70",
   [MetricNames.EFFICIENCY]: "70",
-  [MetricNames.P1HUT]: "50",
+  [MetricNames.P1HUT]: "55",
   [MetricNames.ONE_HUT]: "55",
   [MetricNames.UNPRODUCTIVE]: "2.5",
   [MetricNames.UNPLANNED_TIME]: "16.5",
