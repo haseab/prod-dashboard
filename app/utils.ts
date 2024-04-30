@@ -2,7 +2,33 @@ export const roundToThree = (num: number) => {
   return Math.round(num * 10000 + Number.EPSILON) / 10000;
 };
 
-export const p1HUTWeekly = [
+export const simpleMovingAverage = (prices: number[], interval: number) => {
+  const results = new Array(interval - 1).fill(null); // Fill the first 'interval-1' slots with null
+
+  for (let index = interval - 1; index < prices.length; index++) {
+    const intervalSlice = prices.slice(index - interval + 1, index + 1);
+    const sum = intervalSlice.reduce((prev, curr) => prev + curr, 0);
+    results.push(sum / interval);
+  }
+
+  return results;
+};
+
+interface HistoricalWeeklyData {
+  week: number;
+  date: string;
+  p1HUT: number;
+  movingAverage?: number;
+}
+
+interface HistoricalDailyData {
+  day: number;
+  date: string;
+  p1HUT: number;
+  movingAverage?: number;
+}
+
+export const p1HUTWeekly: HistoricalWeeklyData[] = [
   { week: 1, date: "01-02", p1HUT: 23.234 },
   { week: 2, date: "01-09", p1HUT: 27.676 },
   { week: 3, date: "01-16", p1HUT: 25.972 },
@@ -71,9 +97,10 @@ export const p1HUTWeekly = [
   { week: 66, date: "04-01", p1HUT: 62.256 },
   { week: 67, date: "04-08", p1HUT: 51.207 },
   { week: 68, date: "04-15", p1HUT: 48.723 },
+  { week: 69, date: "04-22", p1HUT: 67.991 },
 ];
 
-export const p1HUTDaily = [
+export const p1HUTDaily: HistoricalDailyData[] = [
   { day: 1, date: "03-04", p1HUT: 6.073 },
   { day: 2, date: "03-05", p1HUT: 8.951 },
   { day: 3, date: "03-06", p1HUT: 9.831 },

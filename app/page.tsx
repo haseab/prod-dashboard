@@ -16,7 +16,12 @@ import { cn } from "@/lib/utils";
 import { Title } from "@tremor/react";
 import { useEffect, useRef, useState } from "react";
 import { BarData, ChartData, EfficiencyData, MetricNames } from "./constant";
-import { p1HUTDaily, p1HUTWeekly, roundToThree } from "./utils";
+import {
+  p1HUTDaily,
+  p1HUTWeekly,
+  roundToThree,
+  simpleMovingAverage,
+} from "./utils";
 
 const refreshTime = 30;
 const pollingInterval = 1000;
@@ -122,6 +127,7 @@ export default function Component() {
   const [dailyData, setDailyData] = useState<DailyData[]>();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [showOnlyMA, setShowOnlyMA] = useState(false);
 
   const fetchData = async () => {
     console.log("fetching data ...");
@@ -217,18 +223,40 @@ export default function Component() {
       setEfficiencyData(newEfficiencyData);
 
       const lastWeek = p1HUTWeekly.length - 1;
+      const weeklyInterval = 4;
+      const dailyInterval = 7;
 
-      setMonthlyData([
-        ...p1HUTWeekly,
-        {
-          week: lastWeek + 1,
-          date: Object.keys(p1HUTList)[0].slice(5),
-          p1HUT: p1HUT,
-          // oneHUT: p1HUT + n1HUT + nw1HUT + w1HUT,
-        },
-      ]);
+      const movingAverageWeekly = simpleMovingAverage(
+        [...p1HUTWeekly.map((item) => item.p1HUT), p1HUT],
+        weeklyInterval
+      );
+
+      p1HUTWeekly.forEach((item, index) => {
+        item.movingAverage = movingAverageWeekly[index];
+      });
+
+      setMonthlyData(
+        [
+          ...p1HUTWeekly,
+          {
+            week: lastWeek + 1,
+            date: Object.keys(p1HUTList)[0].slice(5),
+            p1HUT: p1HUT,
+            movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
+          },
+        ].slice(weeklyInterval)
+      );
 
       const lastDay = p1HUTDaily.length - 1;
+
+      const movingAverageDaily = simpleMovingAverage(
+        [...p1HUTDaily.map((item) => item.p1HUT), ...Object.values(p1HUTList)],
+        dailyInterval
+      );
+
+      p1HUTDaily.forEach((item, index) => {
+        item.movingAverage = movingAverageDaily[index];
+      });
 
       let newDailyData: DailyData[] = [];
 
@@ -238,12 +266,21 @@ export default function Component() {
           day: p1HUTDaily.length,
           date: key.slice(5),
           p1HUT: p1HUTList[key],
+          movingAverage:
+            movingAverageDaily[
+              movingAverageDaily.length - (2 * dailyInterval - index)
+            ],
         };
         // Append the new object to `p1HUTDaily`
         newDailyData.push(newObj);
       });
 
-      setDailyData([...p1HUTDaily, ...newDailyData]);
+      console.log("moving average daily");
+      console.log(movingAverageDaily);
+      console.log("p1HUTDaily");
+      console.log(p1HUTDaily);
+
+      setDailyData([...p1HUTDaily, ...newDailyData].slice(dailyInterval));
 
       const productivePercentage = roundToThree(
         Math.min(
@@ -565,9 +602,13 @@ export default function Component() {
             <AreaGraph
               data={dailyData}
               title={"Daily Productive Flow (h) over past 3 Months"}
-              categories={["p1HUT", "oneHUT"]}
+              categories={
+                showOnlyMA ? ["movingAverage"] : ["p1HUT", "movingAverage"]
+              }
               colors={
-                flow > 2.5
+                showOnlyMA
+                  ? ["slate"]
+                  : flow > 2.5
                   ? ["red", "gray"]
                   : flow > 1.5
                   ? ["fuchsia", "slate"]
@@ -581,9 +622,13 @@ export default function Component() {
               data={monthlyData}
               className="h-[400px]"
               title={"Weekly Productive Flow (h) over past Year"}
-              categories={["p1HUT", "oneHUT"]}
+              categories={
+                showOnlyMA ? ["movingAverage"] : ["p1HUT", "movingAverage"]
+              }
               colors={
-                flow > 2.5
+                showOnlyMA
+                  ? ["slate"]
+                  : flow > 2.5
                   ? ["red", "gray"]
                   : flow > 1.5
                   ? ["fuchsia", "slate"]
@@ -593,6 +638,14 @@ export default function Component() {
               }
               index={"date"}
             />
+            <div className="flex items-center justify-center">
+              <button
+                className="bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setShowOnlyMA(!showOnlyMA)}
+              >
+                Show Only MA
+              </button>
+            </div>
           </div>
         </main>
       </div>
