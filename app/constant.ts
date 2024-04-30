@@ -8,11 +8,13 @@ export declare interface MonthlyData {
   week: number;
   date: string;
   p1HUT: number;
+  movingAverage?: number;
 }
 
 export declare interface DailyData {
   day: string | number;
   p1HUT: number;
+  movingAverage?: number;
 }
 
 export declare interface BarData {
