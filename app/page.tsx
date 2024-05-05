@@ -261,7 +261,9 @@ export default function Component() {
       let newDailyData: DailyData[] = [];
 
       Object.keys(p1HUTList).forEach((key, index) => {
-        // Create a new object with the next `day` index and the `p1HUT` value from `dic`
+        if ((index + 1) % 2 !== 0) {
+          return;
+        }
         const newObj = {
           day: p1HUTDaily.length,
           date: key.slice(5),
@@ -643,7 +645,7 @@ export default function Component() {
                 className="bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded"
                 onClick={() => setShowOnlyMA(!showOnlyMA)}
               >
-                Show Only MA
+                {showOnlyMA ? "Show Both" : "Show Only MA"}
               </button>
             </div>
           </div>
