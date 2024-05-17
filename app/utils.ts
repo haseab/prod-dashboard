@@ -99,6 +99,7 @@ export const p1HUTWeekly: HistoricalWeeklyData[] = [
   { week: 68, date: "04-15", p1HUT: 48.723 },
   { week: 69, date: "04-22", p1HUT: 67.991 },
   { week: 70, date: "04-29", p1HUT: 59.007 },
+  { week: 71, date: "05-06", p1HUT: 52.089 },
 ];
 
 export const p1HUTDaily: HistoricalDailyData[] = [
