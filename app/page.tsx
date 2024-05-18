@@ -231,8 +231,17 @@ export default function Component() {
         weeklyInterval
       );
 
+      const movingAveragePercentageWeekly = simpleMovingAverage(
+        [
+          ...p1HUTWeekly.map((item) => item.p1HUTPercentage),
+          roundToThree(p1HUT / hoursFree),
+        ],
+        weeklyInterval
+      );
+
       p1HUTWeekly.forEach((item, index) => {
         item.movingAverage = movingAverageWeekly[index];
+        item.movingAveragePercentage = movingAveragePercentageWeekly[index];
       });
 
       setMonthlyData(
@@ -243,6 +252,10 @@ export default function Component() {
             date: Object.keys(p1HUTList)[0].slice(5),
             p1HUT: p1HUT,
             movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
+            movingAveragePercentage:
+              movingAveragePercentageWeekly[
+                movingAveragePercentageWeekly.length - 1
+              ],
           },
         ].slice(weeklyInterval)
       );
@@ -623,9 +636,31 @@ export default function Component() {
             <AreaGraph
               data={monthlyData}
               className="h-[400px]"
-              title={"Weekly Productive Flow (h) over past Year"}
+              title={"Weekly Productive Flow (h) Since 2023"}
               categories={
                 showOnlyMA ? ["movingAverage"] : ["p1HUT", "movingAverage"]
+              }
+              colors={
+                showOnlyMA
+                  ? ["slate"]
+                  : flow > 2.5
+                  ? ["red", "gray"]
+                  : flow > 1.5
+                  ? ["fuchsia", "slate"]
+                  : flow > 0.8
+                  ? ["emerald", "slate"]
+                  : ["blue", "slate"]
+              }
+              index={"date"}
+            />
+            <AreaGraph
+              data={monthlyData}
+              className="h-[400px]"
+              title={"Weekly Productive Flow Efficiency (%) Since 2023"}
+              categories={
+                showOnlyMA
+                  ? ["movingAveragePercentage"]
+                  : ["p1HUTPercentage", "movingAveragePercentage"]
               }
               colors={
                 showOnlyMA

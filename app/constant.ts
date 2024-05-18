@@ -9,6 +9,7 @@ export declare interface MonthlyData {
   date: string;
   p1HUT: number;
   movingAverage?: number;
+  movingAveragePercentage?: number;
 }
 
 export declare interface DailyData {
