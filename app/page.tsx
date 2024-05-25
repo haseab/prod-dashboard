@@ -251,6 +251,7 @@ export default function Component() {
             week: lastWeek + 1,
             date: Object.keys(p1HUTList)[0].slice(5),
             p1HUT: p1HUT,
+            p1HUTPercentage: roundToThree(p1HUT / hoursFree),
             movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
             movingAveragePercentage:
               movingAveragePercentageWeekly[
