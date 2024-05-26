@@ -160,7 +160,6 @@ export default function Component() {
         startDate,
         endDate,
       } = data as MetricsResponse;
-
       setFlow(flow);
       setStartDate(startDate);
       setEndDate(endDate);
@@ -537,6 +536,18 @@ export default function Component() {
             {showConfetti && (
               <RealisticConfettiPreset
                 width={window.innerWidth}
+                // make color of confetti red
+                decorateOptions={(options) => {
+                  options.colors =
+                    flow > 2.5
+                      ? ["#DC143C", "#B22222", "#CD5C5C", "#E9967A", "#F08080"]
+                      : flow > 1.5
+                      ? ["#800080", "#8A2BE2", "#4B0082", "#483D8B", "#6A5ACD"]
+                      : flow > 0.8
+                      ? ["#008000", "#228B22", "#32CD32", "#3CB371", "#2E8B57"]
+                      : ["#0000FF", "#4169E1", "#6495ED", "#4682B4", "#87CEFA"];
+                  return options;
+                }}
                 autorun={{ speed: 1, duration: 500 }}
               ></RealisticConfettiPreset>
               // <img
@@ -607,7 +618,7 @@ export default function Component() {
               />
               <AreaGraph
                 data={efficiencyData}
-                title={"Productive vs Free Hours (h)"}
+                title={"Productive vs Free Hours"}
                 categories={["productiveTime", "hoursFree"]}
                 colors={
                   flow > 2.5
