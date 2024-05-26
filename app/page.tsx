@@ -156,11 +156,11 @@ export default function Component() {
         distractionCountList,
         efficiencyList,
         productiveList,
-        // flow,
+        flow,
         startDate,
         endDate,
       } = data as MetricsResponse;
-      const flow = 3;
+
       setFlow(flow);
       setStartDate(startDate);
       setEndDate(endDate);
