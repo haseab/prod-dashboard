@@ -15,6 +15,7 @@ import MetricComponent from "@/components/metric";
 import { cn } from "@/lib/utils";
 import { Title } from "@tremor/react";
 import { useEffect, useRef, useState } from "react";
+import RealisticConfettiPreset from "react-canvas-confetti/dist/presets/realistic";
 import { BarData, ChartData, EfficiencyData, MetricNames } from "./constant";
 import {
   p1HUTDaily,
@@ -79,6 +80,7 @@ function getColorForPercentage(percentage: number, flow: number): TremorColors {
 export default function Component() {
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [error, setError] = useState(null);
   const [timeLeft, setTimeLeft] = useState(refreshTime);
   const [flow, setFlow] = useState(0);
@@ -132,6 +134,9 @@ export default function Component() {
   const fetchData = async () => {
     console.log("fetching data ...");
     setIsLoading(true);
+    await setTimeout(() => {
+      setShowConfetti(true);
+    }, 2000);
     try {
       const response = await fetch("http://localhost:3002/metrics");
       if (!response.ok) {
@@ -151,11 +156,11 @@ export default function Component() {
         distractionCountList,
         efficiencyList,
         productiveList,
-        flow,
+        // flow,
         startDate,
         endDate,
       } = data as MetricsResponse;
-
+      const flow = 3;
       setFlow(flow);
       setStartDate(startDate);
       setEndDate(endDate);
@@ -441,6 +446,9 @@ export default function Component() {
       setError(err.message);
     } finally {
       setIsLoading(false);
+      await setTimeout(() => {
+        setShowConfetti(false);
+      }, 5000);
     }
   };
 
@@ -526,6 +534,24 @@ export default function Component() {
           )}
         >
           <div className="container mx-auto px-6 py-8">
+            {showConfetti && (
+              <RealisticConfettiPreset
+                width={window.innerWidth}
+                autorun={{ speed: 1, duration: 500 }}
+              ></RealisticConfettiPreset>
+              // <img
+              //   src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/confetti-transparent.gif"
+              //   alt="Loading..."
+              //   className="gifPosition"
+              //   style={{
+              //     position: "absolute",
+              //     top: "50%",
+              //     left: "50%",
+              //     zIndex: 100,
+              //     transform: "translate(-50%, -50%)",
+              //   }}
+              // ></img>
+            )}
             {flow > 1.5 && (
               <>
                 <FlowImg top="16%" left="18%" flow={flow} />
