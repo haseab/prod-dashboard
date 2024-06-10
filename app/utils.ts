@@ -105,6 +105,7 @@ export const p1HUTWeekly: HistoricalWeeklyData[] = [
   { week: 72, date: "05-13", p1HUT: 56.228, p1HUTPercentage: 0.59855 },
   { week: 73, date: "05-20", p1HUT: 52.663, p1HUTPercentage: 0.59749 },
   { week: 74, date: "05-27", p1HUT: 52.1, p1HUTPercentage: 0.59214 },
+  { week: 75, date: "06-03", p1HUT: 54.957, p1HUTPercentage: 0.61521 },
 ];
 
 export const p1HUTDaily: HistoricalDailyData[] = [
@@ -186,6 +187,9 @@ export const p1HUTDaily: HistoricalDailyData[] = [
   { day: 76, date: "05-29", p1HUT: 7.652 },
   { day: 77, date: "05-31", p1HUT: 5.483 },
   { day: 78, date: "06-02", p1HUT: 10.308 },
+  { day: 79, date: "06-04", p1HUT: 7.88 },
+  { day: 80, date: "06-06", p1HUT: 9.413 },
+  { day: 81, date: "06-08", p1HUT: 4.278 },
 ];
 /*
 
@@ -225,6 +229,13 @@ export const p1HUTDaily: HistoricalDailyData[] = [
         "2024-05-31": 5.483,
         "2024-06-01": 6.844,
         "2024-06-02": 10.308
+                "2024-06-03": 10.55,
+        "2024-06-04": 7.88,
+        "2024-06-05": 7.03,
+        "2024-06-06": 9.413,
+        "2024-06-07": 8.72,
+        "2024-06-08": 4.278,
+        "2024-06-09": 7.086
 "2024-01-01": 1.933,
 "2024-01-02": 2.292,
 "2024-01-03": 1.127,
