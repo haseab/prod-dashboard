@@ -130,6 +130,7 @@ export default function Component() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [showOnlyMA, setShowOnlyMA] = useState(false);
+  const [showOnlyRaw, setShowOnlyRaw] = useState(false);
 
   const fetchData = async () => {
     console.log("fetching data ...");
@@ -656,7 +657,11 @@ export default function Component() {
               data={dailyData}
               title={"Daily Productive Flow (h) over past 3 Months"}
               categories={
-                showOnlyMA ? ["movingAverage"] : ["p1HUT", "movingAverage"]
+                showOnlyMA
+                  ? ["movingAverage"]
+                  : showOnlyRaw
+                  ? ["p1HUT"]
+                  : ["p1HUT", "movingAverage"]
               }
               colors={
                 showOnlyMA
@@ -676,7 +681,11 @@ export default function Component() {
               className="h-[400px]"
               title={"Weekly Productive Flow (h) Since 2023"}
               categories={
-                showOnlyMA ? ["movingAverage"] : ["p1HUT", "movingAverage"]
+                showOnlyMA
+                  ? ["movingAverage"]
+                  : showOnlyRaw
+                  ? ["p1HUT"]
+                  : ["p1HUT", "movingAverage"]
               }
               colors={
                 showOnlyMA
@@ -698,6 +707,8 @@ export default function Component() {
               categories={
                 showOnlyMA
                   ? ["movingAveragePercentage"]
+                  : showOnlyRaw
+                  ? ["p1HUTPercentage"]
                   : ["p1HUTPercentage", "movingAveragePercentage"]
               }
               colors={
@@ -713,12 +724,18 @@ export default function Component() {
               }
               index={"date"}
             />
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center space-x-4">
               <button
                 className="bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded"
                 onClick={() => setShowOnlyMA(!showOnlyMA)}
               >
                 {showOnlyMA ? "Show Both" : "Show Only MA"}
+              </button>
+              <button
+                className="bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setShowOnlyRaw(!showOnlyRaw)}
+              >
+                {showOnlyRaw ? "Show Both" : "Show Only Raw"}
               </button>
             </div>
           </div>
