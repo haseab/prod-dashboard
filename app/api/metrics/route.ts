@@ -1,12 +1,10 @@
-import { unstable_noStore } from "next/cache";
+// export const revalidate = 0;
 
 export async function GET() {
   console.log("GETTING /metrics");
   try {
-    unstable_noStore();
-    const response = await fetch(`${process.env.SERVER_URL}/metrics`, {
-      next: { revalidate: 0 },
-    });
+    // unstable_noStore();
+    const response = await fetch(`${process.env.SERVER_URL}/metrics`);
 
     if (!response.ok) {
       throw new Error("An error occurred");
