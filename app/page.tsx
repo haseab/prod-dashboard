@@ -8,6 +8,7 @@ import PingDot from "@/components/ping-dot";
 import { useMobile } from "@/hooks/use-mobile";
 import {
   cn,
+  formatPacificTime,
   getNewMetricsData,
   roundToThree,
   simpleMovingAverage,
@@ -488,7 +489,7 @@ export default function Component() {
                         </div>
                       </div>
                       <p className="order-first pb-2 sm:order-none text-gray-600 text-sm">
-                        Local Time: {new Date().toLocaleString()}
+                        Local Time: {formatPacificTime(new Date())}
                       </p>
                     </div>
                   </Card>
