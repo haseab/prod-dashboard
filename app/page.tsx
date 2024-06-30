@@ -334,11 +334,11 @@ export default function Component() {
         </div>
       </div> */}
       <div className="flex font-sans flex-col flex-1 overflow-hidden items center justify-center w-full">
-        <header className="flex items-center justify-between p-6 border-b dark:border-gray-700 w-full">
-          <h2 className="text-md sm:text-2xl font-mono font-semibold text-gray-800 dark:text-gray-200">
+        <header className="flex flex-col xs:flex-row items-center justify-between p-6 pb-0 border-b dark:border-gray-700 w-full">
+          <h2 className="text-md text-2xl font-mono font-semibold text-gray-800 dark:text-gray-200">
             timetracking.live
           </h2>
-          <div className="text-sm sm:text-lg text-center p-5">
+          <div className="text-lg text-center p-5">
             {startDate} to {endDate}
           </div>
         </header>
