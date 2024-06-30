@@ -447,7 +447,7 @@ export default function Component() {
                       </div>
                     </div>
                     <div className="flex items-center justify-center">
-                      <div className="sm:border-r border-gray-700 sm:h-32 sm:w-0"></div>
+                      <div className="border-b w-60 mt-5 sm:border-r border-gray-700 sm:h-32 sm:w-0"></div>
                     </div>
                     <div className="flex flex-1 flex-col items-center justify-center space-y-2 p-3">
                       <Title>Right Now I&apos;m:</Title>
