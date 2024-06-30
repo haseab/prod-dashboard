@@ -487,7 +487,7 @@ export default function Component() {
                           />
                         </div>
                       </div>
-                      <p className="text-gray-600 text-sm">
+                      <p className="order-first pb-2 sm:order-none text-gray-600 text-sm">
                         Local Time: {new Date().toLocaleString()}
                       </p>
                     </div>
