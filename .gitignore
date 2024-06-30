@@ -7,10 +7,13 @@
 
 # testing
 /coverage
+/local
 
 # next.js
 /.next/
 /out/
+
+.env
 
 # production
 /build

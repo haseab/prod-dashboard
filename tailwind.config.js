@@ -11,6 +11,9 @@ module.exports = {
     transparent: "transparent",
     current: "currentColor",
     extend: {
+      screens: {
+        xs: "480px", // Define your custom breakpoint value
+      },
       colors: {
         // light mode
         tremor: {
