@@ -1,4 +1,5 @@
 "use client";
+
 import { p1HUTDaily, p1HUTWeekly } from "@/app/constant";
 import AreaGraph from "@/components/area";
 import { FlowImg } from "@/components/flowicon";
@@ -35,6 +36,7 @@ export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [flow, setFlow] = useState(0);
   const [timeLeft, setTimeLeft] = useState(refreshTime);
+  const [error, setError] = useState(false);
   const timeLeftRef = useRef(0);
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
     weekdays.map((day) => ({
@@ -265,6 +267,9 @@ export default function Component() {
 
       setDailyData([...p1HUTDaily, ...newDailyData].slice(dailyInterval));
     } catch (err: any) {
+      console.log("returning error");
+      console.log(err);
+      setError(true);
     } finally {
       await setTimeout(() => {
         setShowConfetti(false);
@@ -273,23 +278,30 @@ export default function Component() {
   };
 
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(() => {
-      timeLeftRef.current += 1;
-      setTimeLeft(timeLeftRef.current);
-
-      if (timeLeftRef.current === refreshTime - 2) {
-        fetchData();
-      }
-      if (timeLeftRef.current === refreshTime) {
-        timeLeftRef.current = 0;
+    try {
+      fetchData();
+      const interval = setInterval(() => {
+        timeLeftRef.current += 1;
         setTimeLeft(timeLeftRef.current);
-      }
-    }, pollingInterval);
 
-    return () => {
-      clearInterval(interval);
-    };
+        if (timeLeftRef.current === refreshTime - 2) {
+          fetchData();
+        }
+        if (timeLeftRef.current === refreshTime) {
+          timeLeftRef.current = 0;
+          setTimeLeft(timeLeftRef.current);
+        }
+      }, pollingInterval);
+      setError(false);
+
+      return () => {
+        clearInterval(interval);
+      };
+    } catch (err: any) {
+      console.log("returning error");
+      console.log(err);
+      setError(true);
+    }
   }, []);
 
   return (
@@ -396,6 +408,11 @@ export default function Component() {
             <Title className="grid gap-6 text-center">
               Refreshing in {refreshTime - timeLeftRef.current} seconds
             </Title>
+            {error && (
+              <span className="grid gap-6 text-center text-red-700">
+                Server error: trying again in 30 seconds...
+              </span>
+            )}
             <div className="grid md:grid-cols-1 lg:grid-cols-5">
               <div className="grid lg:col-span-3 lg:grid-rows-3 p-5 gap-6">
                 <div className="flex">
