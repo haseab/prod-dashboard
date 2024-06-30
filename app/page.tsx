@@ -14,6 +14,7 @@ import {
   sumValues,
 } from "@/lib/utils";
 import { Card, Title } from "@tremor/react";
+import { unstable_noStore } from "next/cache";
 import { useEffect, useRef, useState } from "react";
 import RealisticConfettiPreset from "react-canvas-confetti/dist/presets/realistic";
 import {
@@ -93,6 +94,7 @@ export default function Component() {
 
     try {
       console.log("fetching data from server ...");
+      unstable_noStore();
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`,
         {

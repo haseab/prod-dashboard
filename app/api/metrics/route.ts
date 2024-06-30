@@ -1,6 +1,9 @@
+import { unstable_noStore } from "next/cache";
+
 export async function GET() {
   console.log("GETTING /metrics");
   try {
+    unstable_noStore();
     const response = await fetch(`${process.env.SERVER_URL}/metrics`, {
       next: { revalidate: 0 },
     });
