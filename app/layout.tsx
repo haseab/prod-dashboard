@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {<PHProvider>children</PHProvider>}
+        <PHProvider>{children}</PHProvider>
       </body>
     </html>
   );
