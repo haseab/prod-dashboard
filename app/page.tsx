@@ -8,7 +8,7 @@ import PingDot from "@/components/ping-dot";
 import { useMobile } from "@/hooks/use-mobile";
 import {
   cn,
-  formatPacificTime,
+  formatToCurrentTimezone,
   getNewMetricsData,
   roundToThree,
   simpleMovingAverage,
@@ -489,7 +489,12 @@ export default function Component() {
                         </div>
                       </div>
                       <p className="order-first pb-2 sm:order-none text-gray-600 text-sm">
-                        Local Time: {formatPacificTime(new Date())}
+                        Local Time:{" "}
+                        {formatToCurrentTimezone(
+                          new Date(),
+                          // "Canada/Eastern"
+                          "America/Los_Angeles"
+                        )}
                       </p>
                     </div>
                   </Card>
