@@ -301,7 +301,7 @@ export default function Component() {
         clearInterval(interval);
       };
     } catch (err: any) {
-      console.log("returning error");
+      console.log("returning error!");
       console.log(err);
       setError(true);
     }
@@ -348,18 +348,20 @@ export default function Component() {
           </nav>
         </div>
       </div> */}
-      <div className="flex font-sans flex-col flex-1 overflow-hidden items center justify-center w-full">
-        <header className="flex flex-col xs:flex-row items-center justify-between p-6 pb-0 border-b dark:border-gray-700 w-full">
-          <h2 className="text-md text-2xl font-mono font-semibold text-gray-800 dark:text-gray-200">
-            timetracking.live
-          </h2>
-          <div className="text-lg text-center p-5">
-            {startDate} to {endDate}
-          </div>
-        </header>
+      <div className="flex font-sans flex-col flex-1 w-full">
+        <div className="flex justify-center items-center">
+          <header className="container px-12 flex flex-col xs:flex-row items-center justify-between p-6 pb-0  w-full">
+            <h2 className="text-md text-2xl font-mono font-semibold text-gray-800 dark:text-gray-200">
+              timetracking.live
+            </h2>
+            <div className="text-lg text-center p-5">
+              {startDate} to {endDate}
+            </div>
+          </header>
+        </div>
         <main
           className={cn(
-            "flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900",
+            "flex-1 bg-gray-100 dark:bg-gray-900",
             flow > 0.8 &&
               "dark:bg-gradient-to-t dark:from-green-800 dark:via-gray-900 dark:to-gray-900",
             flow > 1.5 &&

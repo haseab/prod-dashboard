@@ -2,8 +2,12 @@ export async function GET() {
   console.log("GETTING /metrics");
   try {
     const response = await fetch(`${process.env.SERVER_URL}/metrics`, {
-      next: { revalidate: 30 },
+      next: { revalidate: 0 },
     });
+
+    if (!response.ok) {
+      throw new Error("An error occurred");
+    }
 
     const data = await response.json();
 
@@ -11,7 +15,7 @@ export async function GET() {
       headers: { "content-type": "application/json" },
     });
   } catch (error) {
-    console.log("returning error");
+    console.log("returning server error");
     console.error(error);
     return new Response("An error occurred", { status: 500 });
   }

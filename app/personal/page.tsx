@@ -473,7 +473,7 @@ export default function Component() {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex bg-gray-100 dark:bg-gray-900">
       {/* <div className="flex flex-col w-64 bg-white dark:bg-gray-800 border-r dark:border-gray-700">
         <div className="flex items-center justify-center h-14 border-b dark:border-gray-700">
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
@@ -513,7 +513,7 @@ export default function Component() {
           </nav>
         </div>
       </div> */}
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1">
         <header className="flex items-center justify-between p-6 border-b dark:border-gray-700">
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
             Dashboard
@@ -524,7 +524,7 @@ export default function Component() {
         </header>
         <main
           className={cn(
-            "flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900",
+            "flex-1 bg-gray-100 dark:bg-gray-900",
             flow > 0.8 &&
               "dark:bg-gradient-to-t dark:from-green-800 dark:via-gray-900 dark:to-gray-900",
             flow > 1.5 &&
