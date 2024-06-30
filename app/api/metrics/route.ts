@@ -11,6 +11,7 @@ export async function GET() {
       headers: { "content-type": "application/json" },
     });
   } catch (error) {
+    console.log("returning error");
     console.error(error);
     return new Response("An error occurred", { status: 500 });
   }
