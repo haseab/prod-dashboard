@@ -487,6 +487,9 @@ export default function Component() {
                           />
                         </div>
                       </div>
+                      <p className="text-gray-600 text-sm">
+                        Local Time: {new Date().toLocaleString()}
+                      </p>
                     </div>
                   </Card>
                 </div>
