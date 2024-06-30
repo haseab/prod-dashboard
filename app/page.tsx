@@ -31,6 +31,7 @@ import {
 
 const refreshTime = 30;
 const pollingInterval = 1000;
+export const revalidate = 0;
 
 export default function Component() {
   const isMobile = useMobile();
