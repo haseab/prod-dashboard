@@ -94,7 +94,10 @@ export default function Component() {
     try {
       console.log("fetching data from server ...");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`,
+        {
+          next: { revalidate: 0 },
+        }
       );
 
       const result = await response.json();
@@ -449,10 +452,24 @@ export default function Component() {
                     <div className="flex items-center justify-center">
                       <div className="border-b w-60 mt-5 sm:border-r border-gray-700 sm:h-32 sm:w-0"></div>
                     </div>
-                    <div className="flex flex-1 flex-col items-center justify-center space-y-2 p-3">
+                    <div className="flex flex-1 flex-col items-center justify-center space-y-2 pt-3 sm:p-3">
                       <Title>Right Now I&apos;m:</Title>
-                      <div className="flex items-center justify-center space-x-5">
-                        <div className="flex items-center justify-center h-full">
+                      <div className="flex flex-col sm:flex-row items-center justify-center sm:space-x-5">
+                        <div className="flex items-center justify-center text-center">
+                          <p
+                            className={cn(
+                              "flex text-[1.4rem] sm:text-[1.2rem] md:text-[1.75rem] text-blue-500 font-mono",
+                              {
+                                "text-green-500": flow > 0.8,
+                                "text-purple-500": flow > 1.5,
+                                "text-red-500": flow > 2.5,
+                              }
+                            )}
+                          >
+                            {currentActivity}
+                          </p>
+                        </div>
+                        <div className="flex mt-5 sm:mt-0 sm:ml-5 items-center justify-center h-full">
                           <PingDot
                             color={
                               flow > 2.5
@@ -464,20 +481,6 @@ export default function Component() {
                                 : "green"
                             }
                           />
-                        </div>
-                        <div className="flex items-center justify-center text-center">
-                          <p
-                            className={cn(
-                              "flex text-[1.5rem] sm:text-[1.2rem] md:text-[1.75rem] text-blue-500 font-mono",
-                              {
-                                "text-green-500": flow > 0.8,
-                                "text-purple-500": flow > 1.5,
-                                "text-red-500": flow > 2.5,
-                              }
-                            )}
-                          >
-                            {currentActivity}
-                          </p>
                         </div>
                       </div>
                     </div>
