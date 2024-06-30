@@ -146,6 +146,6 @@ export const publicMetrics: MetricNames[] = [
   MetricNames.EFFICIENCY,
   MetricNames.P1HUT,
   MetricNames.ONE_HUT_EFFICIENCY,
-  MetricNames.UNPLANNED_TIME,
-  MetricNames.DISTRACTION_COUNT,
+  // MetricNames.UNPLANNED_TIME,
+  // MetricNames.DISTRACTION_COUNT,
 ];
