@@ -1,90 +1,40 @@
 "use client";
+import { p1HUTDaily, p1HUTWeekly } from "@/app/constant";
+import AreaGraph from "@/components/area";
+import { FlowImg } from "@/components/flowicon";
+import { default as MetricComponent } from "@/components/metric";
+import PingDot from "@/components/ping-dot";
+import { useMobile } from "@/hooks/use-mobile";
 import {
+  cn,
+  getNewMetricsData,
+  roundToThree,
+  simpleMovingAverage,
+  sumValues,
+} from "@/lib/utils";
+import { Card, Title } from "@tremor/react";
+import { useEffect, useRef, useState } from "react";
+import RealisticConfettiPreset from "react-canvas-confetti/dist/presets/realistic";
+import {
+  BarData,
+  ChartData,
   DailyData,
+  EfficiencyData,
   MetricData,
   MetricsResponse,
   MonthlyData,
-  TremorColors,
-  metrics,
+  publicMetrics,
   weekdays,
-} from "@/app/constant";
-import AreaGraph from "@/components/area";
-import BarGraph from "@/components/bar";
-import { FlowImg } from "@/components/flowicon";
-import MetricComponent from "@/components/metric";
-import { cn } from "@/lib/utils";
-import { Title } from "@tremor/react";
-import { useEffect, useRef, useState } from "react";
-import RealisticConfettiPreset from "react-canvas-confetti/dist/presets/realistic";
-import { BarData, ChartData, EfficiencyData, MetricNames } from "./constant";
-import {
-  p1HUTDaily,
-  p1HUTWeekly,
-  roundToThree,
-  simpleMovingAverage,
-} from "./utils";
+} from "../types";
 
 const refreshTime = 30;
 const pollingInterval = 1000;
 
-const targets = {
-  [MetricNames.HOURS_FREE]: "N/A",
-  [MetricNames.N1HUT]: "N/A",
-  [MetricNames.PRODUCTIVITY]: "70",
-  [MetricNames.EFFICIENCY]: "70",
-  [MetricNames.P1HUT]: "55",
-  [MetricNames.ONE_HUT]: "55",
-  [MetricNames.UNPRODUCTIVE]: "2.5",
-  [MetricNames.UNPLANNED_TIME]: "16.5",
-  [MetricNames.ONE_HUT_EFFICIENCY]: "50",
-  [MetricNames.DISTRACTION_COUNT]: "500",
-};
-
-function getColorForPercentage(percentage: number, flow: number): TremorColors {
-  if (flow > 2.5) {
-    if (percentage >= 95) return "red";
-    if (percentage >= 80 && percentage < 95) return "orange";
-    if (percentage >= 60 && percentage < 80) return "yellow";
-    if (percentage >= 40 && percentage < 60) return "lime";
-    if (percentage >= 20 && percentage < 40) return "cyan";
-    if (percentage >= 0 && percentage < 20) return "blue";
-    if (percentage === -1) return "gray";
-  } else if (flow > 1.5) {
-    if (percentage >= 95) return "purple";
-    if (percentage >= 80 && percentage < 95) return "indigo";
-    if (percentage >= 60 && percentage < 80) return "cyan";
-    if (percentage >= 40 && percentage < 60) return "yellow";
-    if (percentage >= 10 && percentage < 40) return "orange";
-    if (percentage >= 0 && percentage < 10) return "red";
-    if (percentage === -1) return "gray";
-  } else if (flow > 0.8) {
-    if (percentage >= 95) return "emerald";
-    if (percentage >= 80 && percentage < 95) return "green";
-    if (percentage >= 60 && percentage < 80) return "yellow";
-    if (percentage >= 40 && percentage < 60) return "amber";
-    if (percentage >= 15 && percentage < 40) return "orange";
-    if (percentage >= 0 && percentage < 15) return "red";
-    if (percentage === -1) return "gray";
-  } else {
-    if (percentage >= 95) return "purple";
-    if (percentage >= 80 && percentage < 95) return "indigo";
-    if (percentage >= 60 && percentage < 80) return "cyan";
-    if (percentage >= 40 && percentage < 60) return "yellow";
-    if (percentage >= 10 && percentage < 40) return "orange";
-    if (percentage >= 0 && percentage < 10) return "red";
-    if (percentage === -1) return "gray";
-  }
-  return "red";
-}
-
 export default function Component() {
-  const [data, setData] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const isMobile = useMobile();
   const [showConfetti, setShowConfetti] = useState(false);
-  const [error, setError] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(refreshTime);
   const [flow, setFlow] = useState(0);
-  const [prevScore, setPrevScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(refreshTime);
   const timeLeftRef = useRef(0);
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
     weekdays.map((day) => ({
@@ -115,13 +65,14 @@ export default function Component() {
   );
 
   const [metricsData, setMetricsData] = useState<MetricData[]>(
-    metrics.map((metric) => ({
+    publicMetrics.map((metric) => ({
       metric,
       prevScore: 0,
       score: 0,
       percentageOfTarget: 0,
       targetScore: "100",
       color: "blue",
+      tooltip: "",
     }))
   );
 
@@ -131,20 +82,22 @@ export default function Component() {
   const [endDate, setEndDate] = useState("");
   const [showOnlyMA, setShowOnlyMA] = useState(false);
   const [showOnlyRaw, setShowOnlyRaw] = useState(false);
+  const [currentActivity, setCurrentActivity] = useState("Loading ...");
 
   const fetchData = async () => {
-    console.log("fetching data ...");
-    setIsLoading(true);
     await setTimeout(() => {
       setShowConfetti(true);
     }, 2000);
+
     try {
-      const response = await fetch("http://localhost:3002/metrics");
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+      console.log("fetching data from server ...");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`
+      );
+
       const result = await response.json();
-      const data = result.data;
+      const unprocessedData = result.data as MetricsResponse;
+
       const {
         unplannedTimeList,
         oneHUTList,
@@ -160,26 +113,35 @@ export default function Component() {
         flow,
         startDate,
         endDate,
-      } = data as MetricsResponse;
+        currentActivity,
+      } = unprocessedData;
+
+      setCurrentActivity(currentActivity);
       setFlow(flow);
       setStartDate(startDate);
       setEndDate(endDate);
 
-      const sumValues = (obj: Record<string, number>) =>
-        Object.values(obj).reduce((a, b) => a + b, 0);
+      const data = {
+        p1HUT: sumValues(p1HUTList),
+        n1HUT: sumValues(n1HUTList),
+        nw1HUT: sumValues(nw1HUTList),
+        w1HUT: sumValues(w1HUTList),
+        unproductiveTime: sumValues(unproductiveList),
+        hoursFree: sumValues(hoursFreeList),
+        distraction_count: sumValues(distractionCountList),
+        unplannedTime: sumValues(unplannedTimeList),
+        productiveTime: sumValues(productiveList),
+        efficiency: sumValues(efficiencyList),
+        flow: flow,
+        startDate: startDate,
+        endDate: endDate,
+      };
 
-      const p1HUT = sumValues(p1HUTList);
-      const n1HUT = sumValues(n1HUTList);
-      const nw1HUT = sumValues(nw1HUTList);
-      const w1HUT = sumValues(w1HUTList);
-      const unproductiveTime = sumValues(unproductiveList);
-      const hoursFree = sumValues(hoursFreeList);
-      const distraction_count = sumValues(distractionCountList);
-      const unplannedTime = sumValues(unplannedTimeList);
-      const productiveTime = sumValues(productiveList);
-      const efficiency = sumValues(efficiencyList);
+      const newMetricsData = getNewMetricsData({ data, metricsData });
 
-      console.log(data);
+      setMetricsData(newMetricsData);
+
+      console.log(newMetricsData);
 
       const newDistractionData = distractionData.map((item, index) => {
         const distractionCountValue =
@@ -232,14 +194,14 @@ export default function Component() {
       const dailyInterval = 7;
 
       const movingAverageWeekly = simpleMovingAverage(
-        [...p1HUTWeekly.map((item) => item.p1HUT), p1HUT],
+        [...p1HUTWeekly.map((item) => item.p1HUT), data.p1HUT],
         weeklyInterval
       );
 
       const movingAveragePercentageWeekly = simpleMovingAverage(
         [
           ...p1HUTWeekly.map((item) => item.p1HUTPercentage),
-          roundToThree(p1HUT / hoursFree),
+          roundToThree(data.p1HUT / data.hoursFree),
         ],
         weeklyInterval
       );
@@ -255,8 +217,8 @@ export default function Component() {
           {
             week: lastWeek + 1,
             date: Object.keys(p1HUTList)[0].slice(5),
-            p1HUT: p1HUT,
-            p1HUTPercentage: roundToThree(p1HUT / hoursFree),
+            p1HUT: data.p1HUT,
+            p1HUTPercentage: roundToThree(data.p1HUT / data.hoursFree),
             movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
             movingAveragePercentage:
               movingAveragePercentageWeekly[
@@ -302,150 +264,8 @@ export default function Component() {
       console.log(p1HUTDaily);
 
       setDailyData([...p1HUTDaily, ...newDailyData].slice(dailyInterval));
-
-      const productivePercentage = roundToThree(
-        Math.min(
-          (productiveTime / parseFloat(targets[MetricNames.PRODUCTIVITY])) *
-            100,
-          100
-        )
-      );
-      const hoursFreePercentage = roundToThree(
-        Math.min(
-          (hoursFree / parseFloat(targets[MetricNames.HOURS_FREE])) * 100,
-          100
-        )
-      );
-      const efficiencyPercentage = roundToThree(
-        Math.min(
-          (roundToThree((productiveTime / hoursFree) * 100) /
-            parseFloat(targets[MetricNames.EFFICIENCY])) *
-            100,
-          100
-        )
-      );
-      const unplannedTimePercentage = roundToThree(
-        Math.min(
-          (parseFloat(targets[MetricNames.UNPLANNED_TIME]) / unplannedTime) *
-            100,
-          100
-        )
-      );
-      const p1HUTPercentage = roundToThree(
-        Math.min((p1HUT / parseFloat(targets[MetricNames.P1HUT])) * 100, 100)
-      );
-      const n1HUTPercentage = roundToThree(
-        Math.min((n1HUT / parseFloat(targets[MetricNames.N1HUT])) * 100, 100)
-      );
-      const unproductivePercentage = roundToThree(
-        Math.min(
-          (parseFloat(targets[MetricNames.UNPRODUCTIVE]) / w1HUT) * 100,
-          100
-        )
-      );
-      const oneHUTPercentage = roundToThree(
-        Math.min(
-          ((p1HUT + n1HUT + nw1HUT + w1HUT) /
-            parseFloat(targets[MetricNames.ONE_HUT])) *
-            100,
-          100
-        )
-      );
-      const oneHUTEfficiencyPercentage = roundToThree(
-        Math.min(
-          (roundToThree((p1HUT / hoursFree) * 100) /
-            parseFloat(targets[MetricNames.ONE_HUT_EFFICIENCY])) *
-            100,
-          100
-        )
-      );
-      const distractionCountPercentage = roundToThree(
-        Math.min(
-          (parseFloat(targets[MetricNames.DISTRACTION_COUNT]) /
-            distraction_count) *
-            100,
-          100
-        )
-      );
-
-      const newMetricsData = metricsData.map((data, index) => {
-        return {
-          metric: data.metric,
-          prevScore: data.score,
-          score:
-            data.metric === "Hours Free (h)"
-              ? hoursFree
-              : data.metric === "Total Flow Time (h)"
-              ? p1HUT + n1HUT + nw1HUT + w1HUT
-              : data.metric === "Unplanned Time (h)"
-              ? unplannedTime
-              : data.metric === "Distraction #"
-              ? distraction_count
-              : data.metric === "Productive Flow (h)"
-              ? p1HUT
-              : data.metric === "Neutral Flow (h)"
-              ? n1HUT
-              : data.metric === "Unproductive Flow (h)"
-              ? w1HUT
-              : data.metric === "Prod. Flow Efficiency (%)"
-              ? roundToThree((p1HUT / hoursFree) * 100)
-              : data.metric === "Efficiency (%)"
-              ? roundToThree((productiveTime / hoursFree) * 100)
-              : roundToThree(productiveTime),
-          percentageOfTarget:
-            data.metric === "Hours Free (h)"
-              ? 100
-              : data.metric === "Total Flow Time (h)"
-              ? oneHUTPercentage
-              : data.metric === "Unplanned Time (h)"
-              ? unplannedTimePercentage
-              : data.metric === "Distraction #"
-              ? distractionCountPercentage
-              : data.metric === "Productive Flow (h)"
-              ? p1HUTPercentage
-              : data.metric === "Neutral Flow (h)"
-              ? 100
-              : data.metric === "Unproductive Flow (h)"
-              ? unproductivePercentage
-              : data.metric === "Prod. Flow Efficiency (%)"
-              ? oneHUTEfficiencyPercentage
-              : data.metric === "Efficiency (%)"
-              ? efficiencyPercentage
-              : productivePercentage,
-          targetScore: targets[data.metric],
-          color: getColorForPercentage(
-            data.metric === "Hours Free (h)"
-              ? -1
-              : data.metric === "Total Flow Time (h)"
-              ? oneHUTPercentage
-              : data.metric === "Unplanned Time (h)"
-              ? unplannedTimePercentage
-              : data.metric === "Distraction #"
-              ? distractionCountPercentage
-              : data.metric === "Productive Flow (h)"
-              ? p1HUTPercentage
-              : data.metric === "Neutral Flow (h)"
-              ? 100
-              : data.metric === "Unproductive Flow (h)"
-              ? unproductivePercentage
-              : data.metric === "Prod. Flow Efficiency (%)"
-              ? oneHUTEfficiencyPercentage
-              : data.metric === "Efficiency (%)"
-              ? efficiencyPercentage
-              : productivePercentage,
-            flow
-          ),
-        };
-      });
-
-      setMetricsData(newMetricsData);
-      console.log(newMetricsData);
-
-      setData(result);
     } catch (err: any) {
-      setError(err.message);
     } finally {
-      setIsLoading(false);
       await setTimeout(() => {
         setShowConfetti(false);
       }, 5000);
@@ -453,11 +273,11 @@ export default function Component() {
   };
 
   useEffect(() => {
-    fetchData(); // Fetch data immediately on component mount
+    fetchData();
     const interval = setInterval(() => {
       timeLeftRef.current += 1;
       setTimeLeft(timeLeftRef.current);
-      // console.log(`${timeLeftRef.current} second passed`);
+
       if (timeLeftRef.current === refreshTime - 2) {
         fetchData();
       }
@@ -465,10 +285,10 @@ export default function Component() {
         timeLeftRef.current = 0;
         setTimeLeft(timeLeftRef.current);
       }
-    }, pollingInterval); // Set up polling
+    }, pollingInterval);
 
     return () => {
-      clearInterval(interval); // Clear the interval
+      clearInterval(interval);
     };
   }, []);
 
@@ -513,12 +333,12 @@ export default function Component() {
           </nav>
         </div>
       </div> */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <header className="flex items-center justify-between p-6 border-b dark:border-gray-700">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
-            Dashboard
+      <div className="flex font-sans flex-col flex-1 overflow-hidden items center justify-center w-full">
+        <header className="flex items-center justify-between p-6 border-b dark:border-gray-700 w-full">
+          <h2 className="text-md sm:text-2xl font-mono font-semibold text-gray-800 dark:text-gray-200">
+            timetracking.live
           </h2>
-          <div>
+          <div className="text-sm sm:text-lg text-center p-5">
             {startDate} to {endDate}
           </div>
         </header>
@@ -572,170 +392,198 @@ export default function Component() {
                 <FlowImg top="16%" left="82%" flow={flow} />
               </>
             )}
-            <Title className="grid gap-6 mb-8 text-center">
+
+            <Title className="grid gap-6 text-center">
               Refreshing in {refreshTime - timeLeftRef.current} seconds
             </Title>
-            <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-5 mt-5">
-              {metricsData.map((data, index) => (
-                <MetricComponent
-                  key={index}
-                  metric={data.metric}
-                  prevScore={data.prevScore}
-                  score={data.score}
-                  percentageOfTarget={data.percentageOfTarget}
-                  targetScore={data.targetScore}
-                  color={data.color}
-                />
-              ))}
-            </div>
-            <div className="grid gap-6 lg:grid-cols-4">
-              <BarGraph
-                barData={barData}
-                category="Unplanned Time (h)"
-                color={
-                  flow > 2.5
-                    ? "red"
-                    : flow > 1.5
-                    ? "fuchsia"
-                    : flow > 0.8
-                    ? "emerald"
-                    : "blue"
-                }
-              />
-              <AreaGraph
-                data={chartData}
-                title={"Prod. Flow vs Total Flow (h)"}
-                categories={["p1HUT", "oneHUT"]}
-                colors={
-                  flow > 2.5
-                    ? ["red", "gray"]
-                    : flow > 1.5
-                    ? ["fuchsia", "slate"]
-                    : flow > 0.8
-                    ? ["emerald", "slate"]
-                    : ["blue", "slate"]
-                }
-                index={"date"}
-              />
-              <AreaGraph
-                data={efficiencyData}
-                title={"Productive vs Free Hours"}
-                categories={["productiveTime", "hoursFree"]}
-                colors={
-                  flow > 2.5
-                    ? ["red", "gray"]
-                    : flow > 1.5
-                    ? ["fuchsia", "slate"]
-                    : flow > 0.8
-                    ? ["emerald", "slate"]
-                    : ["blue", "slate"]
-                }
-                index={"date"}
-              />
-              <BarGraph
-                barData={distractionData}
-                category="# Distractions"
-                color={
-                  flow > 2.5
-                    ? "red"
-                    : flow > 1.5
-                    ? "fuchsia"
-                    : flow > 0.8
-                    ? "emerald"
-                    : "blue"
-                }
-              />
+            <div className="grid md:grid-cols-1 lg:grid-cols-5">
+              <div className="grid lg:col-span-3 lg:grid-rows-3 p-5 gap-6">
+                <div className="flex">
+                  <Card className="flex flex-col sm:flex-row">
+                    <div className="flex flex-col items-center justify-center mx-10 space-y-2">
+                      <img
+                        src="https://pbs.twimg.com/profile_images/1750678675798855680/2sqTuFi-_400x400.jpg"
+                        alt="flow"
+                        className="w-[20vh] h-[20vh] sm:w-[12vh] sm:h-[12vh] rounded-full"
+                      ></img>
+                      <div>
+                        <p>
+                          <a
+                            href="https://twitter.com/haseab_"
+                            className={cn("flex text-blue-700", {
+                              "text-green-700": flow > 0.8,
+                              "text-purple-700": flow > 1.5,
+                              "text-red-700": flow > 2.5,
+                            })}
+                            target="_blank"
+                          >
+                            @haseab_
+                          </a>
+                        </p>
+                        {/* <a
+                          href="https://haseab.com"
+                          className="text-blue-500"
+                          target="_blank"
+                        >
+                          haseab.com
+                        </a> */}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <div className="sm:border-r border-gray-700 sm:h-32 sm:w-0"></div>
+                    </div>
+                    <div className="flex flex-1 flex-col items-center justify-center space-y-2 p-3">
+                      <Title>Right Now I&apos;m:</Title>
+                      <div className="flex items-center justify-center space-x-5">
+                        <div className="flex items-center justify-center h-full">
+                          <PingDot
+                            color={
+                              flow > 2.5
+                                ? "red"
+                                : flow > 1.5
+                                ? "purple"
+                                : flow > 0.8
+                                ? "green"
+                                : "green"
+                            }
+                          />
+                        </div>
+                        <div className="flex items-center justify-center text-center">
+                          <p
+                            className={cn(
+                              "flex text-[1.5rem] sm:text-[1.2rem] md:text-[1.75rem] text-blue-500 font-mono",
+                              {
+                                "text-green-500": flow > 0.8,
+                                "text-purple-500": flow > 1.5,
+                                "text-red-500": flow > 2.5,
+                              }
+                            )}
+                          >
+                            {currentActivity}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+                <div className="grid lg:row-span-2">
+                  <div className="flex flex-col space-y-5 sm:flex-row sm:space-x-5 sm:space-y-0">
+                    <AreaGraph
+                      data={chartData}
+                      title={"Prod. Flow vs Total Flow (h)"}
+                      categories={["p1HUT", "oneHUT"]}
+                      colors={
+                        flow > 2.5
+                          ? ["red", "gray"]
+                          : flow > 1.5
+                          ? ["fuchsia", "slate"]
+                          : flow > 0.8
+                          ? ["emerald", "slate"]
+                          : ["blue", "slate"]
+                      }
+                      index={"date"}
+                    />
+                    <AreaGraph
+                      data={efficiencyData}
+                      title={"Productive vs Free Hours"}
+                      categories={["productiveTime", "hoursFree"]}
+                      colors={
+                        flow > 2.5
+                          ? ["red", "gray"]
+                          : flow > 1.5
+                          ? ["fuchsia", "slate"]
+                          : flow > 0.8
+                          ? ["emerald", "slate"]
+                          : ["blue", "slate"]
+                      }
+                      index={"date"}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-6 p-5 xs:grid-cols-2 lg:col-span-2">
+                {metricsData.map((data, index) => (
+                  <MetricComponent
+                    key={index}
+                    metric={data.metric}
+                    prevScore={data.prevScore}
+                    score={data.score}
+                    percentageOfTarget={data.percentageOfTarget}
+                    targetScore={data.targetScore}
+                    color={data.color}
+                    tooltip={data.tooltip}
+                  />
+                ))}
+              </div>
             </div>
 
             <br></br>
-            <Title className="grid gap-6 mb-8 text-center">
-              {flow < 0.8 &&
-                `Need ${roundToThree((0.8 - flow) * 60)} more min until flow`}
-            </Title>
-            <br></br>
-            <AreaGraph
-              data={dailyData}
-              title={"Daily Productive Flow (h) over past 3 Months"}
-              categories={
-                showOnlyMA
-                  ? ["movingAverage"]
-                  : showOnlyRaw
-                  ? ["p1HUT"]
-                  : ["p1HUT", "movingAverage"]
-              }
-              colors={
-                showOnlyMA
-                  ? ["slate"]
-                  : flow > 2.5
-                  ? ["red", "gray"]
-                  : flow > 1.5
-                  ? ["fuchsia", "slate"]
-                  : flow > 0.8
-                  ? ["emerald", "slate"]
-                  : ["blue", "slate"]
-              }
-              index={"date"}
-            />
-            <AreaGraph
-              data={monthlyData}
-              className="h-[400px]"
-              title={"Weekly Productive Flow (h) Since 2023"}
-              categories={
-                showOnlyMA
-                  ? ["movingAverage"]
-                  : showOnlyRaw
-                  ? ["p1HUT"]
-                  : ["p1HUT", "movingAverage"]
-              }
-              colors={
-                showOnlyMA
-                  ? ["slate"]
-                  : flow > 2.5
-                  ? ["red", "gray"]
-                  : flow > 1.5
-                  ? ["fuchsia", "slate"]
-                  : flow > 0.8
-                  ? ["emerald", "slate"]
-                  : ["blue", "slate"]
-              }
-              index={"date"}
-            />
-            <AreaGraph
-              data={monthlyData}
-              className="h-[400px]"
-              title={"Weekly Productive Flow Efficiency (%) Since 2023"}
-              categories={
-                showOnlyMA
-                  ? ["movingAveragePercentage"]
-                  : showOnlyRaw
-                  ? ["p1HUTPercentage"]
-                  : ["p1HUTPercentage", "movingAveragePercentage"]
-              }
-              colors={
-                showOnlyMA
-                  ? ["slate"]
-                  : flow > 2.5
-                  ? ["red", "gray"]
-                  : flow > 1.5
-                  ? ["fuchsia", "slate"]
-                  : flow > 0.8
-                  ? ["emerald", "slate"]
-                  : ["blue", "slate"]
-              }
-              index={"date"}
-            />
-            <div className="flex items-center justify-center space-x-4">
-              <button
-                className="bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded"
-                onClick={() => setShowOnlyMA(!showOnlyMA)}
-              >
-                {showOnlyMA ? "Show Both" : "Show Only MA"}
-              </button>
-              <button
-                className="bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded"
-                onClick={() => setShowOnlyRaw(!showOnlyRaw)}
-              >
-                {showOnlyRaw ? "Show Both" : "Show Only Raw"}
+
+            <div className="p-5 hidden opacity-0 xs:block xs:opacity-100">
+              <Title className="grid gap-6 mb-8 text-center">
+                {flow < 0.8 &&
+                  `${roundToThree(
+                    (0.8 - flow) * 60 + 2
+                  )} min until task is classified as flow`}
+              </Title>
+              <br></br>
+              <AreaGraph
+                data={monthlyData}
+                className="h-[40vh]"
+                title={"Weekly Productive Flow (h) Since 2023"}
+                categories={
+                  showOnlyMA
+                    ? ["movingAverage"]
+                    : showOnlyRaw
+                    ? ["p1HUT"]
+                    : ["p1HUT", "movingAverage"]
+                }
+                colors={
+                  showOnlyMA
+                    ? ["slate"]
+                    : flow > 2.5
+                    ? ["red", "gray"]
+                    : flow > 1.5
+                    ? ["fuchsia", "slate"]
+                    : flow > 0.8
+                    ? ["emerald", "slate"]
+                    : ["blue", "slate"]
+                }
+                index={"date"}
+              />
+              <div className="flex items-center justify-center space-x-4">
+                <button
+                  className="bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded"
+                  onClick={() => setShowOnlyMA(!showOnlyMA)}
+                >
+                  {showOnlyMA ? "Show Both" : "Show Only MA"}
+                </button>
+                <button
+                  className="bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded"
+                  onClick={() => setShowOnlyRaw(!showOnlyRaw)}
+                >
+                  {showOnlyRaw ? "Show Both" : "Show Only Raw"}
+                </button>
+              </div>
+            </div>
+
+            <div className="p-5 flex items-center justify-center">
+              <button>
+                <a
+                  href="https://haseab.com"
+                  target="_blank"
+                  className={cn(
+                    "bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded border-gray-700",
+                    {
+                      "bg-green-700": flow > 0.8,
+                      "bg-purple-700": flow > 1.5,
+                      "bg-red-700": flow > 2.5,
+                    }
+                  )}
+                >
+                  See more about me
+                </a>
               </button>
             </div>
           </div>

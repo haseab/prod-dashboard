@@ -1,4 +1,4 @@
-import { BarData } from "@/app/constant";
+import { BarData } from "@/types";
 import { BarChart, Card, Subtitle, Title } from "@tremor/react";
 
 const BarGraph = ({

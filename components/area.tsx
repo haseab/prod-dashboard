@@ -1,10 +1,6 @@
 "use client";
-import {
-  ChartData,
-  DailyData,
-  EfficiencyData,
-  MonthlyData,
-} from "@/app/constant";
+
+import { ChartData, DailyData, EfficiencyData, MonthlyData } from "@/types";
 import { AreaChart, Card, Title } from "@tremor/react";
 
 // const valueFormatter = function (number: number) {
