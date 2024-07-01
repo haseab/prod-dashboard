@@ -350,10 +350,10 @@ export default function Component() {
       <div className="flex font-sans flex-col flex-1 w-full">
         <div className="flex justify-center items-center">
           <header className="container px-12 flex flex-col xs:flex-row items-center justify-between p-6 pb-0  w-full">
-            <h2 className="text-md text-2xl font-mono font-semibold text-gray-800 dark:text-gray-200">
+            <h2 className="text-3xl pt-5 sm:pt-0 sm:text-2xl font-mono font-semibold text-gray-800 dark:text-gray-200">
               timetracking.live
             </h2>
-            <div className="text-lg text-center p-5">
+            <div className="hidden sm:block text-lg text-center p-5">
               {startDate} to {endDate}
             </div>
           </header>
@@ -532,6 +532,12 @@ export default function Component() {
               </div>
 
               <div className="grid gap-6 p-5 xs:grid-cols-2 lg:col-span-2">
+                <div className="block sm:hidden text-lg text-center pt-5">
+                  <p className="text-2xl">Weekly stats</p>
+                  <p>
+                    {startDate} to {endDate}
+                  </p>
+                </div>
                 {metricsData.map((data, index) => (
                   <MetricComponent
                     key={index}
