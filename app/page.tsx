@@ -533,7 +533,7 @@ export default function Component() {
 
               <div className="grid gap-6 p-5 xs:grid-cols-2 lg:col-span-2">
                 <div className="block sm:hidden text-lg text-center pt-5">
-                  <p className="text-2xl">Weekly stats</p>
+                  <p className="text-2xl">Last 7 Days</p>
                   <p>
                     {startDate} to {endDate}
                   </p>
