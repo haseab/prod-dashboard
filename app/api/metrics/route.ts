@@ -1,4 +1,4 @@
-export const revalidate = 30;
+export const revalidate = 25;
 
 export async function GET() {
   console.log("GETTING /metrics");
