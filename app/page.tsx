@@ -172,8 +172,10 @@ export default function Component() {
       const newChartData = chartData.map((item, index) => {
         const p1HUTValue = Object.values(p1HUTList)[index];
         const oneHUTValue = Object.values(oneHUTList)[index];
+        const date = Object.keys(p1HUTList)[index];
         return {
           ...item,
+          date: date.slice(5),
           p1HUT: p1HUTValue || item.p1HUT,
           oneHUT: oneHUTValue || item.oneHUT,
         };
@@ -184,8 +186,10 @@ export default function Component() {
       const newEfficiencyData = efficiencyData.map((item, index) => {
         const productiveTime = Object.values(productiveList)[index];
         const hoursFree = Object.values(hoursFreeList)[index];
+        const date = Object.keys(p1HUTList)[index];
         return {
           ...item,
+          date: date.slice(5),
           productiveTime: productiveTime || item.productiveTime,
           hoursFree: hoursFree || item.hoursFree,
         };
