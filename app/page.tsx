@@ -364,7 +364,7 @@ export default function Component() {
         </div>
         <main
           className={cn(
-            "flex-1 bg-gray-100 dark:bg-gray-900",
+            "h-screen overflow-auto flex-1 bg-gray-100 dark:bg-gray-900",
             flow > 0.8 &&
               "dark:bg-gradient-to-t dark:from-green-800 dark:via-gray-900 dark:to-gray-900",
             flow > 1.5 &&
