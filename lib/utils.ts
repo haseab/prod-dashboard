@@ -115,7 +115,10 @@ export const getNewMetricsData = ({
       tooltip: tooltips[metricData.metric],
     };
 
-    const percentage = getMetricsPercentage({
+    const percentage = [
+      MetricNames.HOURS_FREE,
+      MetricNames.N1HUT,
+    ].includes(metricData.metric) ? 100 : getMetricsPercentage({
       partialNewMetricsData,
       inverse: [
         MetricNames.UNPLANNED_TIME,

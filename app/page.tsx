@@ -1,11 +1,10 @@
 "use client";
 
-import { p1HUTDaily, p1HUTWeekly } from "@/app/constant";
+import { p1HUTWeekly } from "@/app/constant";
 import AreaGraph from "@/components/area";
 import { FlowImg } from "@/components/flowicon";
 import { default as MetricComponent } from "@/components/metric";
 import PingDot from "@/components/ping-dot";
-import { useMobile } from "@/hooks/use-mobile";
 import {
   cn,
   formatToCurrentTimezone,
@@ -20,7 +19,6 @@ import RealisticConfettiPreset from "react-canvas-confetti/dist/presets/realisti
 import {
   BarData,
   ChartData,
-  DailyData,
   EfficiencyData,
   MetricData,
   MetricsResponse,
@@ -34,7 +32,6 @@ const pollingInterval = 1000;
 export const revalidate = 0;
 
 export default function Component() {
-  const isMobile = useMobile();
   const [showConfetti, setShowConfetti] = useState(false);
   const [flow, setFlow] = useState(0);
   const [timeLeft, setTimeLeft] = useState(refreshTime);
@@ -54,13 +51,13 @@ export default function Component() {
     }))
   );
 
-  const [barData, setBarData] = useState<BarData[]>(
+  const [unplannedData, setUnplannedData] = useState<BarData[]>(
     weekdays.map((day) => ({
       date: day,
       value: null,
     }))
   );
-  const [chartData, setChartData] = useState<ChartData[]>(
+  const [dailyProductiveFlowData, setDailyProductiveFlowData] = useState<ChartData[]>(
     weekdays.map((day) => ({
       date: day,
       oneHUT: null,
@@ -80,8 +77,7 @@ export default function Component() {
     }))
   );
 
-  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>(p1HUTWeekly);
-  const [dailyData, setDailyData] = useState<DailyData[]>();
+  const [weeklyProductiveFlowData, setWeeklyProductiveFlowData] = useState<MonthlyData[]>(p1HUTWeekly);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [showOnlyMA, setShowOnlyMA] = useState(false);
@@ -145,8 +141,6 @@ export default function Component() {
 
       setMetricsData(newMetricsData);
 
-      console.log(newMetricsData);
-
       const newDistractionData = distractionData.map((item, index) => {
         const distractionCountValue =
           Object.values(distractionCountList)[index];
@@ -158,7 +152,7 @@ export default function Component() {
 
       setDistractionData(newDistractionData);
 
-      const newBarData = barData.map((item, index) => {
+      const newUnplannedData = unplannedData.map((item, index) => {
         const unplannedTimeValue = Object.values(unplannedTimeList)[index];
         return {
           ...item,
@@ -166,10 +160,9 @@ export default function Component() {
         };
       });
 
-      setBarData(newBarData);
-      console.log(newBarData);
+      setUnplannedData(newUnplannedData);
 
-      const newChartData = chartData.map((item, index) => {
+      const newDailyProductiveFlowData = dailyProductiveFlowData.map((item, index) => {
         const p1HUTValue = Object.values(p1HUTList)[index];
         const oneHUTValue = Object.values(oneHUTList)[index];
         const date = Object.keys(p1HUTList)[index];
@@ -181,7 +174,7 @@ export default function Component() {
         };
       });
 
-      setChartData(newChartData);
+      setDailyProductiveFlowData(newDailyProductiveFlowData);
 
       const newEfficiencyData = efficiencyData.map((item, index) => {
         const productiveTime = Object.values(productiveList)[index];
@@ -199,7 +192,6 @@ export default function Component() {
 
       const lastWeek = p1HUTWeekly.length - 1;
       const weeklyInterval = 4;
-      const dailyInterval = 7;
 
       const movingAverageWeekly = simpleMovingAverage(
         [...p1HUTWeekly.map((item) => item.p1HUT), data.p1HUT],
@@ -219,7 +211,7 @@ export default function Component() {
         item.movingAveragePercentage = movingAveragePercentageWeekly[index];
       });
 
-      setMonthlyData(
+      setWeeklyProductiveFlowData(
         [
           ...p1HUTWeekly,
           {
@@ -236,42 +228,6 @@ export default function Component() {
         ].slice(weeklyInterval)
       );
 
-      const lastDay = p1HUTDaily.length - 1;
-
-      const movingAverageDaily = simpleMovingAverage(
-        [...p1HUTDaily.map((item) => item.p1HUT), ...Object.values(p1HUTList)],
-        dailyInterval
-      );
-
-      p1HUTDaily.forEach((item, index) => {
-        item.movingAverage = movingAverageDaily[index];
-      });
-
-      let newDailyData: DailyData[] = [];
-
-      Object.keys(p1HUTList).forEach((key, index) => {
-        if ((index + 1) % 2 !== 0) {
-          return;
-        }
-        const newObj = {
-          day: p1HUTDaily.length,
-          date: key.slice(5),
-          p1HUT: p1HUTList[key],
-          movingAverage:
-            movingAverageDaily[
-              movingAverageDaily.length - (2 * dailyInterval - index)
-            ],
-        };
-        // Append the new object to `p1HUTDaily`
-        newDailyData.push(newObj);
-      });
-
-      console.log("moving average daily");
-      console.log(movingAverageDaily);
-      console.log("p1HUTDaily");
-      console.log(p1HUTDaily);
-
-      setDailyData([...p1HUTDaily, ...newDailyData].slice(dailyInterval));
     } catch (err: any) {
       console.log("returning error");
       console.log(err);
@@ -312,45 +268,6 @@ export default function Component() {
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      {/* <div className="flex flex-col w-64 bg-white dark:bg-gray-800 border-r dark:border-gray-700">
-        <div className="flex items-center justify-center h-14 border-b dark:border-gray-700">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
-            TiBA
-          </h2>
-        </div>
-        <div className="flex flex-col px-4 py-6">
-          <nav>
-            <Link
-              className="flex items-center py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-              href="#"
-            >
-              <LayoutDashboardIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
-              <span className="mx-4 font-medium">Dashboard</span>
-            </Link>
-            <Link
-              className="flex items-center py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-              href="#"
-            >
-              <ViewIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
-              <span className="mx-4 font-medium">Reports</span>
-            </Link>
-            <Link
-              className="flex items-center py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-              href="#"
-            >
-              <UsersIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
-              <span className="mx-4 font-medium">Users</span>
-            </Link>
-            <Link
-              className="flex items-center py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-              href="#"
-            >
-              <SettingsIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
-              <span className="mx-4 font-medium">Settings</span>
-            </Link>
-          </nav>
-        </div>
-      </div> */}
       <div className="flex font-sans flex-col flex-1 w-full">
         <div className="flex justify-center items-center">
           <header className="container px-12 flex flex-col xs:flex-row items-center justify-between p-6 pb-0  w-full">
@@ -502,7 +419,7 @@ export default function Component() {
                 <div className="grid lg:row-span-2">
                   <div className="flex flex-col space-y-5 sm:flex-row sm:space-x-5 sm:space-y-0">
                     <AreaGraph
-                      data={chartData}
+                      data={dailyProductiveFlowData}
                       title={"Prod. Flow vs Total Flow (h)"}
                       categories={["p1HUT", "oneHUT"]}
                       colors={
@@ -568,7 +485,7 @@ export default function Component() {
               </Title>
               <br></br>
               <AreaGraph
-                data={monthlyData}
+                data={weeklyProductiveFlowData}
                 className="h-[40vh]"
                 title={"Weekly Productive Flow (h) Since 2023"}
                 categories={
