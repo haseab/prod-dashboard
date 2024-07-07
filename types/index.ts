@@ -123,7 +123,7 @@ export enum MetricNames {
   P1HUT = "Productive Flow (h)",
   N1HUT = "Neutral Flow (hours)",
   UNPRODUCTIVE = "Unproductive Flow (hours)",
-  ONE_HUT_EFFICIENCY = "% of Productive Flow",
+  ONE_HUT_EFFICIENCY = "Flow Efficiency (%)",
   EFFICIENCY = "Efficiency (%)",
   PRODUCTIVITY = "Productive Hours",
 }
