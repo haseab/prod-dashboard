@@ -422,6 +422,21 @@ export default function Component() {
                           "America/Los_Angeles"
                         )}
                       </p>
+                      {flow > 2.5 ? (
+                        <p className="text-red-500 text-sm">
+                          Currently in a flow state for over 2.5 hours
+                        </p>
+                      ) : flow > 1.5 ? (
+                        <p className="text-purple-500 text-sm">
+                          Currently in a flow state for over 1.5 hours
+                        </p>
+                      ) : flow > 0.8 ? (
+                        <p className="text-green-500 text-sm">
+                          Currently in a flow state for about 1 hour
+                        </p>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </Card>
                 </div>
