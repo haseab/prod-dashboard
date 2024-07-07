@@ -120,7 +120,7 @@ export default function Component() {
       } = unprocessedData;
 
       setCurrentActivity(currentActivity);
-      setFlow(flow);
+      setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
       setStartDate(startDate);
       setEndDate(endDate);
 
@@ -135,7 +135,7 @@ export default function Component() {
         unplannedTime: sumValues(unplannedTimeList),
         productiveTime: sumValues(productiveList),
         efficiency: sumValues(efficiencyList),
-        flow: flow,
+        flow: currentActivity === "😴 Sleeping" ? 0 : flow,
         startDate: startDate,
         endDate: endDate,
       };
