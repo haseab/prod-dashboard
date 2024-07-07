@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { differenceInMilliseconds, intervalToDuration } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -11,6 +12,28 @@ import { MetricData, MetricNames, TremorColors } from "@/types";
 export const roundToThree = (num: number) => {
   return Math.round(num * 10000 + Number.EPSILON) / 10000;
 };
+
+export function formatTimeDifference(startDateTime: Date, endDateTime: Date) {
+  // Calculate the difference in milliseconds
+  const diff = differenceInMilliseconds(endDateTime, startDateTime);
+
+  // Convert the difference to a duration object
+  const duration = intervalToDuration({ start: 0, end: diff });
+
+  // Ensure each component of the duration is defined
+  const hours = duration.hours ?? 0;
+  const minutes = duration.minutes ?? 0;
+  const seconds = duration.seconds ?? 0;
+
+  // Format the duration as HH:MM:SS
+  const formattedTime = [
+    String(hours).padStart(2, "0"),
+    String(minutes).padStart(2, "0"),
+    String(seconds).padStart(2, "0"),
+  ].join(":");
+
+  return formattedTime;
+}
 
 export const simpleMovingAverage = (prices: number[], interval: number) => {
   const results = new Array(interval - 1).fill(null); // Fill the first 'interval-1' slots with null

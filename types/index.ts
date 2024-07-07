@@ -82,9 +82,10 @@ export declare interface MetricsResponse {
   efficiencyList: { [key: string]: number };
   productiveList: { [key: string]: number };
   flow: number;
-  currentActivity: string;
   startDate: string;
   endDate: string;
+  currentActivityStartTime: string;
+  currentActivity: string;
   // efficiencyList: (presumably an array of numbers or a specific object structure)
 }
 

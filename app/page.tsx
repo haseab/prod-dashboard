@@ -7,7 +7,7 @@ import { default as MetricComponent } from "@/components/metric";
 import PingDot from "@/components/ping-dot";
 import {
   cn,
-  formatToCurrentTimezone,
+  formatTimeDifference,
   getNewMetricsData,
   roundToThree,
   simpleMovingAverage,
@@ -86,6 +86,7 @@ export default function Component() {
   const [showOnlyMA, setShowOnlyMA] = useState(false);
   const [showOnlyRaw, setShowOnlyRaw] = useState(false);
   const [currentActivity, setCurrentActivity] = useState("Loading ...");
+  const [currentActivityStartTime, setCurrentActivityStartTime] = useState("");
 
   const fetchData = async () => {
     await setTimeout(() => {
@@ -117,12 +118,14 @@ export default function Component() {
         startDate,
         endDate,
         currentActivity,
+        currentActivityStartTime,
       } = unprocessedData;
 
-      setCurrentActivity(currentActivity);
       setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
       setStartDate(startDate);
       setEndDate(endDate);
+      setCurrentActivity(currentActivity);
+      setCurrentActivityStartTime(currentActivityStartTime);
 
       const data = {
         p1HUT: sumValues(p1HUTList),
@@ -284,7 +287,7 @@ export default function Component() {
         <main
           className={cn(
             "h-screen overflow-auto flex-1 bg-gray-100 dark:bg-gray-900",
-            flow > 0.8 &&
+            flow > 0.8334 &&
               "dark:bg-gradient-to-t dark:from-green-800 dark:via-gray-900 dark:to-gray-900",
             flow > 1.5 &&
               "dark:bg-gradient-to-t dark:from-purple-800 dark:via-gray-900 dark:to-gray-900",
@@ -303,7 +306,7 @@ export default function Component() {
                       ? ["#DC143C", "#B22222", "#CD5C5C", "#E9967A", "#F08080"]
                       : flow > 1.5
                       ? ["#800080", "#8A2BE2", "#4B0082", "#483D8B", "#6A5ACD"]
-                      : flow > 0.8
+                      : flow > 0.8334
                       ? ["#008000", "#228B22", "#32CD32", "#3CB371", "#2E8B57"]
                       : ["#0000FF", "#4169E1", "#6495ED", "#4682B4", "#87CEFA"];
                   return options;
@@ -337,9 +340,7 @@ export default function Component() {
                 Refreshing in {refreshTime - timeLeftRef.current} seconds
               </Title>
               <div className="hidden lg:block text-lg text-center xs:grid-cols-2 lg:col-span-2">
-                <p>
-                  Last 7 Days: {startDate} to {endDate}
-                </p>
+                <p>Last 7 Days</p>
               </div>
             </div>
             {error && (
@@ -350,7 +351,7 @@ export default function Component() {
             <div className="grid md:grid-cols-1 lg:grid-cols-5">
               <div className="grid lg:col-span-3 lg:grid-rows-3 p-5 gap-6">
                 <div className="flex">
-                  <Card className="flex flex-col sm:flex-row">
+                  <Card className="flex flex-col sm:flex-row p-5">
                     <div className="flex flex-col items-center justify-center mx-10 space-y-2">
                       <img
                         src="https://pbs.twimg.com/profile_images/1750678675798855680/2sqTuFi-_400x400.jpg"
@@ -362,7 +363,7 @@ export default function Component() {
                           <a
                             href="https://twitter.com/haseab_"
                             className={cn("flex text-blue-700", {
-                              "text-green-700": flow > 0.8,
+                              "text-green-700": flow > 0.8334,
                               "text-purple-700": flow > 1.5,
                               "text-red-700": flow > 2.5,
                             })}
@@ -385,13 +386,13 @@ export default function Component() {
                     </div>
                     <div className="flex flex-1 flex-col items-center justify-center space-y-2 pt-3 sm:p-3">
                       <Title>Right Now I&apos;m:</Title>
-                      <div className="flex flex-col sm:flex-row items-center justify-center sm:space-x-5">
-                        <div className="flex items-center justify-center text-center">
+                      <div className="flex flex-col w-full sm:w-auto sm:flex-row items-center justify-center sm:space-x-5">
+                        <div className="flex flex-col border p-2 w-full sm:p-0 sm:border-none rounded-xl border-gray-700 items-center justify-center text-center">
                           <p
                             className={cn(
                               "flex text-[1.4rem] sm:text-[1.2rem] md:text-[1.75rem] text-blue-500 font-mono",
                               {
-                                "text-green-500": flow > 0.8,
+                                "text-green-500": flow > 0.8334,
                                 "text-purple-500": flow > 1.5,
                                 "text-red-500": flow > 2.5,
                               }
@@ -399,7 +400,22 @@ export default function Component() {
                           >
                             {currentActivity}
                           </p>
+                          <div className="mt-2 block sm:hidden flex">
+                            <p
+                              className={cn("flex text-blue-500 font-mono", {
+                                "text-green-500": flow > 0.8334,
+                                "text-purple-500": flow > 1.5,
+                                "text-red-500": flow > 2.5,
+                              })}
+                            >
+                              {formatTimeDifference(
+                                new Date(currentActivityStartTime),
+                                new Date()
+                              )}
+                            </p>
+                          </div>
                         </div>
+
                         <div className="flex mt-5 sm:mt-0 sm:ml-5 items-center justify-center h-full">
                           <PingDot
                             color={
@@ -407,22 +423,36 @@ export default function Component() {
                                 ? "red"
                                 : flow > 1.5
                                 ? "purple"
-                                : flow > 0.8
+                                : flow > 0.8334
                                 ? "green"
                                 : "green"
                             }
                           />
                         </div>
                       </div>
-                      <p className="order-first pb-2 sm:order-none text-gray-600 text-sm">
+                      <div className="hidden sm:block flex">
+                        <p
+                          className={cn("flex text-blue-500 font-mono", {
+                            "text-green-500": flow > 0.8334,
+                            "text-purple-500": flow > 1.5,
+                            "text-red-500": flow > 2.5,
+                          })}
+                        >
+                          {formatTimeDifference(
+                            new Date(currentActivityStartTime),
+                            new Date()
+                          )}
+                        </p>
+                      </div>
+                      {/* <p className="order-first pb-2 sm:order-none text-gray-600 text-sm">
                         Local Time:{" "}
                         {formatToCurrentTimezone(
                           new Date(),
                           // "Canada/Eastern"
                           "America/Los_Angeles"
                         )}
-                      </p>
-                      {flow > 2.5 ? (
+                      </p> */}
+                      {/* {flow > 2.5 ? (
                         <p className="text-red-500 text-sm text-center">
                           Currently in a flow state for over 2.5 hours
                         </p>
@@ -430,13 +460,13 @@ export default function Component() {
                         <p className="text-purple-500 text-sm text-center">
                           Currently in a flow state for over 1.5 hours
                         </p>
-                      ) : flow > 0.8 ? (
+                      ) : flow > 0.8334 ? (
                         <p className="text-green-500 text-sm text-center">
                           Currently in a flow state for about 1 hour
                         </p>
                       ) : (
                         <></>
-                      )}
+                      )} */}
                     </div>
                   </Card>
                 </div>
@@ -451,7 +481,7 @@ export default function Component() {
                           ? ["red", "gray"]
                           : flow > 1.5
                           ? ["fuchsia", "slate"]
-                          : flow > 0.8
+                          : flow > 0.8334
                           ? ["emerald", "slate"]
                           : ["blue", "slate"]
                       }
@@ -466,7 +496,7 @@ export default function Component() {
                           ? ["red", "gray"]
                           : flow > 1.5
                           ? ["fuchsia", "slate"]
-                          : flow > 0.8
+                          : flow > 0.8334
                           ? ["emerald", "slate"]
                           : ["blue", "slate"]
                       }
@@ -501,12 +531,12 @@ export default function Component() {
             <br></br>
 
             <div className="p-5 hidden opacity-0 xs:block xs:opacity-100">
-              <Title className="grid gap-6 mb-8 text-center">
-                {flow < 0.8 &&
+              {/* <Title className="grid gap-6 mb-8 text-center">
+                {flow < 0.8334 &&
                   `${roundToThree(
-                    (0.8 - flow) * 60 + 2
+                    (0.8334 - flow) * 60
                   )} min until task is classified as flow`}
-              </Title>
+              </Title> */}
               <br></br>
               <AreaGraph
                 data={weeklyProductiveFlowData}
@@ -526,7 +556,7 @@ export default function Component() {
                     ? ["red", "gray"]
                     : flow > 1.5
                     ? ["fuchsia", "slate"]
-                    : flow > 0.8
+                    : flow > 0.8334
                     ? ["emerald", "slate"]
                     : ["blue", "slate"]
                 }
@@ -556,7 +586,7 @@ export default function Component() {
                   className={cn(
                     "bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded border-gray-700",
                     {
-                      "bg-green-700": flow > 0.8,
+                      "bg-green-700": flow > 0.8334,
                       "bg-purple-700": flow > 1.5,
                       "bg-red-700": flow > 2.5,
                     }
