@@ -116,16 +116,16 @@ export type TremorColors =
 export const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export enum MetricNames {
-  HOURS_FREE = "Hours Free (h)",
-  ONE_HUT = "Total Flow Time (h)",
-  UNPLANNED_TIME = "Unplanned Time (h)",
+  HOURS_FREE = "Hours Free",
+  ONE_HUT = "Total Flow (hours)",
+  UNPLANNED_TIME = "Unplanned Hours",
   DISTRACTION_COUNT = "Distraction #",
   P1HUT = "Productive Flow (h)",
-  N1HUT = "Neutral Flow (h)",
-  UNPRODUCTIVE = "Unproductive Flow (h)",
-  ONE_HUT_EFFICIENCY = "Prod. Flow Efficiency (%)",
+  N1HUT = "Neutral Flow (hours)",
+  UNPRODUCTIVE = "Unproductive Flow (hours)",
+  ONE_HUT_EFFICIENCY = "% of Productive Flow",
   EFFICIENCY = "Efficiency (%)",
-  PRODUCTIVITY = "Productivity (h)",
+  PRODUCTIVITY = "Productive Hours",
 }
 
 export const metrics: MetricNames[] = [

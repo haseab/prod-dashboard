@@ -90,23 +90,23 @@ export const getNewMetricsData = ({
       metric: metricData.metric,
       prevScore: metricData.score,
       score:
-        metricData.metric === "Hours Free (h)"
+        metricData.metric === MetricNames.HOURS_FREE
           ? hoursFree
-          : metricData.metric === "Total Flow Time (h)"
+          : metricData.metric === MetricNames.ONE_HUT
           ? p1HUT + n1HUT + nw1HUT + w1HUT
-          : metricData.metric === "Unplanned Time (h)"
+          : metricData.metric === MetricNames.UNPLANNED_TIME
           ? unplannedTime
-          : metricData.metric === "Distraction #"
+          : metricData.metric === MetricNames.DISTRACTION_COUNT
           ? distraction_count
-          : metricData.metric === "Productive Flow (h)"
+          : metricData.metric === MetricNames.P1HUT
           ? p1HUT
-          : metricData.metric === "Neutral Flow (h)"
+          : metricData.metric === MetricNames.N1HUT
           ? n1HUT
-          : metricData.metric === "Unproductive Flow (h)"
+          : metricData.metric === MetricNames.UNPRODUCTIVE
           ? w1HUT
-          : metricData.metric === "Prod. Flow Efficiency (%)"
+          : metricData.metric === MetricNames.ONE_HUT_EFFICIENCY
           ? roundToThree((p1HUT / hoursFree) * 100)
-          : metricData.metric === "Efficiency (%)"
+          : metricData.metric === MetricNames.EFFICIENCY
           ? roundToThree((productiveTime / hoursFree) * 100)
           : roundToThree(productiveTime),
       targetScore: targets[metricData.metric],
@@ -115,17 +115,18 @@ export const getNewMetricsData = ({
       tooltip: tooltips[metricData.metric],
     };
 
-    const percentage = [
-      MetricNames.HOURS_FREE,
-      MetricNames.N1HUT,
-    ].includes(metricData.metric) ? 100 : getMetricsPercentage({
-      partialNewMetricsData,
-      inverse: [
-        MetricNames.UNPLANNED_TIME,
-        MetricNames.DISTRACTION_COUNT,
-        MetricNames.UNPRODUCTIVE,
-      ].includes(metricData.metric),
-    });
+    const percentage = [MetricNames.HOURS_FREE, MetricNames.N1HUT].includes(
+      metricData.metric
+    )
+      ? 100
+      : getMetricsPercentage({
+          partialNewMetricsData,
+          inverse: [
+            MetricNames.UNPLANNED_TIME,
+            MetricNames.DISTRACTION_COUNT,
+            MetricNames.UNPRODUCTIVE,
+          ].includes(metricData.metric),
+        });
 
     return {
       ...partialNewMetricsData,

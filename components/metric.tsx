@@ -1,7 +1,8 @@
 import Tooltip from "@/components/tooltip";
 import { TremorColors } from "@/types";
-import { Card, Flex, Metric, ProgressBar } from "@tremor/react";
+import { Card, Flex, Metric, ProgressBar, Title } from "@tremor/react";
 import Number from "./number";
+import { Info } from "lucide-react";
 
 // Define the props that the component will accept
 const MetricComponent = ({
@@ -22,9 +23,12 @@ const MetricComponent = ({
   color: TremorColors;
 }) => (
   <Card className="max-w-xs mx-auto">
-    <Tooltip tooltip={tooltip}>
-      <p className="text-sm text-gray-400">{metric}</p>
-    </Tooltip>
+    <div className="flex items-center justify-between space-x-2">
+      <div className="text-sm inline text-gray-400 w-full">{metric}</div>
+      <Tooltip tooltip={tooltip}>
+        <Info size={15} />
+      </Tooltip>
+    </div>
     <Metric>
       <Number num={prevScore} newNum={score} />
     </Metric>

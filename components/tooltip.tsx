@@ -1,3 +1,4 @@
+import zIndex from "@mui/material/styles/zIndex";
 import { FC, ReactNode, useEffect, useRef, useState } from "react";
 
 interface Props {
@@ -11,6 +12,7 @@ const ToolTip: FC<Props> = ({ children, tooltip }) => {
   const [tooltipStyle, setTooltipStyle] = useState({
     left: "0px",
     transform: "translateX(0)",
+    zIndex: 1000,
   });
 
   const handleMouseEnter = (clientX: number) => {
@@ -27,6 +29,7 @@ const ToolTip: FC<Props> = ({ children, tooltip }) => {
       setTooltipStyle({
         left: `${tooltipLeft}px`,
         transform: "translateX(-50%)",
+        zIndex: 1000,
       });
     }
   };
@@ -55,7 +58,8 @@ const ToolTip: FC<Props> = ({ children, tooltip }) => {
         <span
           ref={tooltipRef}
           style={tooltipStyle}
-          className="p-5 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition bg-blue-900 text-white p-1 rounded absolute top-full mt-2 whitespace-normal w-64"
+          className="p-5 invisible z-1000
+           rounded-xl group-hover:visible opacity-0 group-hover:opacity-100 transition bg-blue-900 text-white p-1 rounded absolute top-full mt-2 whitespace-normal w-64"
         >
           {tooltip}
         </span>

@@ -19,25 +19,25 @@ export const targets = {
 
 export const tooltips = {
   [MetricNames.HOURS_FREE]:
-    "means the total hours in a week that I had freedom to do whatever I wanted",
+    "means the total hours in a week that I had freedom to do whatever I wanted (excluding sleep, eating, and other necessities)",
   [MetricNames.N1HUT]:
-    "means the total hours in a week that I spent doing a neutral activity for over 50 consecutive minutes",
+    "means the total hours in a week that I spent doing a neutral activity for over 50 consecutive minutes (e.g. sleep, eating, etc.)",
   [MetricNames.PRODUCTIVITY]:
-    "means the total hours in a week that I did productive tasks",
+    "means the total hours in a week that I did anything that moved me closer to my goals (e.g. startup work, gym, reading books, research, etc.)",
   [MetricNames.EFFICIENCY]:
-    "calculated as productive time divided by hours free",
+    "calculated as productive hours divided by the # hours that I had free to be productive that week",
   [MetricNames.P1HUT]:
-    "means the total hours in a week that I spent doing a productive activity for over 50 consecutive minutes",
+    "answers the question: how many of those productive hours was I really focused? strictly means the total hours in a week that I spent doing a productive activity for over 50 consecutive minutes",
   [MetricNames.ONE_HUT]:
     "means the total hours in a week that I spent on any activity for over 50 consecutive minutes",
   [MetricNames.UNPRODUCTIVE]:
     "means the total hours in a week that I did unproductive tasks",
   [MetricNames.UNPLANNED_TIME]:
-    "means the total hours in a week that I didn't intentionally decide to do",
+    "means the total hours in a week that I didn't intentionally decide to do. Strictly calculated as the number of hours in my calendar that I didn't explictly put an event for",
   [MetricNames.ONE_HUT_EFFICIENCY]:
-    "calculated as productive flow time divided by hours free",
+    "calculated as productive flow hours divided by # hours that I had free to be productive that week",
   [MetricNames.DISTRACTION_COUNT]:
-    "means the total number of times that I checked my message notifications",
+    "means the total number of times that I checked my message notifications. Strictly calculated by the number of times I hit a keyboard shortcut to check my messages",
 };
 
 export const p1HUTWeekly: HistoricalWeeklyData[] = [

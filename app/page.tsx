@@ -57,7 +57,9 @@ export default function Component() {
       value: null,
     }))
   );
-  const [dailyProductiveFlowData, setDailyProductiveFlowData] = useState<ChartData[]>(
+  const [dailyProductiveFlowData, setDailyProductiveFlowData] = useState<
+    ChartData[]
+  >(
     weekdays.map((day) => ({
       date: day,
       oneHUT: null,
@@ -77,7 +79,8 @@ export default function Component() {
     }))
   );
 
-  const [weeklyProductiveFlowData, setWeeklyProductiveFlowData] = useState<MonthlyData[]>(p1HUTWeekly);
+  const [weeklyProductiveFlowData, setWeeklyProductiveFlowData] =
+    useState<MonthlyData[]>(p1HUTWeekly);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [showOnlyMA, setShowOnlyMA] = useState(false);
@@ -162,17 +165,19 @@ export default function Component() {
 
       setUnplannedData(newUnplannedData);
 
-      const newDailyProductiveFlowData = dailyProductiveFlowData.map((item, index) => {
-        const p1HUTValue = Object.values(p1HUTList)[index];
-        const oneHUTValue = Object.values(oneHUTList)[index];
-        const date = Object.keys(p1HUTList)[index];
-        return {
-          ...item,
-          date: date.slice(5),
-          p1HUT: p1HUTValue || item.p1HUT,
-          oneHUT: oneHUTValue || item.oneHUT,
-        };
-      });
+      const newDailyProductiveFlowData = dailyProductiveFlowData.map(
+        (item, index) => {
+          const p1HUTValue = Object.values(p1HUTList)[index];
+          const oneHUTValue = Object.values(oneHUTList)[index];
+          const date = Object.keys(p1HUTList)[index];
+          return {
+            ...item,
+            date: date.slice(5),
+            p1HUT: p1HUTValue || item.p1HUT,
+            oneHUT: oneHUTValue || item.oneHUT,
+          };
+        }
+      );
 
       setDailyProductiveFlowData(newDailyProductiveFlowData);
 
@@ -227,7 +232,6 @@ export default function Component() {
           },
         ].slice(weeklyInterval)
       );
-
     } catch (err: any) {
       console.log("returning error");
       console.log(err);
@@ -270,13 +274,11 @@ export default function Component() {
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <div className="flex font-sans flex-col flex-1 w-full">
         <div className="flex justify-center items-center">
-          <header className="container px-12 flex flex-col xs:flex-row items-center justify-between p-6 pb-0  w-full">
+          <header className="container px-12 flex flex-col items-center justify-between p-6 pb-2  w-full">
             <h2 className="text-3xl pt-5 sm:pt-0 sm:text-2xl font-mono font-semibold text-gray-800 dark:text-gray-200">
               timetracking.live
             </h2>
-            <div className="hidden sm:block text-lg text-center p-5">
-              {startDate} to {endDate}
-            </div>
+            <div className="border-b w-60 mt-5 border-gray-700 w-full"></div>
           </header>
         </div>
         <main
@@ -330,9 +332,16 @@ export default function Component() {
               </>
             )}
 
-            <Title className="grid gap-6 text-center">
-              Refreshing in {refreshTime - timeLeftRef.current} seconds
-            </Title>
+            <div className="grid md:grid-cols-1 lg:grid-cols-5 items-center p-5 lg:p-0">
+              <Title className="grid col-span-3 w-full gap-6 text-center">
+                Refreshing in {refreshTime - timeLeftRef.current} seconds
+              </Title>
+              <div className="hidden lg:block text-lg text-center xs:grid-cols-2 lg:col-span-2">
+                <p>
+                  Last 7 Days: {startDate} to {endDate}
+                </p>
+              </div>
+            </div>
             {error && (
               <span className="grid gap-6 text-center text-red-700">
                 Server error: trying again in 30 seconds...
@@ -450,15 +459,15 @@ export default function Component() {
                     />
                   </div>
                 </div>
-              </div>
-
-              <div className="grid gap-6 p-5 xs:grid-cols-2 lg:col-span-2">
-                <div className="block sm:hidden text-lg text-center pt-5">
+                <div className="block lg:hidden text-lg text-center pt-5">
                   <p className="text-2xl">Last 7 Days</p>
                   <p>
                     {startDate} to {endDate}
                   </p>
                 </div>
+              </div>
+
+              <div className="grid gap-6 p-5 xs:grid-cols-2 lg:col-span-2">
                 {metricsData.map((data, index) => (
                   <MetricComponent
                     key={index}
