@@ -298,7 +298,7 @@ export default function Component() {
               "dark:bg-gradient-to-t dark:from-red-800 dark:via-gray-900 dark:to-gray-900"
           )}
         >
-          <div className="container mx-auto px-6 py-8">
+          <div className="container mx-auto px-6 py-2">
             {showConfetti && (
               <RealisticConfettiPreset
                 width={window.innerWidth}
@@ -338,7 +338,7 @@ export default function Component() {
               </>
             )}
 
-            <div className="grid md:grid-cols-1 lg:grid-cols-5 items-center p-5 lg:p-0">
+            <div className="grid md:grid-cols-1 lg:grid-cols-5 items-center p-2 lg:p-0">
               <Title className="grid col-span-3 w-full gap-6 text-center">
                 Refreshing in {refreshTime - timeLeftRef.current} seconds
               </Title>
