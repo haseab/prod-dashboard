@@ -1,5 +1,5 @@
 // export const revalidate = process.env.NODE_ENV === "development" ? 0 : 25;
-export const revalidate = 25;
+export const revalidate = 10;
 
 export async function GET() {
   console.log("GETTING /metrics");
