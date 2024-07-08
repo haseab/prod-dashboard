@@ -403,7 +403,7 @@ export default function Component() {
                           >
                             {currentActivity}
                           </p>
-                          <div className="mt-2 block sm:hidden flex">
+                          <div className="mt-2 text-xl block sm:hidden flex">
                             <p
                               className={cn("flex text-blue-500 font-mono", {
                                 "text-green-500": flow > 0.8334,
@@ -435,11 +435,14 @@ export default function Component() {
                       </div>
                       <div className="hidden sm:block flex">
                         <p
-                          className={cn("flex text-blue-500 font-mono", {
-                            "text-green-500": flow > 0.8334,
-                            "text-purple-500": flow > 1.5,
-                            "text-red-500": flow > 2.5,
-                          })}
+                          className={cn(
+                            "flex text-2xl text-blue-500 font-mono",
+                            {
+                              "text-green-500": flow > 0.8334,
+                              "text-purple-500": flow > 1.5,
+                              "text-red-500": flow > 2.5,
+                            }
+                          )}
                         >
                           {formatTimeDifference(
                             new Date(currentActivityStartTime),
