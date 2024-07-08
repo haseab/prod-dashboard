@@ -267,25 +267,23 @@ export default function Component() {
   }, []);
 
   return (
-    <div className="flex bg-gray-100 dark:bg-gray-900">
+    <div className="flex bg-gray-900">
       <div className="flex flex-col flex-1">
-        <header className="flex items-center justify-between p-6 border-b dark:border-gray-700">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
-            Dashboard
-          </h2>
+        <header className="flex items-center justify-between p-6 border-b border-gray-700">
+          <h2 className="text-2xl font-semibold text-gray-200">Dashboard</h2>
           <div>
             {startDate} to {endDate}
           </div>
         </header>
         <main
           className={cn(
-            "flex-1 bg-gray-100 dark:bg-gray-900",
+            "flex-1 bg-gray-900",
             flow > 0.8 &&
-              "dark:bg-gradient-to-t dark:from-green-800 dark:via-gray-900 dark:to-gray-900",
+              "bg-gradient-to-t from-green-800 via-gray-900 to-gray-900",
             flow > 1.5 &&
-              "dark:bg-gradient-to-t dark:from-purple-800 dark:via-gray-900 dark:to-gray-900",
+              "bg-gradient-to-t from-purple-800 via-gray-900 to-gray-900",
             flow > 2.5 &&
-              "dark:bg-gradient-to-t dark:from-red-800 dark:via-gray-900 dark:to-gray-900"
+              "bg-gradient-to-t from-red-800 via-gray-900 to-gray-900"
           )}
         >
           <div className="container mx-auto px-6 py-8">
