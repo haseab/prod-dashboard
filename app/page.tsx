@@ -277,8 +277,8 @@ export default function Component() {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="h-screen flex font-sans flex-col flex-1 w-full">
+    <div className="flex h-[100dvh] bg-gray-100 dark:bg-gray-900">
+      <div className="h-[100dvh] flex font-sans flex-col flex-1 w-full">
         <div className="flex justify-center items-center">
           <header className="container px-12 flex flex-col items-center justify-between p-6 pb-2  w-full">
             <h2 className="text-3xl pt-5 sm:pt-0 sm:text-2xl font-mono font-semibold text-gray-800 dark:text-gray-200">
@@ -289,7 +289,7 @@ export default function Component() {
         </div>
         <main
           className={cn(
-            "h-screen overflow-auto flex-1 bg-gray-100 dark:bg-gray-900",
+            "h-[100dvh] overflow-auto flex-1 bg-gray-100 dark:bg-gray-900",
             flow > 0.8334 &&
               "dark:bg-gradient-to-t dark:from-green-800 dark:via-gray-900 dark:to-gray-900",
             flow > 1.5 &&
