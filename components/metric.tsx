@@ -1,10 +1,10 @@
 "use client";
 import Tooltip from "@/components/tooltip";
-import { TremorColors } from "@/types";
-import { Card, Flex, Metric, ProgressBar, Title } from "@tremor/react";
-import Number from "./number";
-import { Info } from "lucide-react";
 import { useMobile } from "@/hooks/use-mobile";
+import { TremorColors } from "@/types";
+import { Card, Flex, Metric, ProgressBar } from "@tremor/react";
+import { Info } from "lucide-react";
+import Number from "./number";
 
 // Define the props that the component will accept
 const MetricComponent = ({
@@ -39,7 +39,9 @@ const MetricComponent = ({
         <Number num={prevScore} newNum={score} />
       </Metric>
       <Flex className="mt-4">
-        <p className="text-sm text-gray-400">{`${percentageOfTarget}% of target`}</p>
+        <p className="text-sm text-gray-400">{`${Math.floor(
+          percentageOfTarget
+        )}% of target`}</p>
         <p className="text-sm text-gray-400">{`${targetScore}`}</p>
       </Flex>
       <ProgressBar value={percentageOfTarget} color={color} className="mt-2" />

@@ -278,7 +278,7 @@ export default function Component() {
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="flex font-sans flex-col flex-1 w-full">
+      <div className="h-screen flex font-sans flex-col flex-1 w-full">
         <div className="flex justify-center items-center">
           <header className="container px-12 flex flex-col items-center justify-between p-6 pb-2  w-full">
             <h2 className="text-3xl pt-5 sm:pt-0 sm:text-2xl font-mono font-semibold text-gray-800 dark:text-gray-200">
