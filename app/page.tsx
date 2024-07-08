@@ -1,9 +1,9 @@
 "use client";
 
-import { p1HUTWeekly } from "@/app/constant";
+import { weeklyProductiveFlow } from "@/app/constant";
 import AreaGraph from "@/components/area";
 import { FlowImg } from "@/components/flowicon";
-import { default as MetricComponent } from "@/components/metric";
+import MetricComponent from "@/components/metric";
 import PingDot from "@/components/ping-dot";
 import {
   cn,
@@ -62,8 +62,8 @@ export default function Component() {
   >(
     weekdays.map((day) => ({
       date: day,
-      oneHUT: null,
-      p1HUT: null,
+      totalFlow: null,
+      productiveFlow: null,
     }))
   );
 
@@ -80,7 +80,7 @@ export default function Component() {
   );
 
   const [weeklyProductiveFlowData, setWeeklyProductiveFlowData] =
-    useState<MonthlyData[]>(p1HUTWeekly);
+    useState<MonthlyData[]>(weeklyProductiveFlow);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [showOnlyMA, setShowOnlyMA] = useState(false);
@@ -104,8 +104,8 @@ export default function Component() {
 
       const {
         unplannedTimeList,
-        oneHUTList,
-        p1HUTList,
+        totalFlowList,
+        productiveFlowList,
         n1HUTList,
         nw1HUTList,
         w1HUTList,
@@ -128,7 +128,7 @@ export default function Component() {
       setCurrentActivityStartTime(currentActivityStartTime);
 
       const data = {
-        p1HUT: sumValues(p1HUTList),
+        productiveFlow: sumValues(productiveFlowList),
         n1HUT: sumValues(n1HUTList),
         nw1HUT: sumValues(nw1HUTList),
         w1HUT: sumValues(w1HUTList),
@@ -170,14 +170,14 @@ export default function Component() {
 
       const newDailyProductiveFlowData = dailyProductiveFlowData.map(
         (item, index) => {
-          const p1HUTValue = Object.values(p1HUTList)[index];
-          const oneHUTValue = Object.values(oneHUTList)[index];
-          const date = Object.keys(p1HUTList)[index];
+          const productiveFlowValue = Object.values(productiveFlowList)[index];
+          const totalFlowValue = Object.values(totalFlowList)[index];
+          const date = Object.keys(productiveFlowList)[index];
           return {
             ...item,
             date: date.slice(5),
-            p1HUT: p1HUTValue || item.p1HUT,
-            oneHUT: oneHUTValue || item.oneHUT,
+            productiveFlow: productiveFlowValue || item.productiveFlow,
+            totalFlow: totalFlowValue || item.totalFlow,
           };
         }
       );
@@ -187,7 +187,7 @@ export default function Component() {
       const newEfficiencyData = efficiencyData.map((item, index) => {
         const productiveTime = Object.values(productiveList)[index];
         const hoursFree = Object.values(hoursFreeList)[index];
-        const date = Object.keys(p1HUTList)[index];
+        const date = Object.keys(productiveFlowList)[index];
         return {
           ...item,
           date: date.slice(5),
@@ -198,35 +198,38 @@ export default function Component() {
 
       setEfficiencyData(newEfficiencyData);
 
-      const lastWeek = p1HUTWeekly.length - 1;
+      const lastWeek = weeklyProductiveFlow.length - 1;
       const weeklyInterval = 4;
 
       const movingAverageWeekly = simpleMovingAverage(
-        [...p1HUTWeekly.map((item) => item.p1HUT), data.p1HUT],
+        [
+          ...weeklyProductiveFlow.map((item) => item.productiveFlow),
+          data.productiveFlow,
+        ],
         weeklyInterval
       );
 
       const movingAveragePercentageWeekly = simpleMovingAverage(
         [
-          ...p1HUTWeekly.map((item) => item.p1HUTPercentage),
-          roundToThree(data.p1HUT / data.hoursFree),
+          ...weeklyProductiveFlow.map((item) => item.flowPercentage),
+          roundToThree(data.productiveFlow / data.hoursFree),
         ],
         weeklyInterval
       );
 
-      p1HUTWeekly.forEach((item, index) => {
+      weeklyProductiveFlow.forEach((item, index) => {
         item.movingAverage = movingAverageWeekly[index];
         item.movingAveragePercentage = movingAveragePercentageWeekly[index];
       });
 
       setWeeklyProductiveFlowData(
         [
-          ...p1HUTWeekly,
+          ...weeklyProductiveFlow,
           {
             week: lastWeek + 1,
-            date: Object.keys(p1HUTList)[0].slice(5),
-            p1HUT: data.p1HUT,
-            p1HUTPercentage: roundToThree(data.p1HUT / data.hoursFree),
+            date: Object.keys(productiveFlowList)[0].slice(5),
+            productiveFlow: data.productiveFlow,
+            flowPercentage: roundToThree(data.productiveFlow / data.hoursFree),
             movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
             movingAveragePercentage:
               movingAveragePercentageWeekly[
@@ -474,8 +477,8 @@ export default function Component() {
                   <div className="flex flex-col space-y-5 sm:flex-row sm:space-x-5 sm:space-y-0">
                     <AreaGraph
                       data={dailyProductiveFlowData}
-                      title={"Prod. Flow vs Total Flow (h)"}
-                      categories={["p1HUT", "oneHUT"]}
+                      title={"Productive Flow vs Total Flow"}
+                      categories={["productiveFlow", "totalFlow"]}
                       colors={
                         flow > 2.5
                           ? ["red", "gray"]
@@ -486,6 +489,7 @@ export default function Component() {
                           : ["blue", "slate"]
                       }
                       index={"date"}
+                      tooltip="This graph shows how many of my flow hours were productive. Flow doesn't have to be productive, for instance I could be in a flow state while watching TV."
                     />
                     <AreaGraph
                       data={efficiencyData}
@@ -501,6 +505,7 @@ export default function Component() {
                           : ["blue", "slate"]
                       }
                       index={"date"}
+                      tooltip="This graph shows the comparison of productive hours to hours of free time I had. Dividing these two numbers gives the Efficiency (%)."
                     />
                   </div>
                 </div>
@@ -546,8 +551,8 @@ export default function Component() {
                   showOnlyMA
                     ? ["movingAverage"]
                     : showOnlyRaw
-                    ? ["p1HUT"]
-                    : ["p1HUT", "movingAverage"]
+                    ? ["productiveFlow"]
+                    : ["productiveFlow", "movingAverage"]
                 }
                 colors={
                   showOnlyMA

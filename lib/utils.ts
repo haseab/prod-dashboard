@@ -99,7 +99,7 @@ export const getNewMetricsData = ({
   return metricsData.map((metricData) => {
     const {
       unplannedTime,
-      p1HUT,
+      productiveFlow,
       n1HUT,
       nw1HUT,
       w1HUT,
@@ -115,20 +115,20 @@ export const getNewMetricsData = ({
       score:
         metricData.metric === MetricNames.HOURS_FREE
           ? hoursFree
-          : metricData.metric === MetricNames.ONE_HUT
-          ? p1HUT + n1HUT + nw1HUT + w1HUT
+          : metricData.metric === MetricNames.TOTAL_FLOW
+          ? productiveFlow + n1HUT + nw1HUT + w1HUT
           : metricData.metric === MetricNames.UNPLANNED_TIME
           ? unplannedTime
           : metricData.metric === MetricNames.DISTRACTION_COUNT
           ? distraction_count
-          : metricData.metric === MetricNames.P1HUT
-          ? p1HUT
+          : metricData.metric === MetricNames.PRODUCTIVE_FLOW
+          ? productiveFlow
           : metricData.metric === MetricNames.N1HUT
           ? n1HUT
           : metricData.metric === MetricNames.UNPRODUCTIVE
           ? w1HUT
-          : metricData.metric === MetricNames.ONE_HUT_EFFICIENCY
-          ? roundToThree((p1HUT / hoursFree) * 100)
+          : metricData.metric === MetricNames.PRODUCTIVE_FLOW_EFFICIENCY
+          ? roundToThree((productiveFlow / hoursFree) * 100)
           : metricData.metric === MetricNames.EFFICIENCY
           ? roundToThree((productiveTime / hoursFree) * 100)
           : roundToThree(productiveTime),

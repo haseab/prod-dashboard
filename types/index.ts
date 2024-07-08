@@ -1,8 +1,8 @@
 export interface HistoricalWeeklyData {
   week: number;
   date: string;
-  p1HUT: number;
-  p1HUTPercentage: number;
+  productiveFlow: number;
+  flowPercentage: number;
   movingAverage?: number;
   movingAveragePercentage?: number;
 }
@@ -10,27 +10,27 @@ export interface HistoricalWeeklyData {
 export interface HistoricalDailyData {
   day: number;
   date: string;
-  p1HUT: number;
+  productiveFlow: number;
   movingAverage?: number;
 }
 
 export declare interface ChartData {
   date: string;
-  oneHUT: number | null;
-  p1HUT: number | null;
+  totalFlow: number | null;
+  productiveFlow: number | null;
 }
 
 export declare interface MonthlyData {
   week: number;
   date: string;
-  p1HUT: number;
+  productiveFlow: number;
   movingAverage?: number;
   movingAveragePercentage?: number;
 }
 
 export declare interface DailyData {
   day: string | number;
-  p1HUT: number;
+  productiveFlow: number;
   movingAverage?: number;
 }
 
@@ -48,14 +48,14 @@ export declare interface EfficiencyData {
 type MetricKey =
   | "hoursFree"
   | "unplannedTime"
-  | "oneHUT"
-  | "p1HUT"
+  | "totalFlow"
+  | "productiveFlow"
   | "n1HUT"
   | "nw1HUT"
   | "w1HUT"
   | "unproductiveTime"
   | "productiveTime"
-  | "oneHUTEfficiency"
+  | "productiveFlowEfficiency"
   | "efficiency"
   | "distraction_count";
 
@@ -71,8 +71,8 @@ export declare interface MetricData {
 
 export declare interface MetricsResponse {
   unplannedTimeList: { [key: string]: number };
-  oneHUTList: { [key: string]: number };
-  p1HUTList: { [key: string]: number };
+  totalFlowList: { [key: string]: number };
+  productiveFlowList: { [key: string]: number };
   n1HUTList: { [key: string]: number };
   nw1HUTList: { [key: string]: number };
   w1HUTList: { [key: string]: number };
@@ -118,13 +118,13 @@ export const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export enum MetricNames {
   HOURS_FREE = "Hours Free",
-  ONE_HUT = "Total Flow (hours)",
+  TOTAL_FLOW = "Total Flow (hours)",
   UNPLANNED_TIME = "Unplanned Hours",
   DISTRACTION_COUNT = "Distraction #",
-  P1HUT = "Productive Flow (h)",
+  PRODUCTIVE_FLOW = "Productive Flow (h)",
   N1HUT = "Neutral Flow (hours)",
   UNPRODUCTIVE = "Unproductive Flow (hours)",
-  ONE_HUT_EFFICIENCY = "Flow Efficiency (%)",
+  PRODUCTIVE_FLOW_EFFICIENCY = "Flow Efficiency (%)",
   EFFICIENCY = "Efficiency (%)",
   PRODUCTIVITY = "Productive Hours",
 }
@@ -135,9 +135,9 @@ export const metrics: MetricNames[] = [
   MetricNames.EFFICIENCY,
   MetricNames.UNPRODUCTIVE,
   MetricNames.UNPLANNED_TIME,
-  MetricNames.P1HUT,
-  MetricNames.ONE_HUT,
-  MetricNames.ONE_HUT_EFFICIENCY,
+  MetricNames.PRODUCTIVE_FLOW,
+  MetricNames.TOTAL_FLOW,
+  MetricNames.PRODUCTIVE_FLOW_EFFICIENCY,
   MetricNames.N1HUT,
   MetricNames.DISTRACTION_COUNT,
 ];
@@ -145,8 +145,8 @@ export const metrics: MetricNames[] = [
 export const publicMetrics: MetricNames[] = [
   MetricNames.PRODUCTIVITY,
   MetricNames.EFFICIENCY,
-  MetricNames.P1HUT,
-  MetricNames.ONE_HUT_EFFICIENCY,
+  MetricNames.PRODUCTIVE_FLOW,
+  MetricNames.PRODUCTIVE_FLOW_EFFICIENCY,
   MetricNames.UNPLANNED_TIME,
   MetricNames.DISTRACTION_COUNT,
 ];

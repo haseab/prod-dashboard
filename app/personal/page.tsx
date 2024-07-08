@@ -1,27 +1,22 @@
 "use client";
-import { p1HUTDaily, p1HUTWeekly } from "@/app/constant";
+import { weeklyProductiveFlow } from "@/app/constant";
 import AreaGraph from "@/components/area";
 import BarGraph from "@/components/bar";
 import { FlowImg } from "@/components/flowicon";
 import MetricComponent from "@/components/metric";
-import { cn } from "@/lib/utils";
+import { cn, getNewMetricsData, sumValues } from "@/lib/utils";
 import { Title } from "@tremor/react";
 import { useEffect, useRef, useState } from "react";
 import RealisticConfettiPreset from "react-canvas-confetti/dist/presets/realistic";
-import { sumValues } from "@/lib/utils";
-import { getNewMetricsData } from "@/lib/utils";
 
 import { roundToThree, simpleMovingAverage } from "@/lib/utils";
 import {
   BarData,
   ChartData,
-  DailyData,
   EfficiencyData,
   MetricData,
-  MetricNames,
   MetricsResponse,
   MonthlyData,
-  TremorColors,
   metrics,
   weekdays,
 } from "@/types";
@@ -55,11 +50,13 @@ export default function Component() {
       value: null,
     }))
   );
-  const [dailyProductiveFlowData, setDailyProductiveFlowData] = useState<ChartData[]>(
+  const [dailyProductiveFlowData, setDailyProductiveFlowData] = useState<
+    ChartData[]
+  >(
     weekdays.map((day) => ({
       date: day,
-      oneHUT: null,
-      p1HUT: null,
+      totalFlow: null,
+      productiveFlow: null,
     }))
   );
 
@@ -75,7 +72,8 @@ export default function Component() {
     }))
   );
 
-  const [weeklyProductiveFlowData, setWeeklyProductiveFlowData] = useState<MonthlyData[]>(p1HUTWeekly);
+  const [weeklyProductiveFlowData, setWeeklyProductiveFlowData] =
+    useState<MonthlyData[]>(weeklyProductiveFlow);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [showOnlyMA, setShowOnlyMA] = useState(false);
@@ -98,8 +96,8 @@ export default function Component() {
 
       const {
         unplannedTimeList,
-        oneHUTList,
-        p1HUTList,
+        totalFlowList,
+        productiveFlowList,
         n1HUTList,
         nw1HUTList,
         w1HUTList,
@@ -120,7 +118,7 @@ export default function Component() {
       setEndDate(endDate);
 
       const data = {
-        p1HUT: sumValues(p1HUTList),
+        productiveFlow: sumValues(productiveFlowList),
         n1HUT: sumValues(n1HUTList),
         nw1HUT: sumValues(nw1HUTList),
         w1HUT: sumValues(w1HUTList),
@@ -160,24 +158,26 @@ export default function Component() {
 
       setUnplannedData(newUnplannedData);
 
-      const newDailyProductiveFlowData = dailyProductiveFlowData.map((item, index) => {
-        const p1HUTValue = Object.values(p1HUTList)[index];
-        const oneHUTValue = Object.values(oneHUTList)[index];
-        const date = Object.keys(p1HUTList)[index];
-        return {
-          ...item,
-          date: date.slice(5),
-          p1HUT: p1HUTValue || item.p1HUT,
-          oneHUT: oneHUTValue || item.oneHUT,
-        };
-      });
+      const newDailyProductiveFlowData = dailyProductiveFlowData.map(
+        (item, index) => {
+          const productiveFlowValue = Object.values(productiveFlowList)[index];
+          const totalFlowValue = Object.values(totalFlowList)[index];
+          const date = Object.keys(productiveFlowList)[index];
+          return {
+            ...item,
+            date: date.slice(5),
+            productiveFlow: productiveFlowValue || item.productiveFlow,
+            totalFlow: totalFlowValue || item.totalFlow,
+          };
+        }
+      );
 
       setDailyProductiveFlowData(newDailyProductiveFlowData);
 
       const newEfficiencyData = efficiencyData.map((item, index) => {
         const productiveTime = Object.values(productiveList)[index];
         const hoursFree = Object.values(hoursFreeList)[index];
-        const date = Object.keys(p1HUTList)[index];
+        const date = Object.keys(productiveFlowList)[index];
         return {
           ...item,
           date: date.slice(5),
@@ -188,35 +188,38 @@ export default function Component() {
 
       setEfficiencyData(newEfficiencyData);
 
-      const lastWeek = p1HUTWeekly.length - 1;
+      const lastWeek = weeklyProductiveFlow.length - 1;
       const weeklyInterval = 4;
 
       const movingAverageWeekly = simpleMovingAverage(
-        [...p1HUTWeekly.map((item) => item.p1HUT), data.p1HUT],
+        [
+          ...weeklyProductiveFlow.map((item) => item.productiveFlow),
+          data.productiveFlow,
+        ],
         weeklyInterval
       );
 
       const movingAveragePercentageWeekly = simpleMovingAverage(
         [
-          ...p1HUTWeekly.map((item) => item.p1HUTPercentage),
-          roundToThree(data.p1HUT / data.hoursFree),
+          ...weeklyProductiveFlow.map((item) => item.flowPercentage),
+          roundToThree(data.productiveFlow / data.hoursFree),
         ],
         weeklyInterval
       );
 
-      p1HUTWeekly.forEach((item, index) => {
+      weeklyProductiveFlow.forEach((item, index) => {
         item.movingAverage = movingAverageWeekly[index];
         item.movingAveragePercentage = movingAveragePercentageWeekly[index];
       });
 
       setWeeklyProductiveFlowData(
         [
-          ...p1HUTWeekly,
+          ...weeklyProductiveFlow,
           {
             week: lastWeek + 1,
-            date: Object.keys(p1HUTList)[0].slice(5),
-            p1HUT: data.p1HUT,
-            p1HUTPercentage: roundToThree(data.p1HUT / data.hoursFree),
+            date: Object.keys(productiveFlowList)[0].slice(5),
+            productiveFlow: data.productiveFlow,
+            flowPercentage: roundToThree(data.productiveFlow / data.hoursFree),
             movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
             movingAveragePercentage:
               movingAveragePercentageWeekly[
@@ -225,7 +228,6 @@ export default function Component() {
           },
         ].slice(weeklyInterval)
       );
-
     } catch (err: any) {
       console.log("returning error");
       console.log(err);
@@ -263,7 +265,6 @@ export default function Component() {
       setError(true);
     }
   }, []);
-
 
   return (
     <div className="flex bg-gray-100 dark:bg-gray-900">
@@ -359,7 +360,7 @@ export default function Component() {
               <AreaGraph
                 data={dailyProductiveFlowData}
                 title={"Prod. Flow vs Total Flow (h)"}
-                categories={["p1HUT", "oneHUT"]}
+                categories={["productiveFlow", "totalFlow"]}
                 colors={
                   flow > 2.5
                     ? ["red", "gray"]
@@ -414,8 +415,8 @@ export default function Component() {
                 showOnlyMA
                   ? ["movingAverage"]
                   : showOnlyRaw
-                  ? ["p1HUT"]
-                  : ["p1HUT", "movingAverage"]
+                  ? ["productiveFlow"]
+                  : ["productiveFlow", "movingAverage"]
               }
               colors={
                 showOnlyMA
@@ -438,8 +439,8 @@ export default function Component() {
                 showOnlyMA
                   ? ["movingAverage"]
                   : showOnlyRaw
-                  ? ["p1HUT"]
-                  : ["p1HUT", "movingAverage"]
+                  ? ["productiveFlow"]
+                  : ["productiveFlow", "movingAverage"]
               }
               colors={
                 showOnlyMA
@@ -462,8 +463,8 @@ export default function Component() {
                 showOnlyMA
                   ? ["movingAveragePercentage"]
                   : showOnlyRaw
-                  ? ["p1HUTPercentage"]
-                  : ["p1HUTPercentage", "movingAveragePercentage"]
+                  ? ["flowPercentage"]
+                  : ["flowPercentage", "movingAveragePercentage"]
               }
               colors={
                 showOnlyMA
