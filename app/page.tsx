@@ -359,7 +359,7 @@ export default function Component() {
                       <img
                         src="https://pbs.twimg.com/profile_images/1750678675798855680/2sqTuFi-_400x400.jpg"
                         alt="flow"
-                        className="w-[20vh] h-[20vh] sm:w-[12vh] sm:h-[12vh] rounded-full"
+                        className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full"
                       ></img>
                       <div>
                         <p>
