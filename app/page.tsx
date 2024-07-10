@@ -419,24 +419,10 @@ export default function Component() {
                       <Title>Right Now I&apos;m:</Title>
                       <div className="flex flex-col w-full sm:w-auto sm:flex-row items-center justify-center sm:space-x-5">
                         <div className="flex flex-col border p-2 w-full sm:p-0 sm:border-none rounded-xl border-gray-700 items-center justify-center text-center">
-                          <motion.p
-                            animate={{
-                              scale: [1, 1.1, 1],
-                            }}
-                            className={cn(
-                              "flex text-[1.4rem] sm:text-[1.2rem] md:text-[1.75rem] transition-colors duration-1000 ease-in-out text-blue-500 font-mono",
-                              {
-                                "text-green-500": flow > 0.8334,
-                                "text-purple-500": flow > 1.5,
-                                "text-red-500": flow > 2.5,
-                              }
-                            )}
-                          >
-                            <ActivityIndicator
-                              currentActivity={currentActivity}
-                              flow={flow}
-                            />
-                          </motion.p>
+                          <ActivityIndicator
+                            currentActivity={currentActivity}
+                            flow={flow}
+                          />
                           <div className="mt-2 text-xl block sm:hidden flex">
                             <p
                               className={cn(

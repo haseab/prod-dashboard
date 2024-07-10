@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -28,14 +29,25 @@ function ActivityIndicator({
   }`;
 
   return (
-    <motion.p
-      key={key} // Key change triggers re-animation
-      initial={{ scale: 1 }} // Initial scale
-      animate={{ scale: [1, 1.1, 1] }} // Animate scale
-      className={classNames}
+    <div
+      className={cn(
+        "flex text-[1.4rem] sm:text-[1.2rem] md:text-[1.75rem] transition-colors duration-1000 ease-in-out text-blue-500 font-mono",
+        {
+          "text-green-500": flow > 0.8334,
+          "text-purple-500": flow > 1.5,
+          "text-red-500": flow > 2.5,
+        }
+      )}
     >
-      {currentActivity}
-    </motion.p>
+      <motion.p
+        key={key} // Key change triggers re-animation
+        initial={{ scale: 0 }} // Initial scale
+        animate={{ scale: [0, 1] }} // Animate scale
+        className={classNames}
+      >
+        {currentActivity}
+      </motion.p>
+    </div>
   );
 }
 
