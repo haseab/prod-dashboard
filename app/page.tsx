@@ -34,7 +34,7 @@ export const revalidate = 0;
 export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [flow, setFlow] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(refreshTime);
+  const [timeLeft, setTimeLeft] = useState(2);
   const [error, setError] = useState(false);
   const timeLeftRef = useRef(0);
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
