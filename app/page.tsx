@@ -254,7 +254,7 @@ export default function Component() {
     const interval = setInterval(() => {
       timeLeftRef.current += 1; // Update ref
       setTimeLeftState(timeLeftRef.current); // Update state to trigger re-render
-      console.log("Time left: ", refreshTime - timeLeftRef.current);
+      // console.log("Time left: ", refreshTime - timeLeftRef.current);
 
       if (timeLeftRef.current >= refreshTime) {
         timeLeftRef.current = 0;
