@@ -3,6 +3,7 @@ import { TremorColors } from "@/types";
 import { Card, Dialog, Flex, Metric, ProgressBar, Title } from "@tremor/react";
 import { Info, XIcon } from "lucide-react";
 import { useState } from "react";
+import Arrow from "./arrow";
 import Number from "./number";
 
 // Define the props that the component will accept
@@ -24,6 +25,7 @@ const MetricComponent = ({
   color: TremorColors;
 }) => {
   const [showDialog, setShowDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
   return (
     <Card className="max-w-xs mx-auto">
       <div className="flex items-center justify-between space-x-2">
@@ -57,9 +59,13 @@ const MetricComponent = ({
           </Card>
         </Dialog>
       </div>
-      <Metric>
-        <Number num={prevScore} newNum={score} />
-      </Metric>
+      <div className="flex items-center space-x-2">
+        <Metric>
+          <Number num={prevScore} newNum={score} setLoading={setLoading} />
+        </Metric>
+        {score > prevScore && <Arrow up={true} isVisible={loading} />}
+        {score < prevScore && <Arrow up={false} isVisible={loading} />}
+      </div>
       <Flex className="mt-4">
         <p className="text-sm text-gray-400">{`${Math.floor(
           percentageOfTarget

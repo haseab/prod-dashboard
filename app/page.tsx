@@ -35,6 +35,7 @@ export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [flow, setFlow] = useState(0);
   const [timeLeft, setTimeLeft] = useState(2);
+  const [timeLeftState, setTimeLeftState] = useState(0);
   const [error, setError] = useState(false);
   const timeLeftRef = useRef(0);
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
@@ -250,31 +251,33 @@ export default function Component() {
   };
 
   useEffect(() => {
-    try {
-      fetchData();
-      const interval = setInterval(() => {
-        timeLeftRef.current += 1;
-        setTimeLeft(timeLeftRef.current);
+    const interval = setInterval(() => {
+      timeLeftRef.current += 1; // Update ref
+      setTimeLeftState(timeLeftRef.current); // Update state to trigger re-render
+      console.log("Time left: ", refreshTime - timeLeftRef.current);
 
-        if (timeLeftRef.current === refreshTime - 2) {
-          fetchData();
-        }
-        if (timeLeftRef.current === refreshTime) {
-          timeLeftRef.current = 0;
-          setTimeLeft(timeLeftRef.current);
-        }
-      }, pollingInterval);
-      setError(false);
+      if (timeLeftRef.current >= refreshTime) {
+        timeLeftRef.current = 0;
+        setTimeLeftState(0); // Reset the timer and state
+      }
+    }, pollingInterval);
 
-      return () => {
-        clearInterval(interval);
-      };
-    } catch (err: any) {
-      console.log("returning error!");
-      console.log(err);
-      setError(true);
-    }
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
+
+  useEffect(() => {
+    if (timeLeftState === refreshTime || timeLeftState === 0) {
+      try {
+        fetchData();
+        setError(false);
+      } catch (err) {
+        console.error("Returning error!", err);
+        setError(true);
+      }
+    }
+  }, [timeLeftState]);
 
   return (
     <div className="flex h-[100dvh] bg-gray-900">
