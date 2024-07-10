@@ -11,6 +11,9 @@ module.exports = {
     transparent: "transparent",
     current: "currentColor",
     extend: {
+      transitionProperty: {
+        colors: "background-color, border-color, color, fill, stroke",
+      },
       screens: {
         xs: "480px", // Define your custom breakpoint value
       },

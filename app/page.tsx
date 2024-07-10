@@ -1,6 +1,7 @@
 "use client";
 
 import { weeklyProductiveFlow } from "@/app/constant";
+import ActivityIndicator from "@/components/activity";
 import AreaGraph from "@/components/area";
 import { FlowImg } from "@/components/flowicon";
 import MetricComponent from "@/components/metric";
@@ -14,6 +15,7 @@ import {
   sumValues,
 } from "@/lib/utils";
 import { Card, Title } from "@tremor/react";
+import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import RealisticConfettiPreset from "react-canvas-confetti/dist/presets/realistic";
 import {
@@ -34,6 +36,7 @@ export const revalidate = 0;
 export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [flow, setFlow] = useState(0);
+  const controls = useAnimation();
   const [timeLeft, setTimeLeft] = useState(2);
   const [timeLeftState, setTimeLeftState] = useState(0);
   const [error, setError] = useState(false);
@@ -279,6 +282,31 @@ export default function Component() {
     }
   }, [timeLeftState]);
 
+  useEffect(() => {
+    const transitionSettings = {
+      duration: 1, // 1 second duration
+      ease: [0.42, 0, 0.58, 1], // Cubic Bezier curve for ease-in-out
+    };
+
+    // Determine which background to use based on the flow state
+    const determineBackground = () => {
+      if (flow > 2.5) {
+        return "linear-gradient(to top, #dc2626, #111827, #111827)"; // Red gradient
+      } else if (flow > 1.5) {
+        return "linear-gradient(to top, #6d28d9, #111827, #111827)"; // Purple gradient
+      } else if (flow > 0.8334) {
+        return "linear-gradient(to top, #2e7d32, #111827, #111827)"; // Green gradient
+      } else {
+        return "linear-gradient(to top, #111827, #111827, #111827)"; // Default gradient
+      }
+    };
+
+    controls.start({
+      backgroundImage: determineBackground(),
+      transition: transitionSettings,
+    });
+  }, [flow, controls]);
+
   return (
     <div className="flex h-[100dvh] bg-gray-900">
       <div className="h-[100dvh] flex font-sans flex-col flex-1 w-full">
@@ -290,16 +318,10 @@ export default function Component() {
             <div className="border-b w-60 mt-5 border-gray-700 w-full"></div>
           </header>
         </div>
-        <main
-          className={cn(
-            "h-[100dvh] overflow-auto flex-1 bg-gray-100 bg-gray-900",
-            flow > 0.8334 &&
-              "bg-gradient-to-t from-green-800 via-gray-900 to-gray-900",
-            flow > 1.5 &&
-              "bg-gradient-to-t from-purple-800 via-gray-900 to-gray-900",
-            flow > 2.5 &&
-              "bg-gradient-to-t from-red-800 via-gray-900 to-gray-900"
-          )}
+        <motion.main
+          className="h-[100dvh] overflow-auto flex-1"
+          animate={controls}
+          style={{ width: "100%", height: "100vh" }}
         >
           <div className="container mx-auto px-6 py-2">
             {showConfetti && (
@@ -368,11 +390,14 @@ export default function Component() {
                         <p>
                           <a
                             href="https://twitter.com/haseab_"
-                            className={cn("flex text-blue-700", {
-                              "text-green-700": flow > 0.8334,
-                              "text-purple-700": flow > 1.5,
-                              "text-red-700": flow > 2.5,
-                            })}
+                            className={cn(
+                              "flex text-blue-700 transition-colors duration-1000 ease-in-out",
+                              {
+                                "text-green-700": flow > 0.8334,
+                                "text-purple-700": flow > 1.5,
+                                "text-red-700": flow > 2.5,
+                              }
+                            )}
                             target="_blank"
                           >
                             @haseab_
@@ -394,9 +419,12 @@ export default function Component() {
                       <Title>Right Now I&apos;m:</Title>
                       <div className="flex flex-col w-full sm:w-auto sm:flex-row items-center justify-center sm:space-x-5">
                         <div className="flex flex-col border p-2 w-full sm:p-0 sm:border-none rounded-xl border-gray-700 items-center justify-center text-center">
-                          <p
+                          <motion.p
+                            animate={{
+                              scale: [1, 1.1, 1],
+                            }}
                             className={cn(
-                              "flex text-[1.4rem] sm:text-[1.2rem] md:text-[1.75rem] text-blue-500 font-mono",
+                              "flex text-[1.4rem] sm:text-[1.2rem] md:text-[1.75rem] transition-colors duration-1000 ease-in-out text-blue-500 font-mono",
                               {
                                 "text-green-500": flow > 0.8334,
                                 "text-purple-500": flow > 1.5,
@@ -404,15 +432,21 @@ export default function Component() {
                               }
                             )}
                           >
-                            {currentActivity}
-                          </p>
+                            <ActivityIndicator
+                              currentActivity={currentActivity}
+                              flow={flow}
+                            />
+                          </motion.p>
                           <div className="mt-2 text-xl block sm:hidden flex">
                             <p
-                              className={cn("flex text-blue-500 font-mono", {
-                                "text-green-500": flow > 0.8334,
-                                "text-purple-500": flow > 1.5,
-                                "text-red-500": flow > 2.5,
-                              })}
+                              className={cn(
+                                "flex text-blue-500 font-mono transition-colors duration-1000 ease-in-out",
+                                {
+                                  "text-green-500": flow > 0.8334,
+                                  "text-purple-500": flow > 1.5,
+                                  "text-red-500": flow > 2.5,
+                                }
+                              )}
                             >
                               {formatTimeDifference(
                                 new Date(currentActivityStartTime),
@@ -439,7 +473,7 @@ export default function Component() {
                       <div className="hidden sm:block flex">
                         <p
                           className={cn(
-                            "flex text-2xl text-blue-500 font-mono",
+                            "flex text-2xl text-blue-500 font-mono transition-colors duration-1000 ease-in-out",
                             {
                               "text-green-500": flow > 0.8334,
                               "text-purple-500": flow > 1.5,
@@ -608,7 +642,7 @@ export default function Component() {
               </button>
             </div>
           </div>
-        </main>
+        </motion.main>
       </div>
     </div>
   );
