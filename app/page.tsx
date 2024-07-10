@@ -172,7 +172,7 @@ export default function Component() {
         (item, index) => {
           const productiveFlowValue = Object.values(productiveFlowList)[index];
           const totalFlowValue = Object.values(totalFlowList)[index];
-          const date = Object.keys(productiveFlowList)[index];
+          const date = Object.keys(productiveList)[index];
           return {
             ...item,
             date: date.slice(5),
@@ -187,7 +187,7 @@ export default function Component() {
       const newEfficiencyData = efficiencyData.map((item, index) => {
         const productiveTime = Object.values(productiveList)[index];
         const hoursFree = Object.values(hoursFreeList)[index];
-        const date = Object.keys(productiveFlowList)[index];
+        const date = Object.keys(productiveList)[index];
         return {
           ...item,
           date: date.slice(5),
@@ -227,7 +227,7 @@ export default function Component() {
           ...weeklyProductiveFlow,
           {
             week: lastWeek + 1,
-            date: Object.keys(productiveFlowList)[0].slice(5),
+            date: Object.keys(productiveList)[0].slice(5),
             productiveFlow: data.productiveFlow,
             flowPercentage: roundToThree(data.productiveFlow / data.hoursFree),
             movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
