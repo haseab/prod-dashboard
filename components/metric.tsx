@@ -31,7 +31,7 @@ const MetricComponent = ({
         <div className="text-sm inline text-gray-400 w-full">{metric}</div>
         {!isMobile && (
           <Tooltip tooltip={tooltip}>
-            <Info size={15} />
+            <Info size={15} color={"white"} />
           </Tooltip>
         )}
       </div>

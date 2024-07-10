@@ -512,7 +512,7 @@ export default function Component() {
                     />
                   </div>
                 </div>
-                <div className="block lg:hidden text-lg text-center pt-5">
+                <div className="block lg:hidden text-lg text-gray-100 text-center pt-5">
                   <p className="text-2xl">Last 7 Days</p>
                   <p>
                     {startDate} to {endDate}

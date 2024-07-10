@@ -36,7 +36,7 @@ export default function AreaGraph({
         <Title>{title}</Title>
         {!isMobile && (
           <Tooltip tooltip={tooltip}>
-            <Info size={15} />
+            <Info size={15} color={"white"} />
           </Tooltip>
         )}
       </div>
