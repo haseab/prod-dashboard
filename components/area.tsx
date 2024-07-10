@@ -1,10 +1,9 @@
 "use client";
 
-import Tooltip from "@/components/tooltip";
-import { useMobile } from "@/hooks/use-mobile";
 import { ChartData, DailyData, EfficiencyData, MonthlyData } from "@/types";
-import { AreaChart, Card, Title } from "@tremor/react";
-import { Info } from "lucide-react";
+import { AreaChart, Card, Dialog, Title } from "@tremor/react";
+import { Info, XIcon } from "lucide-react";
+import { useState } from "react";
 
 // const valueFormatter = function (number: number) {
 //   return "$ " + new Intl.NumberFormat("us").format(number).toString();
@@ -27,29 +26,53 @@ export default function AreaGraph({
   className?: string;
   tooltip?: string;
 }) {
-  const isMobile = useMobile();
-  // const data = chartData.length === 0 ? efficiencyData : chartData;
+  const [showDialog, setShowDialog] = useState(false);
 
   return (
-    <Card>
-      <div className="flex items-center justify-between space-x-3 ">
-        <Title>{title}</Title>
-        {!isMobile && (
-          <Tooltip tooltip={tooltip}>
+    <>
+      <Card>
+        <div className="flex items-center justify-between space-x-3 ">
+          <Title className="text-[1rem] sm:text-lg">{title}</Title>
+          <button
+            onClick={() => {
+              setShowDialog(true);
+            }}
+          >
             <Info size={15} color={"white"} />
-          </Tooltip>
-        )}
-      </div>
-      <AreaChart
-        className={"h-80 " + className}
-        data={data}
-        index={index}
-        yAxisWidth={30}
-        rotateLabelX={{ angle: 0 }}
-        categories={categories}
-        colors={colors}
-        // valueFormatter={valueFormatter}
-      />
-    </Card>
+          </button>
+        </div>
+        <AreaChart
+          className={"h-80 " + className}
+          data={data}
+          index={index}
+          yAxisWidth={30}
+          rotateLabelX={{ angle: 0 }}
+          categories={categories}
+          colors={colors}
+          // valueFormatter={valueFormatter}
+        />
+      </Card>
+      <Dialog
+        open={showDialog}
+        onClose={() => {
+          setShowDialog(false);
+        }}
+      >
+        <Card className="flex max-w-md">
+          <div>
+            <Title>{title}</Title>
+            <div>{tooltip}</div>
+          </div>
+          <button
+            className="flex justify-start"
+            onClick={() => {
+              setShowDialog(false);
+            }}
+          >
+            <XIcon />
+          </button>
+        </Card>
+      </Dialog>
+    </>
   );
 }
