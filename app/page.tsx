@@ -342,7 +342,7 @@ export default function Component() {
               <Title className="grid col-span-3 w-full gap-6 text-center">
                 Refreshing in {refreshTime - timeLeftRef.current} seconds
               </Title>
-              <div className="hidden lg:block text-lg text-center xs:grid-cols-2 lg:col-span-2">
+              <div className="hidden lg:block text-lg text-gray-100 text-center xs:grid-cols-2 lg:col-span-2">
                 <p>Last 7 Days</p>
               </div>
             </div>
