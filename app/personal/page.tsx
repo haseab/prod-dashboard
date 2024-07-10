@@ -278,7 +278,7 @@ export default function Component() {
         <main
           className={cn(
             "flex-1 bg-gray-900",
-            flow > 0.8 &&
+            flow > 0.8334 &&
               "bg-gradient-to-t from-green-800 via-gray-900 to-gray-900",
             flow > 1.5 &&
               "bg-gradient-to-t from-purple-800 via-gray-900 to-gray-900",
@@ -297,7 +297,7 @@ export default function Component() {
                       ? ["#DC143C", "#B22222", "#CD5C5C", "#E9967A", "#F08080"]
                       : flow > 1.5
                       ? ["#800080", "#8A2BE2", "#4B0082", "#483D8B", "#6A5ACD"]
-                      : flow > 0.8
+                      : flow > 0.8334
                       ? ["#008000", "#228B22", "#32CD32", "#3CB371", "#2E8B57"]
                       : ["#0000FF", "#4169E1", "#6495ED", "#4682B4", "#87CEFA"];
                   return options;
@@ -350,7 +350,7 @@ export default function Component() {
                     ? "red"
                     : flow > 1.5
                     ? "fuchsia"
-                    : flow > 0.8
+                    : flow > 0.8334
                     ? "emerald"
                     : "blue"
                 }
@@ -364,7 +364,7 @@ export default function Component() {
                     ? ["red", "gray"]
                     : flow > 1.5
                     ? ["fuchsia", "slate"]
-                    : flow > 0.8
+                    : flow > 0.8334
                     ? ["emerald", "slate"]
                     : ["blue", "slate"]
                 }
@@ -379,7 +379,7 @@ export default function Component() {
                     ? ["red", "gray"]
                     : flow > 1.5
                     ? ["fuchsia", "slate"]
-                    : flow > 0.8
+                    : flow > 0.8334
                     ? ["emerald", "slate"]
                     : ["blue", "slate"]
                 }
@@ -393,7 +393,7 @@ export default function Component() {
                     ? "red"
                     : flow > 1.5
                     ? "fuchsia"
-                    : flow > 0.8
+                    : flow > 0.8334
                     ? "emerald"
                     : "blue"
                 }
@@ -423,7 +423,7 @@ export default function Component() {
                   ? ["red", "gray"]
                   : flow > 1.5
                   ? ["fuchsia", "slate"]
-                  : flow > 0.8
+                  : flow > 0.8334
                   ? ["emerald", "slate"]
                   : ["blue", "slate"]
               }
@@ -447,7 +447,7 @@ export default function Component() {
                   ? ["red", "gray"]
                   : flow > 1.5
                   ? ["fuchsia", "slate"]
-                  : flow > 0.8
+                  : flow > 0.8334
                   ? ["emerald", "slate"]
                   : ["blue", "slate"]
               }
@@ -471,7 +471,7 @@ export default function Component() {
                   ? ["red", "gray"]
                   : flow > 1.5
                   ? ["fuchsia", "slate"]
-                  : flow > 0.8
+                  : flow > 0.8334
                   ? ["emerald", "slate"]
                   : ["blue", "slate"]
               }

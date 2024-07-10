@@ -182,7 +182,7 @@ export const getColorForPercentage = (
     if (percentage >= 10 && percentage < 40) return "orange";
     if (percentage >= 0 && percentage < 10) return "red";
     if (percentage === -1) return "gray";
-  } else if (flow > 0.8) {
+  } else if (flow > 0.8334) {
     if (percentage >= 95) return "emerald";
     if (percentage >= 80 && percentage < 95) return "green";
     if (percentage >= 60 && percentage < 80) return "yellow";
