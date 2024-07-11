@@ -62,7 +62,7 @@ const MetricComponent = ({
           </Card>
         </Dialog>
       </div>
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center justify-between space-x-2">
         <Metric>
           <Number num={prevScore} newNum={score} setLoading={setLoading} />
         </Metric>
