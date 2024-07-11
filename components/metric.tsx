@@ -46,7 +46,10 @@ const MetricComponent = ({
           <Card className="flex max-w-md">
             <div>
               <Title>{metric}</Title>
-              <div>{tooltip}</div>
+              <div>{tooltip?.split("\n")[0]}</div>
+              <br></br>
+              <Title>Why I track this</Title>
+              <div>{tooltip?.split("\n")[1]}</div>
             </div>
             <button
               className="flex justify-start"

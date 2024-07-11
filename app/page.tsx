@@ -515,7 +515,9 @@ export default function Component() {
                           : ["blue", "slate"]
                       }
                       index={"date"}
-                      tooltip="This graph shows how many of my flow hours were productive. Flow doesn't have to be productive, for instance I could be in a flow state while watching TV."
+                      tooltip={
+                        "This graph shows how many of my flow hours were productive. Flow doesn't have to be productive, for instance I could be in a flow state while watching TV.\nI track this because It's a good visual to show how much of my flow time is productive on each day of the week. I ideally want this to be as close to 100% as possible."
+                      }
                     />
                     <AreaGraph
                       data={efficiencyData}
@@ -531,7 +533,9 @@ export default function Component() {
                           : ["blue", "slate"]
                       }
                       index={"date"}
-                      tooltip="This graph shows the comparison of productive hours to hours of free time I had. Dividing these two numbers gives the Efficiency (%)."
+                      tooltip={
+                        "This graph shows the comparison of productive hours to hours of free time I had. Dividing these two numbers gives the Efficiency (%).\nI track this because it's a good visual to show how much of my free time is productive each day of the week. Allows me to monitor why some days are more productive than others."
+                      }
                     />
                   </div>
                 </div>

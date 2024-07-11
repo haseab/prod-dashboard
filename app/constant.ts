@@ -19,25 +19,25 @@ export const targets = {
 
 export const tooltips = {
   [MetricNames.HOURS_FREE]:
-    "means the total hours in a week that I had freedom to do whatever I wanted (excluding sleep, eating, and other necessities)",
+    "means the total hours in a week that I had freedom to do whatever I wanted (excluding sleep, eating, and other necessities)\nI track this because It gives me clarity on how much free time I have in the week so I notice if I have too much or too little free time relative to my productivity",
   [MetricNames.N1HUT]:
-    "means the total hours in a week that I spent doing a neutral activity for over 50 consecutive minutes (e.g. sleep, eating, etc.)",
+    "means the total hours in a week that I spent doing a neutral activity for over 50 consecutive minutes (e.g. sleep, eating, etc.)\nI track this because it gives me a sense of how much flow I have in neutral tasks",
   [MetricNames.PRODUCTIVITY]:
-    "means the total hours in a week that I did anything that moved me closer to my goals (e.g. startup work, gym, reading books, research, etc.)",
+    "means the total hours in a week that I did anything that moved me closer to my goals (e.g. startup work, gym, reading books, research, etc.)\nI track this because it gives me a sense of how much time I spent on things that move me closer to my goals",
   [MetricNames.EFFICIENCY]:
-    "calculated as productive hours divided by the # hours that I had free to be productive that week",
+    "calculated as productive hours divided by the # hours that I had free to be productive that week\nI track this because it gives me a good understanding early in the week of how much I'm getting done",
   [MetricNames.PRODUCTIVE_FLOW]:
-    "answers the question: how many of those productive hours was I really focused? strictly means the total hours in a week that I spent doing a productive activity for over 50 consecutive minutes",
+    "answers the question: how many of those productive hours was I really focused? strictly means the total hours in a week that I spent doing a productive activity for over 50 consecutive minutes\n I track this because it's a good indicator of how much of my productive time was spent in flow state and not just doing busy work",
   [MetricNames.TOTAL_FLOW]:
-    "means the total hours in a week that I spent on any activity for over 50 consecutive minutes",
+    "means the total hours in a week that I spent on any activity for over 50 consecutive minutes\nI track this because it gives me a good number of how many hours of flow I had in a week, the goal is to have this number be as high as possible at minimum so even if I am unproductive I am at least in flow state doing something unproductive",
   [MetricNames.UNPRODUCTIVE]:
-    "means the total hours in a week that I did unproductive tasks",
+    "means the total hours in a week that I did unproductive tasks\nI track this because it gives me a sense of how much time I spent on things that don't move me closer to my goals",
   [MetricNames.UNPLANNED_TIME]:
-    "means the total hours in a week that I didn't intentionally decide to do. Strictly calculated as the number of hours in my calendar that I didn't explictly put an event for",
+    "means the total hours in a week that I didn't intentionally decide to do. Strictly calculated as the number of hours in my calendar that I didn't explictly put an event for\nI track this because my goal is to have as little unplanned time as possible, i have a theory the less unplanned time you have the less self conflict you have",
   [MetricNames.PRODUCTIVE_FLOW_EFFICIENCY]:
-    "calculated as productive flow hours divided by # hours that I had free to be productive that week",
+    "calculated as productive flow hours divided by # hours that I had free to be productive that week\nI track this because it gives me a good understanding early in the week of how much I'm getting done in a flow state",
   [MetricNames.DISTRACTION_COUNT]:
-    "means the total number of times that I checked my message notifications. Strictly calculated by the number of times I hit a keyboard shortcut to check my messages",
+    "means the total number of times that I checked my message notifications. Strictly calculated by the number of times I hit a keyboard shortcut to check my messages\nI track this because it is a good proxy to understanding how many times I got distracted in a week, the goal is to have this number be as low as possible",
 };
 
 export const weeklyProductiveFlow: HistoricalWeeklyData[] = [
