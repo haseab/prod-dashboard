@@ -21,7 +21,7 @@ export const Arrow = ({
         variants={fadeInOutVariants}
         transition={{ duration: 0.5 }} // duration of fade
         className={cn(
-          "text-2xl text-green-500",
+          "text-xl text-green-500",
           { "rotate-180 text-red-500": !up } // rotate the arrow if it's not up
         )}
       >
