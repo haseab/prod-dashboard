@@ -17,7 +17,6 @@ import {
 import { Card, Title } from "@tremor/react";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import RealisticConfettiPreset from "react-canvas-confetti/dist/presets/realistic";
 import {
   BarData,
   ChartData,
@@ -324,7 +323,7 @@ export default function Component() {
           style={{ width: "100%", height: "100vh" }}
         >
           <div className="container mx-auto px-6 py-2">
-            {showConfetti && (
+            {/* {showConfetti && (
               <RealisticConfettiPreset
                 width={window.innerWidth}
                 // make color of confetti red
@@ -353,7 +352,7 @@ export default function Component() {
               //     transform: "translate(-50%, -50%)",
               //   }}
               // ></img>
-            )}
+            )} */}
             {flow > 1.5 && (
               <>
                 <FlowImg top="16%" left="18%" flow={flow} />
