@@ -1,7 +1,7 @@
 "use client";
 
 import { ChartData, DailyData, EfficiencyData, MonthlyData } from "@/types";
-import { AreaChart, Card, Dialog, Title } from "@tremor/react";
+import { AreaChart, Card, Dialog, Subtitle, Title } from "@tremor/react";
 import { Info, XIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -58,13 +58,13 @@ export default function AreaGraph({
           setShowDialog(false);
         }}
       >
-        <Card className="flex max-w-md">
+        <Card className="flex max-w-md ">
           <div>
             <Title>{title}</Title>
-            <div>{tooltip?.split("\n")[0]}</div>
+            <Subtitle>{tooltip?.split("\n")[0]}</Subtitle>
             <br></br>
             <Title>Why I track this</Title>
-            <div>{tooltip?.split("\n")[1]}</div>
+            <Subtitle>{tooltip?.split("\n")[1]}</Subtitle>
           </div>
           <button
             className="flex justify-start"

@@ -77,9 +77,6 @@ module.exports = {
             strong: "#f9fafb", // gray-50
             inverted: "#000000", // black
           },
-          textColor: {
-            DEFAULT: "#ffffff", // Ensures the default text color is white
-          },
         },
       },
       boxShadow: {
