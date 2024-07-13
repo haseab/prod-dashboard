@@ -1,11 +1,9 @@
-import { revalidateCache } from "@/lib/utils";
 import { unstable_cache } from "next/cache";
 
 export async function GET() {
   try {
-    revalidateCache(["time"]);
+    console.log("about to fetch time data");
     const data = await fetchTimeData();
-
     console.log("returning data", data);
 
     return new Response(JSON.stringify(data), {
