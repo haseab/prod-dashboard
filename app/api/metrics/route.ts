@@ -1,3 +1,4 @@
+import { revalidateCache } from "@/lib/utils";
 import { unstable_cache } from "next/cache";
 
 export async function GET() {
@@ -50,17 +51,17 @@ const fetchTimeData = unstable_cache(
   }
 );
 
-// // Function to revalidate the 'time' tag
-// function startRevalidating() {
-//   setInterval(async () => {
-//     try {
-//       await revalidateCache(["time"]);
-//       console.log("Revalidated time tag");
-//     } catch (error) {
-//       console.error("Error revalidating time tag", error);
-//     }
-//   }, 15000); // Revalidate every 30 seconds
-// }
+// Function to revalidate the 'time' tag
+function startRevalidating() {
+  setInterval(async () => {
+    try {
+      await revalidateCache(["time"]);
+      console.log("Revalidated time tag");
+    } catch (error) {
+      console.error("Error revalidating time tag", error);
+    }
+  }, 15000); // Revalidate every 30 seconds
+}
 
-// // Start the revalidation process
-// startRevalidating();
+// Start the revalidation process
+startRevalidating();
