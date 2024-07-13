@@ -96,16 +96,13 @@ export default function Component() {
       setShowConfetti(true);
     }, 2000);
 
+    const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`;
+
     try {
       console.log("fetching data from server ...");
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`,
-        {
-          next: {
-            revalidate: 0,
-          },
-        }
-      );
+      console.log("GET ", url);
+
+      const response = await fetch(url);
 
       const result = await response.json();
       const unprocessedData = result.data as MetricsResponse;
