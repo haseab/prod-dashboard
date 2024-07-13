@@ -159,6 +159,28 @@ export const getNewMetricsData = ({
   });
 };
 
+export const revalidateCache = async (tags: string[]) => {
+  const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/revalidate`;
+  console.log("REVALIDATING TAGS", tags, "AT", url);
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tags,
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+  } catch (e) {
+    console.log("Error revalidating tags: ", e);
+    throw new Error(`Error revalidating tags: ${e}`);
+  }
+};
+
 export const sumValues = (obj: Record<string, number>) =>
   Object.values(obj).reduce((a, b) => a + b, 0);
 
