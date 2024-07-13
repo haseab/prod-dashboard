@@ -15,7 +15,6 @@ import {
   sumValues,
 } from "@/lib/utils";
 import { Card, Title } from "@tremor/react";
-import axios from "axios";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -102,9 +101,9 @@ export default function Component() {
       console.log("fetching data from server ...");
       console.log("GET ", url);
 
-      const response = await axios.get(url);
+      const response = await fetch(url);
 
-      const result = response.data;
+      const result = await response.json();
       const unprocessedData = result.data as MetricsResponse;
 
       const {

@@ -1,5 +1,4 @@
 import { revalidateCache } from "@/lib/utils";
-import { unstable_cache } from "next/cache";
 
 export async function GET() {
   try {
@@ -17,39 +16,38 @@ export async function GET() {
   }
 }
 
-const fetchTimeData = unstable_cache(
-  async () => {
-    try {
-      const response = await fetch(`${process.env.SERVER_URL}/metrics`, {
-        headers: {
-          "cache-control": "no-store",
-        },
-      });
+const fetchTimeData = async () => {
+  try {
+    const response = await fetch(`${process.env.SERVER_URL}/metrics`, {
+      headers: {
+        "cache-control": "no-store",
+      },
+    });
 
-      // Check for network errors
-      if (!response.ok) {
-        throw new Error(`Fetch error: ${response.statusText}`);
-      }
-
-      console.log("response", response);
-
-      if (!response.ok) {
-        throw new Error(`An error occurred: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      return data;
-    } catch (error) {
-      console.error("FetchTimeData error:", error);
-      throw error;
+    // Check for network errors
+    if (!response.ok) {
+      throw new Error(`Fetch error: ${response.statusText}`);
     }
-  },
-  ["time"],
-  {
-    tags: ["time"],
+
+    console.log("response", response);
+
+    if (!response.ok) {
+      throw new Error(`An error occurred: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("FetchTimeData error:", error);
+    throw error;
   }
-);
+};
+//   ["time"],
+//   {
+//     tags: ["time"],
+//   }
+// );
 
 // Function to revalidate the 'time' tag
 function startRevalidating() {
