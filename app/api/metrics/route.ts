@@ -1,4 +1,4 @@
-import { revalidateCache } from "@/lib/utils";
+export const revalidate = 15;
 
 export async function GET() {
   try {
@@ -18,11 +18,7 @@ export async function GET() {
 
 const fetchTimeData = async () => {
   try {
-    const response = await fetch(`${process.env.SERVER_URL}/metrics`, {
-      headers: {
-        "cache-control": "no-store",
-      },
-    });
+    const response = await fetch(`${process.env.SERVER_URL}/metrics`);
 
     // Check for network errors
     if (!response.ok) {
@@ -49,17 +45,17 @@ const fetchTimeData = async () => {
 //   }
 // );
 
-// Function to revalidate the 'time' tag
-function startRevalidating() {
-  setInterval(async () => {
-    try {
-      await revalidateCache(["time"]);
-      console.log("Revalidated time tag");
-    } catch (error) {
-      console.error("Error revalidating time tag", error);
-    }
-  }, 15000); // Revalidate every 30 seconds
-}
+// // Function to revalidate the 'time' tag
+// function startRevalidating() {
+//   setInterval(async () => {
+//     try {
+//       await revalidateCache(["time"]);
+//       console.log("Revalidated time tag");
+//     } catch (error) {
+//       console.error("Error revalidating time tag", error);
+//     }
+//   }, 15000); // Revalidate every 30 seconds
+// }
 
-// Start the revalidation process
-startRevalidating();
+// // Start the revalidation process
+// startRevalidating();

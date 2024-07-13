@@ -16,6 +16,7 @@ import {
 } from "@/lib/utils";
 import { Card, Title } from "@tremor/react";
 import { motion, useAnimation } from "framer-motion";
+import { unstable_noStore } from "next/cache";
 import { useEffect, useRef, useState } from "react";
 import {
   BarData,
@@ -101,6 +102,7 @@ export default function Component() {
       console.log("fetching data from server ...");
       console.log("GET ", url);
 
+      unstable_noStore();
       const response = await fetch(url);
 
       const result = await response.json();
