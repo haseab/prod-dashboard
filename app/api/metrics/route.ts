@@ -7,7 +7,6 @@ export async function GET() {
   try {
     console.log("about to fetch time data");
     const data = await fetchTimeData();
-    console.log("returning data", data);
 
     return new Response(JSON.stringify(data), {
       headers: { "content-type": "application/json" },
