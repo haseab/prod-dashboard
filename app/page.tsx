@@ -99,7 +99,12 @@ export default function Component() {
     try {
       console.log("fetching data from server ...");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`,
+        {
+          next: {
+            revalidate: 0,
+          },
+        }
       );
 
       const result = await response.json();

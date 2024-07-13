@@ -61,7 +61,7 @@ function startRevalidating() {
     } catch (error) {
       console.error("Error revalidating time tag", error);
     }
-  }, 30000); // Revalidate every 30 seconds
+  }, 15000); // Revalidate every 30 seconds
 }
 
 // Start the revalidation process
