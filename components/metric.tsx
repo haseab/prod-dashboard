@@ -1,6 +1,14 @@
 "use client";
 import { TremorColors } from "@/types";
-import { Card, Dialog, Flex, Metric, ProgressBar, Title } from "@tremor/react";
+import {
+  Card,
+  Dialog,
+  Flex,
+  Metric,
+  ProgressBar,
+  Subtitle,
+  Title,
+} from "@tremor/react";
 import { Info, XIcon } from "lucide-react";
 import { useState } from "react";
 import Arrow from "./arrow";
@@ -46,10 +54,10 @@ const MetricComponent = ({
           <Card className="flex max-w-md">
             <div>
               <Title>{metric}</Title>
-              <div>{tooltip?.split("\n")[0]}</div>
+              <Subtitle>{tooltip?.split("\n")[0]}</Subtitle>
               <br></br>
               <Title>Why I track this</Title>
-              <div>{tooltip?.split("\n")[1]}</div>
+              <Subtitle>{tooltip?.split("\n")[1]}</Subtitle>
             </div>
             <button
               className="flex justify-start"
