@@ -65,7 +65,7 @@ const MetricComponent = ({
                 setShowDialog(false);
               }}
             >
-              <XIcon />
+              <XIcon color={"white"} />
             </button>
           </Card>
         </Dialog>

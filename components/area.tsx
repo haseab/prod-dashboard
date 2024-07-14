@@ -72,7 +72,7 @@ export default function AreaGraph({
               setShowDialog(false);
             }}
           >
-            <XIcon />
+            <XIcon color={"white"} />
           </button>
         </Card>
       </Dialog>
