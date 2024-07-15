@@ -677,7 +677,8 @@ export default function Component() {
                     <strong>Today:</strong> time tracking allows me to have
                     calculate my productive flow time, which I&apos;m currently
                     maximizing for, and my unplanned time, which I&apos;m
-                    currently minimizing for.
+                    currently minimizing for. Both of these will get me to my
+                    goals.
                   </Subtitle>
                   <br></br>
                   <Link
