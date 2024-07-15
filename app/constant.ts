@@ -125,6 +125,7 @@ export const weeklyProductiveFlow: HistoricalWeeklyData[] = [
   { week: 77, date: "06-17", productiveFlow: 46.202, flowPercentage: 0.53428 },
   { week: 78, date: "06-24", productiveFlow: 53.496, flowPercentage: 0.59195 },
   { week: 79, date: "07-01", productiveFlow: 60.421, flowPercentage: 0.63102 },
+  { week: 80, date: "07-08", productiveFlow: 51.102, flowPercentage: 0.5486 },
 ];
 
 export const dailyProductiveFlow: HistoricalDailyData[] = [
