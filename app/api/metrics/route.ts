@@ -3,10 +3,15 @@ import { unstable_cache } from "next/cache";
 
 export const revalidate = 15;
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     console.log("about to fetch time data");
-    const data = await fetchTimeData();
+
+    const url = new URL(request.url);
+    const startDate = url.searchParams.get("startDate");
+    const endDate = url.searchParams.get("endDate");
+
+    const data = await fetchTimeData({ startDate, endDate });
 
     return new Response(JSON.stringify(data), {
       headers: { "content-type": "application/json" },
@@ -19,9 +24,22 @@ export async function GET() {
 }
 
 const fetchTimeData = unstable_cache(
-  async () => {
+  async ({
+    startDate,
+    endDate,
+  }: {
+    startDate: string | null;
+    endDate: string | null;
+  }) => {
     try {
-      const response = await fetch(`${process.env.SERVER_URL}/metrics`);
+      let response;
+      if (!startDate || !endDate) {
+        response = await fetch(`${process.env.SERVER_URL}/metrics`);
+      } else {
+        response = await fetch(
+          `${process.env.SERVER_URL}/metricsdate?startDate=${startDate}&endDate=${endDate}`
+        );
+      }
 
       // Check for network errors
       if (!response.ok) {

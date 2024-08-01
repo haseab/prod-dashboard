@@ -95,10 +95,6 @@ export default function Component() {
   const [currentActivityStartTime, setCurrentActivityStartTime] = useState("");
 
   const fetchData = async () => {
-    await setTimeout(() => {
-      setShowConfetti(true);
-    }, 2000);
-
     const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`;
 
     try {
