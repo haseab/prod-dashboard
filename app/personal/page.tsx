@@ -6,6 +6,7 @@ import { FlowImg } from "@/components/flowicon";
 import MetricComponent from "@/components/metric";
 import { cn, getNewMetricsData, sumValues } from "@/lib/utils";
 import { Title } from "@tremor/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import RealisticConfettiPreset from "react-canvas-confetti/dist/presets/realistic";
 
@@ -25,11 +26,20 @@ import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 const refreshTime = 30;
 const pollingInterval = 1000;
 
-export default function Component() {
+export default function Component({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const [showConfetti, setShowConfetti] = useState(false);
   const [flow, setFlow] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(refreshTime);
   const [error, setError] = useState(false);
+  const [startDate, setStartDate] = useState(
+    (searchParams.startDate as string) || new Date().toISOString().split("T")[0]
+  );
+  const [endDate, setEndDate] = useState(
+    (searchParams.endDate as string) || new Date().toISOString().split("T")[0]
+  );
   const timeLeftRef = useRef(0);
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
     weekdays.map((day) => ({
@@ -75,13 +85,11 @@ export default function Component() {
 
   const [weeklyProductiveFlowData, setWeeklyProductiveFlowData] =
     useState<MonthlyData[]>(weeklyProductiveFlow);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [showOnlyMA, setShowOnlyMA] = useState(false);
   const [showOnlyRaw, setShowOnlyRaw] = useState(false);
   const [timeLeftState, setTimeLeftState] = useState(0);
 
-  const [currentActivity, setCurrentActivity] = useState("Loading ...");
+  const router = useRouter();
 
   const fetchData = async (startDate: string, endDate: string) => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics?startDate=${startDate}&endDate=${endDate}`;
@@ -109,10 +117,8 @@ export default function Component() {
         flow,
         startDate,
         endDate,
-        currentActivity,
       } = unprocessedData;
 
-      setCurrentActivity(currentActivity);
       setFlow(flow);
       setStartDate(startDate);
       setEndDate(endDate);
@@ -291,7 +297,9 @@ export default function Component() {
                   .split("T")[0];
                 console.log("start date: ", newStartDate);
                 console.log("end date: ", endStartDate);
-                fetchData(newStartDate, endStartDate);
+                router.push(
+                  `${process.env.NEXT_PUBLIC_SITE_URL}/personal?startDate=${newStartDate}&endDate=${endStartDate}`
+                );
               }}
             >
               <ArrowLeftIcon className="h-6 w-6 text-gray-200" />
@@ -316,7 +324,9 @@ export default function Component() {
                   .split("T")[0];
                 console.log("start date: ", newStartDate);
                 console.log("end date: ", endStartDate);
-                fetchData(newStartDate, endStartDate);
+                router.push(
+                  `${process.env.NEXT_PUBLIC_SITE_URL}/personal?startDate=${newStartDate}&endDate=${endStartDate}`
+                );
               }}
             >
               <ArrowRightIcon className="h-6 w-6 text-gray-200" />
