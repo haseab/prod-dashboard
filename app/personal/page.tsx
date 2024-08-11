@@ -272,7 +272,7 @@ export default function Component({
         setError(true);
       }
     }
-  }, [timeLeftState]);
+  }, [timeLeftState, startDate, endDate]);
 
   return (
     <div className="flex bg-gray-900">
@@ -297,8 +297,11 @@ export default function Component({
                   .split("T")[0];
                 console.log("start date: ", newStartDate);
                 console.log("end date: ", endStartDate);
+                setStartDate(newStartDate);
+                setEndDate(endStartDate);
+                setTimeLeftState(0);
                 router.push(
-                  `${process.env.NEXT_PUBLIC_SITE_URL}/personal?startDate=${newStartDate}&endDate=${endStartDate}`
+                  `/personal?startDate=${newStartDate}&endDate=${endStartDate}`
                 );
               }}
             >
@@ -324,8 +327,11 @@ export default function Component({
                   .split("T")[0];
                 console.log("start date: ", newStartDate);
                 console.log("end date: ", endStartDate);
+                setStartDate(newStartDate);
+                setEndDate(endStartDate);
+                setTimeLeftState(0);
                 router.push(
-                  `${process.env.NEXT_PUBLIC_SITE_URL}/personal?startDate=${newStartDate}&endDate=${endStartDate}`
+                  `/personal?startDate=${newStartDate}&endDate=${endStartDate}`
                 );
               }}
             >
