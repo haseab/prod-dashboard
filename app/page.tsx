@@ -32,6 +32,10 @@ import {
 
 const refreshTime = 30;
 const pollingInterval = 1000;
+const staleDataInterval = 30000; // 30 seconds
+const SERVER_ERROR_MESSAGE = "Server error: trying again in 30 seconds...";
+const STALE_DATA_ERROR_MESSAGE =
+  "Data has not been updated for over 30 seconds.";
 
 export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
@@ -39,8 +43,9 @@ export default function Component() {
   const controls = useAnimation();
   const [timeLeft, setTimeLeft] = useState(2);
   const [timeLeftState, setTimeLeftState] = useState(0);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const timeLeftRef = useRef(0);
+  const lastFetchTimeRef = useRef(Date.now());
   const [showDialog, setShowDialog] = useState(false);
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
     weekdays.map((day) => ({
@@ -242,10 +247,12 @@ export default function Component() {
           },
         ].slice(weeklyInterval)
       );
+
+      lastFetchTimeRef.current = Date.now(); // Update the last fetch time here
     } catch (err: any) {
       console.log("returning error");
       console.log(err);
-      setError(true);
+      setError(SERVER_ERROR_MESSAGE);
     } finally {
       await setTimeout(() => {
         setShowConfetti(false);
@@ -257,11 +264,15 @@ export default function Component() {
     const interval = setInterval(() => {
       timeLeftRef.current += 1; // Update ref
       setTimeLeftState(timeLeftRef.current); // Update state to trigger re-render
-      // console.log("Time left: ", refreshTime - timeLeftRef.current);
 
       if (timeLeftRef.current >= refreshTime) {
         timeLeftRef.current = 0;
         setTimeLeftState(0); // Reset the timer and state
+      }
+
+      // Check if the data is stale
+      if (Date.now() - lastFetchTimeRef.current > staleDataInterval) {
+        setError(STALE_DATA_ERROR_MESSAGE);
       }
     }, pollingInterval);
 
@@ -274,10 +285,10 @@ export default function Component() {
     if (timeLeftState === refreshTime || timeLeftState === 0) {
       try {
         fetchData();
-        setError(false);
+        setError("");
       } catch (err) {
         console.error("Returning error!", err);
-        setError(true);
+        setError(SERVER_ERROR_MESSAGE);
       }
     }
   }, [timeLeftState]);
@@ -324,36 +335,6 @@ export default function Component() {
           style={{ width: "100%", height: "100vh" }}
         >
           <div className="container mx-auto px-6 py-2">
-            {/* {showConfetti && (
-              <RealisticConfettiPreset
-                width={window.innerWidth}
-                // make color of confetti red
-                decorateOptions={(options) => {
-                  options.colors =
-                    flow > 2.5
-                      ? ["#DC143C", "#B22222", "#CD5C5C", "#E9967A", "#F08080"]
-                      : flow > 1.5
-                      ? ["#800080", "#8A2BE2", "#4B0082", "#483D8B", "#6A5ACD"]
-                      : flow > 0.8334
-                      ? ["#008000", "#228B22", "#32CD32", "#3CB371", "#2E8B57"]
-                      : ["#0000FF", "#4169E1", "#6495ED", "#4682B4", "#87CEFA"];
-                  return options;
-                }}
-                autorun={{ speed: 1, duration: 500 }}
-              ></RealisticConfettiPreset>
-              // <img
-              //   src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/confetti-transparent.gif"
-              //   alt="Loading..."
-              //   className="gifPosition"
-              //   style={{
-              //     position: "absolute",
-              //     top: "50%",
-              //     left: "50%",
-              //     zIndex: 100,
-              //     transform: "translate(-50%, -50%)",
-              //   }}
-              // ></img>
-            )} */}
             {flow > 1.5 && (
               <>
                 <FlowImg top="16%" left="18%" flow={flow} />
@@ -373,7 +354,7 @@ export default function Component() {
             </div>
             {error && (
               <span className="grid gap-6 text-center text-red-700">
-                Server error: trying again in 30 seconds...
+                {error}
               </span>
             )}
             <div className="grid md:grid-cols-1 lg:grid-cols-5">
@@ -403,13 +384,6 @@ export default function Component() {
                             @haseab_
                           </a>
                         </p>
-                        {/* <a
-                          href="https://tracker.haseab.workers.dev/?button=seeMore&campaign=timetracking.live&project=haseab-personal&redirect=https%3A%2F%2Fhaseab.com%2F"
-                          className="text-blue-500"
-                          target="_blank"
-                        >
-                          haseab.com
-                        </a> */}
                       </div>
                     </div>
                     <div className="flex items-center justify-center">
@@ -473,29 +447,6 @@ export default function Component() {
                           )}
                         </p>
                       </div>
-                      {/* <p className="order-first pb-2 sm:order-none text-gray-600 text-sm">
-                        Local Time:{" "}
-                        {formatToCurrentTimezone(
-                          new Date(),
-                          // "Canada/Eastern"
-                          "America/Los_Angeles"
-                        )}
-                      </p> */}
-                      {/* {flow > 2.5 ? (
-                        <p className="text-red-500 text-sm text-center">
-                          Currently in a flow state for over 2.5 hours
-                        </p>
-                      ) : flow > 1.5 ? (
-                        <p className="text-purple-500 text-sm text-center">
-                          Currently in a flow state for over 1.5 hours
-                        </p>
-                      ) : flow > 0.8334 ? (
-                        <p className="text-green-500 text-sm text-center">
-                          Currently in a flow state for about 1 hour
-                        </p>
-                      ) : (
-                        <></>
-                      )} */}
                     </div>
                   </Card>
                 </div>
@@ -566,12 +517,6 @@ export default function Component() {
             <br></br>
 
             <div className="p-5 hidden opacity-0 xs:block xs:opacity-100">
-              {/* <Title className="grid gap-6 mb-8 text-center">
-                {flow < 0.8334 &&
-                  `${roundToThree(
-                    (0.8334 - flow) * 60
-                  )} min until task is classified as flow`}
-              </Title> */}
               <br></br>
               <AreaGraph
                 data={weeklyProductiveFlowData}
