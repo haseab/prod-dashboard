@@ -6,6 +6,7 @@ import AreaGraph from "@/components/area";
 import { FlowImg } from "@/components/flowicon";
 import MetricComponent from "@/components/metric";
 import PingDot from "@/components/ping-dot";
+import { WhyITrackTimeDialog } from "@/components/whyitracktime";
 import {
   cn,
   formatTimeDifference,
@@ -14,11 +15,9 @@ import {
   simpleMovingAverage,
   sumValues,
 } from "@/lib/utils";
-import { Card, Dialog, Subtitle, Title } from "@tremor/react";
+import { Card, Title } from "@tremor/react";
 import { motion, useAnimation } from "framer-motion";
-import { XIcon } from "lucide-react";
 import { unstable_noStore } from "next/cache";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
   BarData,
@@ -628,80 +627,7 @@ export default function Component() {
               </div>
             </div>
 
-            <div className="p-5 flex items-center justify-center">
-              <button
-                className={cn(
-                  " bg-blue-800 w-15 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
-                  {
-                    "bg-green-700  border-green-400 border-2": flow > 0.8334,
-                    "bg-purple-700 border-purple-400 border-2": flow > 1.5,
-                    "bg-red-700 border-red-400 border-2": flow > 2.5,
-                  }
-                )}
-                onClick={() => {
-                  setShowDialog(true);
-                }}
-              >
-                See why I track my time
-              </button>
-            </div>
-
-            <Dialog
-              open={showDialog}
-              onClose={() => {
-                setShowDialog(false);
-              }}
-            >
-              <Card className="flex max-w-md ">
-                <div>
-                  <Title>Why I track my time?</Title>
-                  <br></br>
-                  <Subtitle>
-                    <strong>July 16, 2018: </strong>I was playing video games
-                    all day and then one day I realized that I wasn&apos;t able
-                    to recall anything I did in the last 2 months, I found that
-                    extremely unacceptable since I felt like my life was moving
-                    extremely fast. I started tracking my time because of that
-                  </Subtitle>
-                  <br></br>
-                  <Subtitle>
-                    this constant feedback feels like a sixth sense and reduces
-                    the original anxiety I had.
-                  </Subtitle>
-                  <Subtitle>
-                    <br></br>
-                    <strong>Today:</strong> time tracking allows me to have
-                    calculate my productive flow time, which I&apos;m currently
-                    maximizing for, and my unplanned time, which I&apos;m
-                    currently minimizing for. Both of these will get me to my
-                    goals.
-                  </Subtitle>
-                  <br></br>
-                  <Link
-                    href="https://tracker.haseab.workers.dev/?button=seeMore&campaign=timetracking.live&project=haseab-personal&redirect=https%3A%2F%2Fhaseab.com%2F"
-                    target="_blank"
-                    className={cn(
-                      "bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded border-gray-700",
-                      {
-                        "bg-green-700": flow > 0.8334,
-                        "bg-purple-700": flow > 1.5,
-                        "bg-red-700": flow > 2.5,
-                      }
-                    )}
-                  >
-                    See more about me
-                  </Link>
-                </div>
-                <button
-                  className="flex justify-start"
-                  onClick={() => {
-                    setShowDialog(false);
-                  }}
-                >
-                  <XIcon color={"white"} />
-                </button>
-              </Card>
-            </Dialog>
+            <WhyITrackTimeDialog flow={flow} />
           </div>
         </motion.main>
       </div>
