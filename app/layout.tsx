@@ -53,7 +53,6 @@ export default function RootLayout({
         <link rel="canonical" href="https://timetracking.live" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      ;
       <body className={inter.className}>
         <PHProvider>{children}</PHProvider>
       </body>
