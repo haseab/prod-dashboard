@@ -1,20 +1,11 @@
+import prisma from "@/app/lib/prisma";
+import { updatePileDb } from "@/app/lib/server-utils";
 import { revalidateCache } from "@/lib/utils";
 import { pile_history } from "@prisma/client";
 import { unstable_cache } from "next/cache";
-import prisma from "../../lib/prisma";
 
 let prevTaskPileNumber = 0;
 let count = 0;
-
-export const updatePileDb = async (num: number) => {
-  console.log("ABOUT TO UPDATE THE DB! WITH THE FOLLOWING PILE NUMBER: ", num);
-  return await prisma.pile_history.create({
-    data: {
-      amount: num,
-      createdAt: new Date(),
-    },
-  });
-};
 
 export const revalidate = 15;
 
