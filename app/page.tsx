@@ -15,6 +15,7 @@ import {
   simpleMovingAverage,
   sumValues,
 } from "@/lib/utils";
+import { pile_history } from "@prisma/client";
 import { Card, Title } from "@tremor/react";
 import { motion, useAnimation } from "framer-motion";
 import { unstable_noStore } from "next/cache";
@@ -96,6 +97,7 @@ export default function Component() {
   const [showOnlyRaw, setShowOnlyRaw] = useState(false);
   const [currentActivity, setCurrentActivity] = useState("Loading ...");
   const [currentActivityStartTime, setCurrentActivityStartTime] = useState("");
+  const [pileHistory, setPileHistory] = useState<pile_history[]>([]);
 
   const fetchData = async () => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`;
@@ -123,12 +125,15 @@ export default function Component() {
         efficiencyList,
         productiveList,
         flow,
+        taskPile,
         startDate,
         endDate,
         currentActivity,
         currentActivityStartTime,
+        pileHistory,
       } = unprocessedData;
 
+      setPileHistory(pileHistory || []);
       setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
       setStartDate(startDate);
       setEndDate(endDate);
@@ -258,6 +263,19 @@ export default function Component() {
       }, 5000);
     }
   };
+
+  // useEffect(() => {
+  //   // if taskPileNumber has changed, show confetti
+  //   const triggerDbCall = async () => {
+  //     console.log("taskPileNumber", taskPileNumber);
+  //     console.log("prevTaskPileNumber", prevTaskPileNumber);
+  //     if (taskPileNumber !== prevTaskPileNumber && prevTaskPileNumber !== 0) {
+  //       await updatePileDb(taskPileNumber);
+  //     }
+  //   };
+
+  //   triggerDbCall();
+  // }, [taskPileNumber, prevTaskPileNumber]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -515,7 +533,7 @@ export default function Component() {
 
             <br></br>
 
-            <div className="p-5 hidden opacity-0 xs:block xs:opacity-100">
+            <div className="p-5 space-y-8 hidden opacity-0 xs:block xs:opacity-100">
               <br></br>
               <AreaGraph
                 data={weeklyProductiveFlowData}
@@ -540,6 +558,24 @@ export default function Component() {
                     : ["blue", "slate"]
                 }
                 index={"date"}
+              />
+              <AreaGraph
+                data={pileHistory}
+                className="h-[40vh]"
+                title={"Task pile for the next month (h)"}
+                categories={["amount"]}
+                colors={
+                  showOnlyMA
+                    ? ["slate"]
+                    : flow > 2.5
+                    ? ["red", "gray"]
+                    : flow > 1.5
+                    ? ["fuchsia", "slate"]
+                    : flow > 0.8334
+                    ? ["emerald", "slate"]
+                    : ["blue", "slate"]
+                }
+                index={"createdAt"}
               />
               <div className="mt-8 flex items-center justify-center space-x-4">
                 <button

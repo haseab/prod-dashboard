@@ -1,13 +1,10 @@
 "use client";
 
 import { ChartData, DailyData, EfficiencyData, MonthlyData } from "@/types";
+import { pile_history } from "@prisma/client";
 import { AreaChart, Card, Dialog, Subtitle, Title } from "@tremor/react";
 import { Info, XIcon } from "lucide-react";
 import { useState } from "react";
-
-// const valueFormatter = function (number: number) {
-//   return "$ " + new Intl.NumberFormat("us").format(number).toString();
-// };
 
 export default function AreaGraph({
   data = [],
@@ -18,7 +15,12 @@ export default function AreaGraph({
   className,
   tooltip,
 }: {
-  data?: ChartData[] | EfficiencyData[] | MonthlyData[] | DailyData[];
+  data?:
+    | ChartData[]
+    | EfficiencyData[]
+    | MonthlyData[]
+    | DailyData[]
+    | pile_history[];
   title: string;
   categories: string[]; // Define the type for categories
   colors: string[];

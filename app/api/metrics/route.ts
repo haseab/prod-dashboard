@@ -1,5 +1,20 @@
 import { revalidateCache } from "@/lib/utils";
+import { pile_history } from "@prisma/client";
 import { unstable_cache } from "next/cache";
+import prisma from "../../lib/prisma";
+
+let prevTaskPileNumber = 0;
+let count = 0;
+
+export const updatePileDb = async (num: number) => {
+  console.log("ABOUT TO UPDATE THE DB! WITH THE FOLLOWING PILE NUMBER: ", num);
+  return await prisma.pile_history.create({
+    data: {
+      amount: num,
+      createdAt: new Date(),
+    },
+  });
+};
 
 export const revalidate = 15;
 
@@ -13,9 +28,52 @@ export async function GET(request: Request) {
 
     const data = await fetchTimeData({ startDate, endDate });
 
-    return new Response(JSON.stringify(data), {
-      headers: { "content-type": "application/json" },
-    });
+    const { taskPile } = data.data;
+
+    console.log("prevTaskPileNumber", prevTaskPileNumber);
+    console.log("taskPile", taskPile);
+    console.log("count", count);
+
+    let pileHistory: pile_history[] = [];
+
+    if (
+      taskPile &&
+      taskPile !== prevTaskPileNumber &&
+      prevTaskPileNumber !== 0 &&
+      count === 120
+    ) {
+      await updatePileDb(taskPile);
+
+      pileHistory = await prisma.pile_history.findMany({
+        where: {
+          createdAt: {
+            gte: new Date(startDate as string),
+            lte: new Date(endDate as string),
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    }
+
+    console.log("pileHistory");
+    console.log(pileHistory);
+
+    prevTaskPileNumber = taskPile;
+    count++;
+
+    return new Response(
+      JSON.stringify({
+        data: {
+          ...data.data,
+          pileHistory,
+        },
+      }),
+      {
+        headers: { "content-type": "application/json" },
+      }
+    );
   } catch (error) {
     console.log("returning server error");
     console.error(error);
@@ -33,6 +91,7 @@ const fetchTimeData = unstable_cache(
   }) => {
     try {
       let response;
+
       if (!startDate || !endDate) {
         response = await fetch(`${process.env.SERVER_URL}/metrics`);
       } else {
