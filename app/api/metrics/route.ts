@@ -34,19 +34,19 @@ export async function GET(request: Request) {
       count === 120
     ) {
       await updatePileDb(taskPile);
-
-      pileHistory = await prisma.pile_history.findMany({
-        where: {
-          createdAt: {
-            gte: new Date(startDate as string),
-            lte: new Date(endDate as string),
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
     }
+
+    pileHistory = await prisma.pile_history.findMany({
+      // where: {
+      //   createdAt: {
+      //     gte: new Date(startDate as string),
+      //     lte: new Date(endDate as string),
+      //   },
+      // },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
     console.log("pileHistory");
     console.log(pileHistory);

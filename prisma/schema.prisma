@@ -8,10 +8,11 @@ datasource db {
 }
 
 model pile_history {
-  id         BigInt   @id @default(autoincrement())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @db.Timestamptz(6)
-  amount     Float
+  amount    Float
 }
+
 
 model keyboard_shortcuts {
   id                Int      @id @default(autoincrement())

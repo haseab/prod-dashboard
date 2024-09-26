@@ -560,10 +560,14 @@ export default function Component() {
                 index={"date"}
               />
               <AreaGraph
-                data={pileHistory}
+                data={pileHistory.map((item) => ({
+                  day: item.id,
+                  value: item.amount,
+                  date: item.createdAt,
+                }))}
                 className="h-[40vh]"
                 title={"Task pile for the next month (h)"}
-                categories={["amount"]}
+                categories={["value"]}
                 colors={
                   showOnlyMA
                     ? ["slate"]
@@ -575,7 +579,7 @@ export default function Component() {
                     ? ["emerald", "slate"]
                     : ["blue", "slate"]
                 }
-                index={"createdAt"}
+                index={"date"}
               />
               <div className="mt-8 flex items-center justify-center space-x-4">
                 <button

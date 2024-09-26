@@ -1,7 +1,6 @@
 "use client";
 
 import { ChartData, DailyData, EfficiencyData, MonthlyData } from "@/types";
-import { pile_history } from "@prisma/client";
 import { AreaChart, Card, Dialog, Subtitle, Title } from "@tremor/react";
 import { Info, XIcon } from "lucide-react";
 import { useState } from "react";
@@ -20,7 +19,7 @@ export default function AreaGraph({
     | EfficiencyData[]
     | MonthlyData[]
     | DailyData[]
-    | pile_history[];
+    | Record<any, any>[];
   title: string;
   categories: string[]; // Define the type for categories
   colors: string[];
