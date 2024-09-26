@@ -89,7 +89,7 @@ export declare interface MetricsResponse {
   currentActivityStartTime: string;
   currentActivity: string;
   taskPile: number;
-  pileHistory: pile_history[] | null;
+  pileHistory: pile_history[];
   // efficiencyList: (presumably an array of numbers or a specific object structure)
 }
 

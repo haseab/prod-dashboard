@@ -11,6 +11,7 @@ export const revalidate = 15;
 
 export async function GET(request: Request) {
   try {
+    console.log("-----------------------");
     console.log("about to fetch time data");
 
     const url = new URL(request.url);
@@ -27,14 +28,20 @@ export async function GET(request: Request) {
 
     let pileHistory: pile_history[] = [];
 
-    if (
-      taskPile &&
-      taskPile !== prevTaskPileNumber &&
-      prevTaskPileNumber !== 0 &&
-      count === 120
-    ) {
-      await updatePileDb(taskPile);
+    if (count > 120 || count === 0) {
+      if (
+        taskPile &&
+        taskPile !== prevTaskPileNumber &&
+        prevTaskPileNumber !== 0
+      ) {
+        console.log("time to update db");
+        await updatePileDb(taskPile);
+      }
+      prevTaskPileNumber = taskPile;
+      count = 0;
     }
+
+    count++;
 
     pileHistory = await prisma.pile_history.findMany({
       // where: {
@@ -44,15 +51,12 @@ export async function GET(request: Request) {
       //   },
       // },
       orderBy: {
-        createdAt: "desc",
+        createdAt: "asc",
       },
     });
 
     console.log("pileHistory");
-    console.log(pileHistory);
-
-    prevTaskPileNumber = taskPile;
-    count++;
+    console.log(pileHistory.slice(pileHistory.length - 1));
 
     return new Response(
       JSON.stringify({
@@ -95,8 +99,6 @@ const fetchTimeData = unstable_cache(
       if (!response.ok) {
         throw new Error(`Fetch error: ${response.statusText}`);
       }
-
-      console.log("response", response);
 
       if (!response.ok) {
         throw new Error(`An error occurred: ${response.statusText}`);

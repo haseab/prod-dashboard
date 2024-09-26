@@ -17,6 +17,7 @@ import {
 } from "@/lib/utils";
 import { pile_history } from "@prisma/client";
 import { Card, Title } from "@tremor/react";
+import cuid from "cuid";
 import { motion, useAnimation } from "framer-motion";
 import { unstable_noStore } from "next/cache";
 import { useEffect, useRef, useState } from "react";
@@ -133,7 +134,10 @@ export default function Component() {
         pileHistory,
       } = unprocessedData;
 
-      setPileHistory(pileHistory || []);
+      setPileHistory([
+        ...pileHistory,
+        { id: cuid(), amount: taskPile, createdAt: new Date() },
+      ]);
       setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
       setStartDate(startDate);
       setEndDate(endDate);
@@ -562,12 +566,15 @@ export default function Component() {
               <AreaGraph
                 data={pileHistory.map((item) => ({
                   day: item.id,
-                  value: item.amount,
-                  date: item.createdAt,
+                  hours: item.amount,
+                  date: new Date(item.createdAt)
+                    .toISOString()
+                    .slice(0, 16)
+                    .replace("T", " "),
                 }))}
                 className="h-[40vh]"
                 title={"Task pile for the next month (h)"}
-                categories={["value"]}
+                categories={["hours"]}
                 colors={
                   showOnlyMA
                     ? ["slate"]
