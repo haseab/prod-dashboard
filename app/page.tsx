@@ -244,7 +244,7 @@ export default function Component() {
           ...weeklyProductiveFlow,
           {
             week: lastWeek + 1,
-            date: Object.keys(productiveList)[0].slice(5),
+            date: Object.keys(productiveList)[0].slice(5) + " (🟢 LIVE)",
             productiveFlow: data.productiveFlow,
             flowPercentage: roundToThree(data.productiveFlow / data.hoursFree),
             movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
@@ -564,13 +564,16 @@ export default function Component() {
                 index={"date"}
               />
               <AreaGraph
-                data={pileHistory.map((item) => ({
+                data={pileHistory.map((item, index) => ({
                   day: item.id,
                   hours: item.amount,
-                  date: new Date(item.createdAt)
-                    .toISOString()
-                    .slice(0, 16)
-                    .replace("T", " "),
+                  date:
+                    index === pileHistory.length - 1
+                      ? "🟢 LIVE"
+                      : new Date(item.createdAt)
+                          .toISOString()
+                          .slice(0, 16)
+                          .replace("T", " "),
                 }))}
                 className="h-[40vh]"
                 title={"Task pile for the next month (h)"}
