@@ -570,7 +570,7 @@ export default function Component() {
                   date:
                     index === pileHistory.length - 1
                       ? "🟢 LIVE"
-                      : new Date(item.createdAt)
+                      : new Date(item.createdAt.toLocaleString())
                           .toISOString()
                           .slice(0, 16)
                           .replace("T", " "),
