@@ -871,29 +871,27 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                         dataKey,
                       } = props;
                       return (
-                        <g>
-                          <Dot
-                            className={cx(
-                              "stroke-white dark:stroke-gray-950",
-                              onValueChange ? "cursor-pointer" : "",
-                              getColorClassName(
-                                categoryColors.get(
-                                  dataKey
-                                ) as AvailableChartColorsKeys,
-                                "fill"
-                              )
-                            )}
-                            cx={cxCoord}
-                            cy={cyCoord}
-                            r={5}
-                            fill=""
-                            stroke={stroke}
-                            strokeLinecap={strokeLinecap}
-                            strokeLinejoin={strokeLinejoin}
-                            strokeWidth={strokeWidth}
-                            onClick={(_, event) => onDotClick(props, event)}
-                          />
-                        </g>
+                        <Dot
+                          className={cx(
+                            "stroke-white dark:stroke-gray-950",
+                            onValueChange ? "cursor-pointer" : "",
+                            getColorClassName(
+                              categoryColors.get(
+                                dataKey
+                              ) as AvailableChartColorsKeys,
+                              "fill"
+                            )
+                          )}
+                          cx={cxCoord}
+                          cy={cyCoord}
+                          r={5}
+                          fill=""
+                          stroke={stroke}
+                          strokeLinecap={strokeLinecap}
+                          strokeLinejoin={strokeLinejoin}
+                          strokeWidth={strokeWidth}
+                          onClick={(_, event) => onDotClick(props, event)}
+                        />
                       );
                     }}
                     dot={(props: any) => {
