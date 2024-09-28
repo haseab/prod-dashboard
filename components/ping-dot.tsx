@@ -10,7 +10,9 @@ export default function PingDot({
   size?: number;
 }) {
   return (
-    <span className={cx(`relative mx-1 h-${size} w-${size}`, className)}>
+    <span
+      className={cx(`relative mx-1 inline-flex h-${size} w-${size}`, className)}
+    >
       <span
         className={cx(
           "absolute inline-flex h-full w-full animate-ping rounded-full transition-colors duration-1000 ease-in-out opacity-75",

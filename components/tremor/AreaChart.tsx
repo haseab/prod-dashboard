@@ -29,6 +29,7 @@ import {
 } from "@/app/lib/chart-utils";
 import { useOnWindowResize } from "@/app/lib/hooks/window-resize";
 import { cx } from "@/lib/utils";
+import PingDot from "../ping-dot";
 
 //#region Legend
 
@@ -379,6 +380,7 @@ interface ChartTooltipProps {
   payload: PayloadItem[];
   label: string;
   valueFormatter: (value: number) => string;
+  lastValue: boolean;
 }
 
 const ChartTooltip = ({
@@ -386,6 +388,7 @@ const ChartTooltip = ({
   payload,
   label,
   valueFormatter,
+  lastValue,
 }: ChartTooltipProps) => {
   if (active && payload && payload.length) {
     return (
@@ -399,7 +402,9 @@ const ChartTooltip = ({
           "bg-white dark:bg-gray-950"
         )}
       >
-        <div className={cx("border-b border-inherit px-4 py-2")}>
+        <div
+          className={cx("flex items-center border-b border-inherit px-4  py-2")}
+        >
           <p
             className={cx(
               // base
@@ -410,7 +415,9 @@ const ChartTooltip = ({
           >
             {label}
           </p>
+          {lastValue && <PingDot size={2} />}
         </div>
+
         <div className={cx("space-y-1 px-4 py-2")}>
           {payload.map(({ value, category, color }, index) => (
             <div
@@ -787,6 +794,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                       payload={cleanPayload}
                       label={label}
                       valueFormatter={valueFormatter}
+                      lastValue={data[data.length - 1][index] === label}
                     />
                   )
                 ) : null;
