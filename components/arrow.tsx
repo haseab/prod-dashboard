@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cx } from "class-variance-authority";
 import { motion } from "framer-motion";
 
 const fadeInOutVariants = {
@@ -20,7 +20,7 @@ export const Arrow = ({
         animate={isVisible ? "visible" : "hidden"}
         variants={fadeInOutVariants}
         transition={{ duration: 0.5 }} // duration of fade
-        className={cn(
+        className={cx(
           "text-xl text-green-500",
           { "rotate-180 text-red-500": !up } // rotate the arrow if it's not up
         )}

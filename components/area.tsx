@@ -1,9 +1,9 @@
 "use client";
 
+import { AreaChart } from "@/components/tremor/AreaChart";
 import { roundToTwo } from "@/lib/utils";
 import { ChartData, DailyData, EfficiencyData, MonthlyData } from "@/types";
 import {
-  AreaChart,
   Card,
   Color,
   Dialog,

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cx } from "class-variance-authority";
 
 export default function PingDot({
   className,
@@ -10,9 +10,9 @@ export default function PingDot({
   size?: number;
 }) {
   return (
-    <span className={cn(`relative mx-1 h-${size} w-${size}`, className)}>
+    <span className={cx(`relative mx-1 h-${size} w-${size}`, className)}>
       <span
-        className={cn(
+        className={cx(
           "absolute inline-flex h-full w-full animate-ping rounded-full transition-colors duration-1000 ease-in-out opacity-75",
           color === "green" && "bg-green-400",
           color === "red" && "bg-red-400",
@@ -21,7 +21,7 @@ export default function PingDot({
         )}
       ></span>
       <span
-        className={cn(
+        className={cx(
           `relative inline-flex h-${size} w-${size} rounded-full transition-colors duration-1000 ease-in-out`,
           color === "green" && "bg-green-500",
           color === "red" && "bg-red-500",

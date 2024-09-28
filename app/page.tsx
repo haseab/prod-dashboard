@@ -8,7 +8,7 @@ import MetricComponent from "@/components/metric";
 import PingDot from "@/components/ping-dot";
 import { WhyITrackTimeDialog } from "@/components/whyitracktime";
 import {
-  cn,
+  cx,
   formatTimeDifference,
   getNewMetricsData,
   roundToThree,
@@ -395,7 +395,7 @@ export default function Component() {
                         <p>
                           <a
                             href="https://twitter.com/haseab_"
-                            className={cn(
+                            className={cx(
                               "flex text-blue-700 transition-colors duration-1000 ease-in-out",
                               {
                                 "text-green-700": flow > 0.8334,
@@ -423,7 +423,7 @@ export default function Component() {
                           />
                           <div className="mt-2 text-xl block sm:hidden flex">
                             <p
-                              className={cn(
+                              className={cx(
                                 "flex text-blue-500 font-mono transition-colors duration-1000 ease-in-out",
                                 {
                                   "text-green-500": flow > 0.8334,
@@ -456,7 +456,7 @@ export default function Component() {
                       </div>
                       <div className="hidden sm:block flex">
                         <p
-                          className={cn(
+                          className={cx(
                             "flex text-2xl text-blue-500 font-mono transition-colors duration-1000 ease-in-out",
                             {
                               "text-green-500": flow > 0.8334,
@@ -605,7 +605,7 @@ export default function Component() {
               />
               <div className="mt-8 flex items-center justify-center space-x-4">
                 <button
-                  className={cn(
+                  className={cx(
                     " bg-blue-800 w-15 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
                     {
                       "bg-green-700  border-green-400 border-2": flow > 0.8334,
@@ -618,7 +618,7 @@ export default function Component() {
                   {showOnlyMA ? "Show Both" : "Show Only MA"}
                 </button>
                 <button
-                  className={cn(
+                  className={cx(
                     " bg-blue-800 w-15 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
                     {
                       "bg-green-700  border-green-400 border-2": flow > 0.8334,

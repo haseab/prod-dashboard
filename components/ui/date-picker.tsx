@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cx } from "class-variance-authority";
 
 export function DatePickerWithRange({
   className,
@@ -30,13 +30,13 @@ export function DatePickerWithRange({
   });
 
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div className={cx("grid gap-2", className)}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
             id="date"
             variant={"outline"}
-            className={cn(
+            className={cx(
               "w-[300px] justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}

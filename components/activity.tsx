@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cx } from "class-variance-authority";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -30,7 +30,7 @@ function ActivityIndicator({
 
   return (
     <div
-      className={cn(
+      className={cx(
         "flex text-[1.4rem] sm:text-[1.2rem] md:text-[1.75rem] transition-colors duration-1000 ease-in-out text-blue-500 font-mono",
         {
           "text-green-500": flow > 0.8334,

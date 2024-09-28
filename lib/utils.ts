@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { differenceInMilliseconds, intervalToDuration } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
-export function cn(...inputs: ClassValue[]) {
+export function cx(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 

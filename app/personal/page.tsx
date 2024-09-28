@@ -4,7 +4,7 @@ import AreaGraph from "@/components/area";
 import BarGraph from "@/components/bar";
 import { FlowImg } from "@/components/flowicon";
 import MetricComponent from "@/components/metric";
-import { cn, getNewMetricsData, sumValues } from "@/lib/utils";
+import { cx, getNewMetricsData, sumValues } from "@/lib/utils";
 import { Title } from "@tremor/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -340,7 +340,7 @@ export default function Component({
           </div>
         </header>
         <main
-          className={cn(
+          className={cx(
             "flex-1 bg-gray-900",
             flow > 0.8334 &&
               "bg-gradient-to-t from-green-800 via-gray-900 to-gray-900",

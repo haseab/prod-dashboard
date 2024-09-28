@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
 import { Card, Subtitle, Title } from "@tremor/react";
+import { cx } from "class-variance-authority";
 import Link from "next/link";
 
 export const WhyITrackTimeDialog = ({ flow }: { flow: number }) => {
@@ -9,7 +9,7 @@ export const WhyITrackTimeDialog = ({ flow }: { flow: number }) => {
       <Dialog>
         <DialogTrigger>
           <div
-            className={cn(
+            className={cx(
               " bg-blue-800 w-15 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
               {
                 "bg-green-700  border-green-400 border-2": flow > 0.8334,
@@ -49,7 +49,7 @@ export const WhyITrackTimeDialog = ({ flow }: { flow: number }) => {
               <Link
                 href="https://tracker.haseab.workers.dev/?button=seeMore&campaign=timetracking.live&project=haseab-personal&redirect=https%3A%2F%2Fhaseab.com%2F"
                 target="_blank"
-                className={cn(
+                className={cx(
                   "bg-blue-800 hover:bg-blue-700 mt-4 text-white font-bold py-2 px-4 rounded border-gray-700",
                   {
                     "bg-green-700": flow > 0.8334,
