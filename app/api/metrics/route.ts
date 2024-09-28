@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
     const data = await fetchTimeData({ startDate, endDate });
 
-    const { taskPile } = data.data;
+    const { taskPile, currentActivity } = data.data;
 
     console.log("prevTaskPileNumber", prevTaskPileNumber);
     console.log("taskPile", taskPile);
@@ -30,11 +30,7 @@ export async function GET(request: Request) {
     let pileHistory: pile_history[] = [];
 
     if (count > interval || count === 0) {
-      if (
-        taskPile &&
-        taskPile !== prevTaskPileNumber &&
-        prevTaskPileNumber !== 0
-      ) {
+      if (taskPile && currentActivity !== "Sleep" && prevTaskPileNumber !== 0) {
         console.log("time to update db");
         await updatePileDb(taskPile);
       }
