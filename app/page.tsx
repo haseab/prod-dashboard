@@ -563,7 +563,7 @@ export default function Component() {
                         )}`,
                 }))}
                 className="h-[40vh]"
-                title={"Task pile for the next month (h)"}
+                title={"Progress on Tasks Workload (h)"}
                 categories={["hours"]}
                 colors={
                   showOnlyMA
