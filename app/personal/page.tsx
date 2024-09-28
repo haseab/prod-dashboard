@@ -516,6 +516,7 @@ export default function Component({
                   : ["blue", "slate"]
               }
               index={"date"}
+              liveCategory="productiveFlow"
             />
             <AreaGraph
               data={weeklyProductiveFlowData}
@@ -540,6 +541,7 @@ export default function Component({
                   : ["blue", "slate"]
               }
               index={"date"}
+              liveCategory="flowPercentage"
             />
             <div className="flex items-center justify-center space-x-4">
               <button

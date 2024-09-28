@@ -1,5 +1,6 @@
 "use client";
 
+import { AvailableChartColorsKeys } from "@/app/lib/chart-utils";
 import { AreaChart } from "@/components/tremor/AreaChart";
 import { roundToTwo } from "@/lib/utils";
 import { ChartData, DailyData, EfficiencyData, MonthlyData } from "@/types";
@@ -24,6 +25,7 @@ export default function AreaGraph({
   tooltip,
   minutesLeft,
   timeUnits,
+  liveCategory,
 }: {
   data?:
     | ChartData[]
@@ -39,6 +41,7 @@ export default function AreaGraph({
   tooltip?: string;
   minutesLeft?: number;
   timeUnits?: string;
+  liveCategory?: string;
 }) {
   const [showDialog, setShowDialog] = useState(false);
 
@@ -79,9 +82,9 @@ export default function AreaGraph({
           data={data}
           index={index}
           yAxisWidth={30}
-          rotateLabelX={{ angle: 0 }}
           categories={categories}
-          colors={colors}
+          colors={colors as AvailableChartColorsKeys[]}
+          liveCategory={liveCategory}
           // valueFormatter={valueFormatter}
         />
       </Card>

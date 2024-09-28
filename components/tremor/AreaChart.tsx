@@ -497,6 +497,7 @@ interface AreaChartProps extends React.HTMLAttributes<HTMLDivElement> {
   type?: "default" | "stacked" | "percent";
   legendPosition?: "left" | "center" | "right";
   fill?: "gradient" | "solid" | "none";
+  liveCategory?: string;
   tooltipCallback?: (tooltipCallbackContent: TooltipProps) => void;
   customTooltip?: React.ComponentType<TooltipProps>;
 }
@@ -533,6 +534,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
       fill = "gradient",
       tooltipCallback,
       customTooltip,
+      liveCategory,
       ...other
     } = props;
     const CustomTooltip = customTooltip;
@@ -869,27 +871,29 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                         dataKey,
                       } = props;
                       return (
-                        <Dot
-                          className={cx(
-                            "stroke-white dark:stroke-gray-950",
-                            onValueChange ? "cursor-pointer" : "",
-                            getColorClassName(
-                              categoryColors.get(
-                                dataKey
-                              ) as AvailableChartColorsKeys,
-                              "fill"
-                            )
-                          )}
-                          cx={cxCoord}
-                          cy={cyCoord}
-                          r={5}
-                          fill=""
-                          stroke={stroke}
-                          strokeLinecap={strokeLinecap}
-                          strokeLinejoin={strokeLinejoin}
-                          strokeWidth={strokeWidth}
-                          onClick={(_, event) => onDotClick(props, event)}
-                        />
+                        <g>
+                          <Dot
+                            className={cx(
+                              "stroke-white dark:stroke-gray-950",
+                              onValueChange ? "cursor-pointer" : "",
+                              getColorClassName(
+                                categoryColors.get(
+                                  dataKey
+                                ) as AvailableChartColorsKeys,
+                                "fill"
+                              )
+                            )}
+                            cx={cxCoord}
+                            cy={cyCoord}
+                            r={5}
+                            fill=""
+                            stroke={stroke}
+                            strokeLinecap={strokeLinecap}
+                            strokeLinejoin={strokeLinejoin}
+                            strokeWidth={strokeWidth}
+                            onClick={(_, event) => onDotClick(props, event)}
+                          />
+                        </g>
                       );
                     }}
                     dot={(props: any) => {
@@ -937,6 +941,63 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                           />
                         );
                       }
+                      if (
+                        data.length - 1 === index &&
+                        liveCategory === category
+                      ) {
+                        return (
+                          <>
+                            {liveCategory === category && (
+                              <Dot
+                                key={index}
+                                cx={cxCoord}
+                                cy={cyCoord}
+                                r={5}
+                                stroke={stroke}
+                                fill=""
+                                strokeLinecap={strokeLinecap}
+                                strokeLinejoin={strokeLinejoin}
+                                strokeWidth={0}
+                                className={cx(
+                                  "stroke-white dark:stroke-gray-950 animate-ping",
+                                  onValueChange ? "cursor-pointer" : "",
+                                  getColorClassName(
+                                    categoryColors.get(
+                                      dataKey
+                                    ) as AvailableChartColorsKeys,
+                                    "fill"
+                                  )
+                                )}
+                                style={{
+                                  transformOrigin: "center",
+                                  transformBox: "fill-box",
+                                }}
+                              />
+                            )}
+                            <Dot
+                              key={index}
+                              cx={cxCoord}
+                              cy={cyCoord}
+                              r={5}
+                              stroke={stroke}
+                              fill=""
+                              strokeLinecap={strokeLinecap}
+                              strokeLinejoin={strokeLinejoin}
+                              strokeWidth={0}
+                              className={cx(
+                                "stroke-white dark:stroke-gray-950",
+                                onValueChange ? "cursor-pointer" : "",
+                                getColorClassName(
+                                  categoryColors.get(
+                                    dataKey
+                                  ) as AvailableChartColorsKeys,
+                                  "fill"
+                                )
+                              )}
+                            />
+                          </>
+                        );
+                      }
                       return <React.Fragment key={index}></React.Fragment>;
                     }}
                     key={category}
@@ -947,7 +1008,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                     strokeWidth={2}
                     strokeLinejoin="round"
                     strokeLinecap="round"
-                    isAnimationActive={false}
+                    isAnimationActive={true}
                     connectNulls={connectNulls}
                     stackId={stacked ? "stack" : undefined}
                     fill={`url(#${categoryId})`}

@@ -247,7 +247,7 @@ export default function Component() {
           ...weeklyProductiveFlow,
           {
             week: lastWeek + 1,
-            date: Object.keys(productiveList)[0].slice(5) + " (🟢 LIVE)",
+            date: Object.keys(productiveList)[0].slice(5) + " (LIVE)",
             productiveFlow: data.productiveFlow,
             flowPercentage: roundToThree(data.productiveFlow / data.hoursFree),
             movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
@@ -490,6 +490,7 @@ export default function Component() {
                           : ["blue", "slate"]
                       }
                       index={"date"}
+                      liveCategory="productiveFlow"
                       tooltip={
                         "This graph shows how many of my flow hours were productive. Flow doesn't have to be productive, for instance I could be in a flow state while watching TV.\nI track this because It's a good visual to show how much of my flow time is productive on each day of the week. I ideally want this to be as close to 100% as possible."
                       }
@@ -508,6 +509,7 @@ export default function Component() {
                           : ["blue", "slate"]
                       }
                       index={"date"}
+                      liveCategory="productiveTime"
                       tooltip={
                         "This graph shows the comparison of productive hours to hours of free time I had. Dividing these two numbers gives the Efficiency (%).\nI track this because it's a good visual to show how much of my free time is productive each day of the week. Allows me to monitor why some days are more productive than others."
                       }
@@ -543,43 +545,12 @@ export default function Component() {
             <div className="p-5 space-y-8 hidden opacity-0 xs:block xs:opacity-100">
               <br></br>
               <AreaGraph
-                data={weeklyProductiveFlowData}
-                className="h-[40vh]"
-                title={"Weekly Productive Flow (h) Since 2023"}
-                categories={
-                  showOnlyMA
-                    ? ["movingAverage"]
-                    : showOnlyRaw
-                    ? ["productiveFlow"]
-                    : ["productiveFlow", "movingAverage"]
-                }
-                colors={
-                  showOnlyMA
-                    ? ["slate"]
-                    : flow > 2.5
-                    ? ["red", "gray"]
-                    : flow > 1.5
-                    ? ["fuchsia", "slate"]
-                    : flow > 0.8334
-                    ? ["emerald", "slate"]
-                    : ["blue", "slate"]
-                }
-                index={"date"}
-                // minutesLeft={
-                //   timeLeftRef.current === 0
-                //     ? refreshTime / 60
-                //     : (refreshTime - timeLeftRef.current) / 60
-                // }
-                // timeUnits="seconds"
-                // pileRefreshesLeft={pileRefreshesLeft}
-              />
-              <AreaGraph
                 data={pileHistory.map((item, index) => ({
                   day: item.id,
                   hours: item.amount,
                   date:
                     index === pileHistory.length - 1
-                      ? "🟢 LIVE"
+                      ? "LIVE"
                       : new Date(item.createdAt.toLocaleString())
                           .toISOString()
                           .slice(0, 16)
@@ -602,6 +573,39 @@ export default function Component() {
                 index={"date"}
                 minutesLeft={pileRefreshesLeft / 2}
                 timeUnits="minutes"
+                liveCategory="hours"
+              />
+              <AreaGraph
+                data={weeklyProductiveFlowData}
+                className="h-[40vh]"
+                title={"Weekly Productive Flow (h) Since 2023"}
+                categories={
+                  showOnlyMA
+                    ? ["movingAverage"]
+                    : showOnlyRaw
+                    ? ["productiveFlow"]
+                    : ["productiveFlow", "movingAverage"]
+                }
+                colors={
+                  showOnlyMA
+                    ? ["slate"]
+                    : flow > 2.5
+                    ? ["red", "gray"]
+                    : flow > 1.5
+                    ? ["fuchsia", "slate"]
+                    : flow > 0.8334
+                    ? ["emerald", "slate"]
+                    : ["blue", "slate"]
+                }
+                index={"date"}
+                liveCategory="productiveFlow"
+                // minutesLeft={
+                //   timeLeftRef.current === 0
+                //     ? refreshTime / 60
+                //     : (refreshTime - timeLeftRef.current) / 60
+                // }
+                // timeUnits="seconds"
+                // pileRefreshesLeft={pileRefreshesLeft}
               />
               <div className="mt-8 flex items-center justify-center space-x-4">
                 <button
