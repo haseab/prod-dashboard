@@ -1,7 +1,16 @@
 "use client";
 
+import { roundToTwo } from "@/lib/utils";
 import { ChartData, DailyData, EfficiencyData, MonthlyData } from "@/types";
-import { AreaChart, Card, Dialog, Subtitle, Title } from "@tremor/react";
+import {
+  AreaChart,
+  Card,
+  Color,
+  Dialog,
+  ProgressBar,
+  Subtitle,
+  Title,
+} from "@tremor/react";
 import { Info, XIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -13,6 +22,8 @@ export default function AreaGraph({
   index,
   className,
   tooltip,
+  minutesLeft,
+  timeUnits,
 }: {
   data?:
     | ChartData[]
@@ -26,6 +37,8 @@ export default function AreaGraph({
   index: string;
   className?: string;
   tooltip?: string;
+  minutesLeft?: number;
+  timeUnits?: string;
 }) {
   const [showDialog, setShowDialog] = useState(false);
 
@@ -34,13 +47,32 @@ export default function AreaGraph({
       <Card>
         <div className="flex items-center justify-between space-x-3 ">
           <Title className="text-[1rem] sm:text-lg">{title}</Title>
-          <button
-            onClick={() => {
-              setShowDialog(true);
-            }}
-          >
-            <Info size={15} color={"white"} />
-          </button>
+          {minutesLeft && timeUnits ? (
+            <div className="flex flex-col items-center space-y-1 mb-2 w-[280px] border rounded-lg border-gray-600 p-2">
+              <span>{`Logging next point in ${
+                timeUnits === "seconds"
+                  ? minutesLeft * 60
+                  : roundToTwo(minutesLeft)
+              } ${timeUnits}`}</span>
+              <ProgressBar
+                value={
+                  timeUnits === "seconds"
+                    ? minutesLeft * 200
+                    : minutesLeft / 0.6
+                }
+                color={colors[0] as Color}
+                className="w-full"
+              />
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                setShowDialog(true);
+              }}
+            >
+              <Info size={15} color={"white"} />
+            </button>
+          )}
         </div>
         <AreaChart
           className={"h-80 " + className}

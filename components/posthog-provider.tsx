@@ -7,7 +7,8 @@ import { useEffect } from "react";
 
 if (
   typeof window !== "undefined" &&
-  (window as Window).self === (window as Window).top
+  (window as Window).self === (window as Window).top &&
+  process.env.NODE_ENV === "production"
 ) {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_API_KEY!, {
     api_host: "https://app.posthog.com",
@@ -15,9 +16,9 @@ if (
       maskAllInputs: false,
     },
     // Enable debug mode in development
-    loaded: (posthog) => {
-      if (process.env.NODE_ENV === "development") posthog.debug();
-    },
+    // loaded: (posthog) => {
+    //   if (process.env.NODE_ENV === "development") posthog.debug();
+    // },
   });
 }
 

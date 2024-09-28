@@ -48,6 +48,7 @@ export default function Component() {
   const timeLeftRef = useRef(0);
   const lastFetchTimeRef = useRef(Date.now());
   const [showDialog, setShowDialog] = useState(false);
+  const [pileRefreshesLeft, setPileRefreshesLeft] = useState(0);
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
     weekdays.map((day) => ({
       date: day,
@@ -131,9 +132,11 @@ export default function Component() {
         endDate,
         currentActivity,
         currentActivityStartTime,
+        pileRefreshesLeft,
         pileHistory,
       } = unprocessedData;
 
+      setPileRefreshesLeft(pileRefreshesLeft);
       setPileHistory([
         ...pileHistory,
         { id: cuid(), amount: taskPile, createdAt: new Date() },
@@ -562,6 +565,13 @@ export default function Component() {
                     : ["blue", "slate"]
                 }
                 index={"date"}
+                // minutesLeft={
+                //   timeLeftRef.current === 0
+                //     ? refreshTime / 60
+                //     : (refreshTime - timeLeftRef.current) / 60
+                // }
+                // timeUnits="seconds"
+                // pileRefreshesLeft={pileRefreshesLeft}
               />
               <AreaGraph
                 data={pileHistory.map((item, index) => ({
@@ -590,6 +600,8 @@ export default function Component() {
                     : ["blue", "slate"]
                 }
                 index={"date"}
+                minutesLeft={pileRefreshesLeft / 2}
+                timeUnits="minutes"
               />
               <div className="mt-8 flex items-center justify-center space-x-4">
                 <button

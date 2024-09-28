@@ -6,6 +6,7 @@ import { unstable_cache } from "next/cache";
 
 let prevTaskPileNumber = 0;
 let count = 0;
+let interval = 120;
 
 export const revalidate = 15;
 
@@ -28,7 +29,7 @@ export async function GET(request: Request) {
 
     let pileHistory: pile_history[] = [];
 
-    if (count > 120 || count === 0) {
+    if (count > interval || count === 0) {
       if (
         taskPile &&
         taskPile !== prevTaskPileNumber &&
@@ -63,6 +64,7 @@ export async function GET(request: Request) {
         data: {
           ...data.data,
           pileHistory,
+          pileRefreshesLeft: interval - count,
         },
       }),
       {

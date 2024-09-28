@@ -10,7 +10,11 @@ import { targets, tooltips } from "@/app/constant";
 import { MetricData, MetricNames, TremorColors } from "@/types";
 
 export const roundToThree = (num: number) => {
-  return Math.round(num * 10000 + Number.EPSILON) / 10000;
+  return Math.round(num * 1000 + Number.EPSILON) / 1000;
+};
+
+export const roundToTwo = (num: number) => {
+  return Math.round(num * 100 + Number.EPSILON) / 100;
 };
 
 export function formatTimeDifference(startDateTime: Date, endDateTime: Date) {
