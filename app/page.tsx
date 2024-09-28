@@ -551,10 +551,16 @@ export default function Component() {
                   date:
                     index === pileHistory.length - 1
                       ? "LIVE"
-                      : new Date(item.createdAt.toLocaleString())
-                          .toISOString()
-                          .slice(0, 16)
-                          .replace("T", " "),
+                      : `${new Date(item.createdAt).toLocaleDateString(
+                          "en-CA"
+                        )} ${new Date(item.createdAt).toLocaleTimeString(
+                          "en-GB",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          }
+                        )}`,
                 }))}
                 className="h-[40vh]"
                 title={"Task pile for the next month (h)"}

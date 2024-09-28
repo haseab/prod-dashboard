@@ -794,7 +794,10 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                       payload={cleanPayload}
                       label={label}
                       valueFormatter={valueFormatter}
-                      lastValue={data[data.length - 1][index] === label}
+                      lastValue={
+                        data[data.length - 1] &&
+                        data[data.length - 1][index] === label
+                      }
                     />
                   )
                 ) : null;
