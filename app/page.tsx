@@ -550,7 +550,7 @@ export default function Component() {
               <AreaGraph
                 data={pileHistory.map((item, index) => ({
                   day: item.id,
-                  hours: item.amount,
+                  "hours of planned tasks left": item.amount,
                   date:
                     index === pileHistory.length - 1
                       ? "LIVE"
@@ -567,7 +567,7 @@ export default function Component() {
                 }))}
                 className="h-[40vh]"
                 title={"Progress on Tasks Workload (h)"}
-                categories={["hours"]}
+                categories={["hours of planned tasks left"]}
                 colors={
                   showOnlyMA
                     ? ["slate"]
