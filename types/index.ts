@@ -91,6 +91,7 @@ export declare interface MetricsResponse {
   taskPile: number;
   pileHistory: pile_history[];
   pileRefreshesLeft: number;
+  neutralActivity: boolean;
   // efficiencyList: (presumably an array of numbers or a specific object structure)
 }
 

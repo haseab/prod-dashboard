@@ -100,6 +100,7 @@ export default function Component() {
   const [currentActivity, setCurrentActivity] = useState("Loading ...");
   const [currentActivityStartTime, setCurrentActivityStartTime] = useState("");
   const [pileHistory, setPileHistory] = useState<pile_history[]>([]);
+  const [neutralActivity, setNeutralActivity] = useState(false);
 
   const fetchData = async () => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`;
@@ -134,6 +135,7 @@ export default function Component() {
         currentActivityStartTime,
         pileRefreshesLeft,
         pileHistory,
+        neutralActivity,
       } = unprocessedData;
 
       setPileRefreshesLeft(pileRefreshesLeft);
@@ -141,6 +143,7 @@ export default function Component() {
         ...pileHistory,
         { id: cuid(), amount: taskPile, createdAt: new Date() },
       ]);
+      setNeutralActivity(neutralActivity);
       setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
       setStartDate(startDate);
       setEndDate(endDate);
@@ -360,12 +363,12 @@ export default function Component() {
         >
           <div className="container mx-auto px-6 py-2">
             {flow > 1.5 && (
-              <>
+              <div>
                 <FlowImg top="16%" left="18%" flow={flow} />
                 <FlowImg top="16%" left="35%" flow={flow} />
                 <FlowImg top="16%" left="65%" flow={flow} />
                 <FlowImg top="16%" left="82%" flow={flow} />
-              </>
+              </div>
             )}
 
             <div className="grid md:grid-cols-1 lg:grid-cols-5 items-center p-2 lg:p-0">
@@ -580,6 +583,7 @@ export default function Component() {
                 minutesLeft={pileRefreshesLeft / 2}
                 timeUnits="minutes"
                 liveCategory="hours"
+                neutralActivity={neutralActivity}
               />
               <AreaGraph
                 data={weeklyProductiveFlowData}

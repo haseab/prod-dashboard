@@ -26,6 +26,7 @@ export default function AreaGraph({
   minutesLeft,
   timeUnits,
   liveCategory,
+  neutralActivity,
 }: {
   data?:
     | ChartData[]
@@ -42,15 +43,16 @@ export default function AreaGraph({
   minutesLeft?: number;
   timeUnits?: string;
   liveCategory?: string;
+  neutralActivity?: boolean;
 }) {
   const [showDialog, setShowDialog] = useState(false);
 
   return (
-    <>
+    <div className="flex w-full">
       <Card>
         <div className="flex items-center justify-between space-x-3 ">
           <Title className="text-[1rem] sm:text-lg">{title}</Title>
-          {minutesLeft && timeUnits ? (
+          {minutesLeft && timeUnits && !neutralActivity ? (
             <div className="flex flex-col items-center space-y-1 mb-2 w-[280px] border rounded-lg border-gray-600 p-2">
               <span>{`Logging next point in ${
                 timeUnits === "seconds"
@@ -112,6 +114,6 @@ export default function AreaGraph({
           </button>
         </Card>
       </Dialog>
-    </>
+    </div>
   );
 }
