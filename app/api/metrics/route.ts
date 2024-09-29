@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
     let pileHistory: pile_history[] = [];
 
-    if (count > interval || count === 0) {
+    if (count >= interval || count === 0) {
       if (taskPile && currentActivity !== "Sleep" && prevTaskPileNumber !== 0) {
         console.log("time to update db");
         await updatePileDb(taskPile);
@@ -37,8 +37,6 @@ export async function GET(request: Request) {
       prevTaskPileNumber = taskPile;
       count = 0;
     }
-
-    count++;
 
     pileHistory = await prisma.pile_history.findMany({
       // where: {
@@ -122,6 +120,7 @@ function startRevalidating() {
     try {
       await revalidateCache(["time"]);
       console.log("Revalidated time tag");
+      count++;
     } catch (error) {
       console.error("Error revalidating time tag", error);
     }
