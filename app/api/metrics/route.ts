@@ -6,7 +6,7 @@ import { unstable_cache } from "next/cache";
 
 let prevTaskPileNumber = 0;
 let count = 0;
-let interval = 120;
+let interval = 240;
 let neutral = false;
 
 export const revalidate = 15;

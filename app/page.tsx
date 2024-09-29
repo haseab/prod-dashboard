@@ -580,7 +580,7 @@ export default function Component() {
                     : ["blue", "slate"]
                 }
                 index={"date"}
-                minutesLeft={pileRefreshesLeft / 2}
+                minutesLeft={pileRefreshesLeft / 4}
                 timeUnits="minutes"
                 liveCategory="hours"
                 neutralActivity={neutralActivity}
