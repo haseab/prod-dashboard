@@ -7,6 +7,7 @@ import { unstable_cache } from "next/cache";
 let prevTaskPileNumber = 0;
 let count = 0;
 let interval = 120;
+let neutral = false;
 
 export const revalidate = 15;
 
@@ -21,19 +22,20 @@ export async function GET(request: Request) {
 
     const data = await fetchTimeData({ startDate, endDate });
 
-    const { taskPile, currentActivity } = data.data;
+    const { taskPile, neutralActivity } = data.data;
+
+    neutral = neutralActivity;
 
     console.log("prevTaskPileNumber", prevTaskPileNumber);
     console.log("taskPile", taskPile);
-    console.log("count", count);
 
     let pileHistory: pile_history[] = [];
 
-    if (count >= interval || count === 0) {
-      if (taskPile && currentActivity !== "Sleep" && prevTaskPileNumber !== 0) {
-        console.log("time to update db");
-        await updatePileDb(taskPile);
-      }
+    if (count >= interval) {
+      // if (taskPile && prevTaskPileNumber !== 0) {
+      console.log("time to update db");
+      await updatePileDb(taskPile);
+      // }
       prevTaskPileNumber = taskPile;
       count = 0;
     }
@@ -120,7 +122,12 @@ function startRevalidating() {
     try {
       await revalidateCache(["time"]);
       console.log("Revalidated time tag");
-      count++;
+      if (!neutral) {
+        count++;
+        console.log("non neutral, counting up to", count);
+      } else {
+        console.log("neutral activity detected, not counting");
+      }
     } catch (error) {
       console.error("Error revalidating time tag", error);
     }
