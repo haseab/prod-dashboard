@@ -956,7 +956,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                       ) {
                         return (
                           <>
-                            {liveCategory === category && (
+                            {liveCategory == category && (
                               <Dot
                                 key={index + 50}
                                 cx={cxCoord}

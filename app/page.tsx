@@ -250,7 +250,7 @@ export default function Component() {
           ...weeklyProductiveFlow,
           {
             week: lastWeek + 1,
-            date: Object.keys(productiveList)[0].slice(5) + " (LIVE)",
+            date: Object.keys(productiveList)[0].slice(5) + " - LIVE",
             productiveFlow: data.productiveFlow,
             flowPercentage: roundToThree(data.productiveFlow / data.hoursFree),
             movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
@@ -446,13 +446,14 @@ export default function Component() {
                         <div className="flex mt-5 sm:mt-0 sm:ml-5 items-center justify-center h-full">
                           <PingDot
                             color={
-                              flow > 2.5
-                                ? "red"
-                                : flow > 1.5
-                                ? "purple"
-                                : flow > 0.8334
-                                ? "green"
-                                : "green"
+                              error ? "red" : "green"
+                              // : flow > 2.5
+                              // ? "red"
+                              // : flow > 1.5
+                              // ? "purple"
+                              // : flow > 0.8334
+                              // ? "green"
+                              // : "green"
                             }
                           />
                         </div>
@@ -582,7 +583,7 @@ export default function Component() {
                 index={"date"}
                 minutesLeft={pileRefreshesLeft / 4}
                 timeUnits="minutes"
-                liveCategory="hours"
+                liveCategory="hours of planned tasks left"
                 neutralActivity={neutralActivity}
               />
               <AreaGraph
