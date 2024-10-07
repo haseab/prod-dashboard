@@ -250,7 +250,13 @@ export default function Component() {
           ...weeklyProductiveFlow,
           {
             week: lastWeek + 1,
-            date: Object.keys(productiveList)[0].slice(5) + " - LIVE",
+            date:
+              "Week of " +
+              new Date(Object.keys(productiveList)[0]).toLocaleDateString(
+                "en-US",
+                { month: "short", day: "numeric" }
+              ) +
+              " - LIVE",
             productiveFlow: data.productiveFlow,
             flowPercentage: roundToThree(data.productiveFlow / data.hoursFree),
             movingAverage: movingAverageWeekly[movingAverageWeekly.length - 1],
@@ -556,11 +562,15 @@ export default function Component() {
                     index === pileHistory.length - 1
                       ? "LIVE"
                       : `${new Date(item.createdAt).toLocaleDateString(
-                          "en-CA"
+                          "en-US",
+                          {
+                            month: "short",
+                            day: "numeric",
+                          }
                         )} ${new Date(item.createdAt).toLocaleTimeString(
                           "en-GB",
                           {
-                            hour: "2-digit",
+                            hour: "numeric", // This will remove the leading zero
                             minute: "2-digit",
                             hour12: true,
                           }
