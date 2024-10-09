@@ -1,5 +1,5 @@
 "use client";
-import { TremorColors } from "@/types";
+import { MetricNames, TremorColors } from "@/types";
 import {
   Card,
   Dialog,
@@ -80,7 +80,15 @@ const MetricComponent = ({
       <Flex className="mt-4">
         <p className="text-sm text-gray-400">{`${Math.floor(
           percentageOfTarget
-        )}% of target`}</p>
+        )}% ${
+          [
+            MetricNames.UNPLANNED_TIME,
+            MetricNames.DISTRACTION_COUNT,
+            MetricNames.UNPRODUCTIVE,
+          ].includes(metric as MetricNames)
+            ? "from"
+            : "of"
+        } target`}</p>
         <p className="text-sm text-gray-400">{`${targetScore}`}</p>
       </Flex>
       <ProgressBar value={percentageOfTarget} color={color} className="mt-2" />
