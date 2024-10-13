@@ -680,7 +680,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
             {showGridLines ? (
               <CartesianGrid
                 stroke="#e0e0e0" // Use a light gray color instead of white for more subtle lines
-                strokeWidth={0.5} // Decrease the stroke width to make the lines thinner
+                strokeWidth={0.2} // Decrease the stroke width to make the lines thinner
                 horizontal={true} // Keep the horizontal lines
                 vertical={false} // Disable vertical lines if you don't want them
               />
