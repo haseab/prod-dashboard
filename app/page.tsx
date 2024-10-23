@@ -577,7 +577,7 @@ export default function Component() {
                         )}`,
                 }))}
                 className="h-[40vh]"
-                title={"Progress on Tasks Workload (h)"}
+                title={"Progress on Tasks Backlog (h)"}
                 categories={["hours of planned tasks left"]}
                 colors={
                   showOnlyMA
@@ -595,6 +595,9 @@ export default function Component() {
                 timeUnits="minutes"
                 liveCategory="hours of planned tasks left"
                 neutralActivity={neutralActivity}
+                tooltip={
+                  "This graph shows the status of how many hours of planned work is left on my to-do list. It refreshes every hour and if it goes down it means I'm completing more tasks than planning, and vice versa.\nI track this because this is single handedly the most useful metric for me to know if I'm moving the needle toward my goals. This is because my planned tasks are essentially my theory of the qucikest steps required to get closer to my goals, and if I can do what I say I will do, that's a good sign."
+                }
               />
               <AreaGraph
                 data={weeklyProductiveFlowData}
@@ -620,6 +623,9 @@ export default function Component() {
                 }
                 index={"date"}
                 liveCategory="productiveFlow"
+                tooltip={
+                  "This graph shows the historical productive flow hours I've had each week since January 2023. The gray graph is a 4 week moving average of the productive flow hours to show the trends.\nI track this because it's a good visual to see how much high quality hours I really am putting in week on week. You can see the progress this year from last year has been incredible."
+                }
                 // minutesLeft={
                 //   timeLeftRef.current === 0
                 //     ? refreshTime / 60
