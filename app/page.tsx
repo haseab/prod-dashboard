@@ -393,7 +393,7 @@ export default function Component() {
             )}
             <div className="grid md:grid-cols-1 lg:grid-cols-5">
               <div className="grid lg:col-span-3 lg:grid-rows-3 p-5 gap-6">
-                <div className="flex">
+                <div className="flex z-10 opacity-95">
                   <Card className="flex flex-col sm:flex-row p-5">
                     <div className="flex flex-col items-center justify-center mx-10 space-y-2">
                       <div className="relative w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem]">
@@ -516,7 +516,7 @@ export default function Component() {
                     </div>
                   </Card>
                 </div>
-                <div className="grid lg:row-span-2">
+                <div className="grid lg:row-span-2 z-10 opacity-95">
                   <div className="flex flex-col space-y-5 sm:flex-row sm:space-x-5 sm:space-y-0">
                     <AreaGraph
                       data={dailyProductiveFlowData}
@@ -566,7 +566,7 @@ export default function Component() {
                 </div>
               </div>
 
-              <div className="grid gap-6 p-5 xs:grid-cols-2 lg:col-span-2">
+              <div className="grid gap-6 p-5 xs:grid-cols-2 lg:col-span-2 z-10 opacity-95">
                 {metricsData.map((data, index) => (
                   <MetricComponent
                     key={index}
