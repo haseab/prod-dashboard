@@ -4,6 +4,7 @@ import { weeklyProductiveFlow } from "@/app/constant";
 import ActivityIndicator from "@/components/activity";
 import AreaGraph from "@/components/area";
 import MetricComponent from "@/components/metric";
+import ParticlesComponent from "@/components/particles";
 import PingDot from "@/components/ping-dot";
 import { WhyITrackTimeDialog } from "@/components/whyitracktime";
 import {
@@ -353,6 +354,7 @@ export default function Component() {
   return (
     <div className="flex h-[100dvh] bg-gray-900">
       <div className="h-[100dvh] flex font-sans flex-col flex-1 w-full">
+        <ParticlesComponent id="particles" flow={flow} />
         <div className="sm:pt-12 flex justify-center items-center">
           <header className="container px-12 flex flex-col items-center justify-between p-6 pb-2  w-full">
             <h2 className="text-3xl pt-5 sm:pt-0 sm:text-2xl font-mono font-semibold text-gray-200">
