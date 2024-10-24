@@ -394,7 +394,7 @@ export default function Component() {
             <div className="grid md:grid-cols-1 lg:grid-cols-5">
               <div className="grid lg:col-span-3 lg:grid-rows-3 p-5 gap-6">
                 <div className="flex z-10">
-                  <Card className="flex flex-col sm:flex-row p-5 opacity">
+                  <Card className="flex flex-col sm:flex-row p-5 opacity-95">
                     <div className="flex flex-col items-center justify-center mx-10 space-y-2">
                       <div className="relative w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem]">
                         {/* <FlowImg
