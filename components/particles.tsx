@@ -118,5 +118,6 @@ const ParticlesComponent = (props: any) => {
 };
 
 export default React.memo(ParticlesComponent, (prevProps, nextProps) => {
-  return prevProps.flow === nextProps.flow;
+  console.log("prev flow", prevProps.flow, "next flow", nextProps.flow);
+  return Math.abs(nextProps.flow - prevProps.flow) < 0.05;
 });
