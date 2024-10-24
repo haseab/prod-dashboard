@@ -27,7 +27,7 @@ importers:
         specifier: ^0.84.0
         version: 0.84.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@prisma/client':
-        specifier: ^5.20.0
+        specifier: ^5.12.0
         version: 5.21.1(prisma@5.21.1)
       '@radix-ui/react-dialog':
         specifier: ^1.1.1
