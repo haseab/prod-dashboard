@@ -35,7 +35,7 @@ const MetricComponent = ({
   const [showDialog, setShowDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   return (
-    <Card className="max-w-xs mx-auto">
+    <Card className="max-w-xs mx-auto opacity-95">
       <div className="flex items-center justify-between space-x-2">
         <div className="text-sm inline text-gray-400 w-full">{metric}</div>
         <button
