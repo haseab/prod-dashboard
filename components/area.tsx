@@ -49,8 +49,8 @@ export default function AreaGraph({
 
   return (
     <div className="flex w-full">
-      <Card>
-        <div className="flex items-center justify-between space-x-3 ">
+      <Card className="z-10 opacity-95">
+        <div className="flex items-center justify-between space-x-3">
           <Title className="text-[1rem] sm:text-lg">{title}</Title>
           {minutesLeft && timeUnits && !neutralActivity ? (
             <div className="flex flex-col items-center space-y-1 mb-2 w-[280px] border rounded-lg border-gray-600 p-2">
