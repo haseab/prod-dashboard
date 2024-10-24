@@ -3,7 +3,6 @@
 import { weeklyProductiveFlow } from "@/app/constant";
 import ActivityIndicator from "@/components/activity";
 import AreaGraph from "@/components/area";
-import { FlowImg } from "@/components/flowicon";
 import MetricComponent from "@/components/metric";
 import PingDot from "@/components/ping-dot";
 import { WhyITrackTimeDialog } from "@/components/whyitracktime";
@@ -368,14 +367,14 @@ export default function Component() {
           style={{ width: "100%", height: "100vh" }}
         >
           <div className="container mx-auto px-6 py-2">
-            {flow > 1.5 && (
+            {/* {flow > 1.5 && (
               <div>
                 <FlowImg top="16%" left="18%" flow={flow} />
                 <FlowImg top="16%" left="35%" flow={flow} />
                 <FlowImg top="16%" left="65%" flow={flow} />
                 <FlowImg top="16%" left="82%" flow={flow} />
               </div>
-            )}
+            )} */}
 
             <div className="grid md:grid-cols-1 lg:grid-cols-5 items-center p-2 lg:p-0">
               <Title className="grid col-span-3 w-full gap-6 text-center">
@@ -395,11 +394,23 @@ export default function Component() {
                 <div className="flex">
                   <Card className="flex flex-col sm:flex-row p-5">
                     <div className="flex flex-col items-center justify-center mx-10 space-y-2">
-                      <img
-                        src="https://pbs.twimg.com/profile_images/1750678675798855680/2sqTuFi-_400x400.jpg"
-                        alt="flow"
-                        className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full"
-                      ></img>
+                      <div className="relative w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem]">
+                        {/* <FlowImg
+                          className="absolute w-[30vh] h-[30vh] sm:w-[12rem] sm:h-[12rem]"
+                          flow={3}
+                          style={{
+                            zIndex: 0,
+                          }}
+                        /> */}
+                        <img
+                          src="https://pbs.twimg.com/profile_images/1750678675798855680/2sqTuFi-_400x400.jpg"
+                          alt="flow"
+                          className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                          style={{
+                            zIndex: 100,
+                          }}
+                        />
+                      </div>
                       <div>
                         <p>
                           <a
@@ -407,9 +418,9 @@ export default function Component() {
                             className={cx(
                               "flex text-blue-700 transition-colors duration-1000 ease-in-out",
                               {
-                                "text-green-700": flow > 0.8334,
-                                "text-purple-700": flow > 1.5,
-                                "text-red-700": flow > 2.5,
+                                "text-green-500": flow > 0.8334,
+                                "text-purple-500": flow > 1.5,
+                                "text-red-500": flow > 2.5,
                               }
                             )}
                             target="_blank"
@@ -418,6 +429,22 @@ export default function Component() {
                           </a>
                         </p>
                       </div>
+                      {/* {flow > 0.8834 && (
+                        <div className="flex items-center justify-center w-full">
+                          <div
+                            className={cx(
+                              "flex h-6 w-24 items-center justify-center rounded-md animate-pulse-custom",
+                              {
+                                "bg-green-600": flow > 0.8334,
+                                "bg-purple-500": flow > 1.5,
+                                "bg-red-500": flow > 2.5,
+                              }
+                            )}
+                          >
+                            <span className="font-mono text-xs">In Flow!</span>
+                          </div>
+                        </div>
+                      )} */}
                     </div>
                     <div className="flex items-center justify-center">
                       <div className="border-b w-60 mt-5 sm:border-r border-gray-700 sm:h-32 sm:w-0"></div>
