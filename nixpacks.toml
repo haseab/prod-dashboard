@@ -1,3 +1,0 @@
-[phases.setup]
-nodejs = "nodejs_18"
-package_manager = "yarn"
