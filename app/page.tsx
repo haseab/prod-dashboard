@@ -452,14 +452,17 @@ export default function Component() {
                         <div className="flex mt-5 sm:mt-0 sm:ml-5 items-center justify-center h-full">
                           <PingDot
                             color={
-                              error ? "red" : "green"
-                              // : flow > 2.5
-                              // ? "red"
-                              // : flow > 1.5
-                              // ? "purple"
-                              // : flow > 0.8334
-                              // ? "green"
-                              // : "green"
+                              error && flow > 2.5
+                                ? "blue"
+                                : error && flow < 2.5
+                                ? "red"
+                                : flow > 2.5
+                                ? "red"
+                                : flow > 1.5
+                                ? "purple"
+                                : flow > 0.8334
+                                ? "green"
+                                : "green"
                             }
                           />
                         </div>
