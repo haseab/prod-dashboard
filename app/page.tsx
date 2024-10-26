@@ -404,14 +404,34 @@ export default function Component() {
                             zIndex: 0,
                           }}
                         /> */}
-                        <img
-                          src="https://pbs.twimg.com/profile_images/1750678675798855680/2sqTuFi-_400x400.jpg"
-                          alt="flow"
-                          className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
-                          style={{
-                            zIndex: 100,
-                          }}
-                        />
+                        {flow > 2.5 ? (
+                          <img
+                            src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/red-eyes.png"
+                            alt="flow"
+                            className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                            style={{
+                              zIndex: 100,
+                            }}
+                          />
+                        ) : flow > 1.5 ? (
+                          <img
+                            src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
+                            alt="flow"
+                            className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                            style={{
+                              zIndex: 100,
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/normal-eyes.jpg"
+                            alt="flow"
+                            className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                            style={{
+                              zIndex: 100,
+                            }}
+                          />
+                        )}
                       </div>
                       <div>
                         <p>
