@@ -40,7 +40,7 @@ const STALE_DATA_ERROR_MESSAGE = "Data is outdated, please refresh the page.";
 
 export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
-  const [flow, setFlow] = useState(3);
+  const [flow, setFlow] = useState(0);
   const controls = useAnimation();
   const [timeLeft, setTimeLeft] = useState(2);
   const [timeLeftState, setTimeLeftState] = useState(0);
@@ -144,7 +144,7 @@ export default function Component() {
         { id: cuid(), amount: taskPile, createdAt: new Date() },
       ]);
       setNeutralActivity(neutralActivity);
-      // setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
+      setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
       setStartDate(startDate);
       setEndDate(endDate);
       setCurrentActivity(currentActivity);
