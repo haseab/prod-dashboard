@@ -32,7 +32,7 @@ body {
     opacity: 1;
   }
   50% {
-    opacity: 0.2; /* Adjust this to control how much it fades out */
+    opacity: 0; /* Adjust this to control how much it fades out */
   }
 }
 

@@ -40,7 +40,7 @@ const STALE_DATA_ERROR_MESSAGE = "Data is outdated, please refresh the page.";
 
 export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
-  const [flow, setFlow] = useState(0);
+  const [flow, setFlow] = useState(3);
   const controls = useAnimation();
   const [timeLeft, setTimeLeft] = useState(2);
   const [timeLeftState, setTimeLeftState] = useState(0);
@@ -144,7 +144,7 @@ export default function Component() {
         { id: cuid(), amount: taskPile, createdAt: new Date() },
       ]);
       setNeutralActivity(neutralActivity);
-      setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
+      // setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
       setStartDate(startDate);
       setEndDate(endDate);
       setCurrentActivity(currentActivity);
@@ -417,21 +417,55 @@ export default function Component() {
                             <img
                               src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/red-eyes.png"
                               alt="flow"
-                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse"
+                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
+                              style={{
+                                zIndex: 100,
+                              }}
+                            />
+                            {/* <img
+                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/red-eyes.png"
+                              alt="flow"
+                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
+                              style={{
+                                zIndex: 100,
+                              }}
+                            /> */}
+                            <img
+                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
+                              alt="flow"
+                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
                               style={{
                                 zIndex: 100,
                               }}
                             />
                           </>
                         ) : flow > 1.5 ? (
-                          <img
-                            src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
-                            alt="flow"
-                            className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse"
-                            style={{
-                              zIndex: 100,
-                            }}
-                          />
+                          <>
+                            <img
+                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
+                              alt="flow"
+                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                              style={{
+                                zIndex: 100,
+                              }}
+                            />
+                            <img
+                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
+                              alt="flow"
+                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
+                              style={{
+                                zIndex: 100,
+                              }}
+                            />
+                            <img
+                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
+                              alt="flow"
+                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
+                              style={{
+                                zIndex: 100,
+                              }}
+                            />
+                          </>
                         ) : (
                           <div></div>
                         )}
