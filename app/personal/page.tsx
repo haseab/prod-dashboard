@@ -2,7 +2,6 @@
 import { weeklyProductiveFlow } from "@/app/constant";
 import AreaGraph from "@/components/area";
 import BarGraph from "@/components/bar";
-import { FlowImg } from "@/components/flowicon";
 import MetricComponent from "@/components/metric";
 import { cx, getNewMetricsData, sumValues } from "@/lib/utils";
 import { Title } from "@tremor/react";
@@ -380,14 +379,6 @@ export default function Component({
               //     transform: "translate(-50%, -50%)",
               //   }}
               // ></img>
-            )}
-            {flow > 1.5 && (
-              <>
-                <FlowImg top="16%" left="18%" flow={flow} />
-                <FlowImg top="16%" left="35%" flow={flow} />
-                <FlowImg top="16%" left="65%" flow={flow} />
-                <FlowImg top="16%" left="82%" flow={flow} />
-              </>
             )}
             <Title className="grid gap-6 mb-8 text-center">
               Refreshing in {refreshTime - timeLeftRef.current} seconds
