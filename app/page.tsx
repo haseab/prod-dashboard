@@ -340,6 +340,8 @@ export default function Component() {
         return "linear-gradient(to top, #6d28d9, #111827, #111827)"; // Purple gradient
       } else if (flow > 0.8334) {
         return "linear-gradient(to top, #2e7d32, #111827, #111827)"; // Green gradient
+      } else if (flow > 0.4167) {
+        return "linear-gradient(to top, #0d47a1, #111827, #111827)"; // Blue gradient
       } else {
         return "linear-gradient(to top, #111827, #111827, #111827)"; // Default gradient
       }
@@ -356,7 +358,7 @@ export default function Component() {
       <div className="h-[100dvh] flex font-sans flex-col flex-1 w-full">
         <ParticlesComponent id="particles" flow={flow} />
         <div className="sm:pt-12 flex justify-center items-center">
-          <header className="container px-12 flex flex-col items-center justify-between p-6 pb-2  w-full">
+          <header className="container px-12 flex flex-col items-center justify-between p-6 pb-0 w-full">
             <h2 className="text-3xl pt-5 sm:pt-0 sm:text-2xl font-mono font-semibold text-gray-200">
               timetracking.live
             </h2>
