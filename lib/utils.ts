@@ -188,6 +188,14 @@ export const revalidateCache = async (tags: string[]) => {
 export const sumValues = (obj: Record<string, number>) =>
   Object.values(obj).reduce((a, b) => a + b, 0);
 
+export const hexToRgbInt = (hexColor: string): number => {
+  hexColor = hexColor.replace("#", "");
+  const r = parseInt(hexColor.substring(0, 2), 16);
+  const g = parseInt(hexColor.substring(2, 4), 16);
+  const b = parseInt(hexColor.substring(4, 6), 16);
+  return (r << 16) + (g << 8) + b;
+};
+
 export const getColorForPercentage = (
   percentage: number,
   flow: number

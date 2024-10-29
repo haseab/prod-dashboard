@@ -1,3 +1,4 @@
+import { setLightColor } from "@/app/lib/light-actions";
 import prisma from "@/app/lib/prisma";
 import { updatePileDb } from "@/app/lib/server-utils";
 import { revalidateCache } from "@/lib/utils";
@@ -5,6 +6,7 @@ import { pile_history } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
 let prevTaskPileNumber = 0;
+let prevFlowColour = "";
 let count = 0;
 let interval = 240;
 let neutral = false;
@@ -20,16 +22,50 @@ export async function GET(request: Request) {
     const startDate = url.searchParams.get("startDate");
     const endDate = url.searchParams.get("endDate");
 
-    const data = await fetchTimeData({ startDate, endDate });
+    const { data } = await fetchTimeData({ startDate, endDate });
 
-    const { taskPile, neutralActivity } = data.data;
+    const { taskPile, neutralActivity, currentActivity } = data;
+    const currentFlowColour =
+      data.flow > 2.5
+        ? "red"
+        : data.flow > 1.5
+        ? "purple"
+        : data.flow > 0.8334
+        ? "green"
+        : data.flow > 0.4167
+        ? "blue"
+        : "default";
 
     neutral = neutralActivity;
 
     console.log("prevTaskPileNumber", prevTaskPileNumber);
     console.log("taskPile", taskPile);
 
+    console.log("prevFlowColour", prevFlowColour);
+    console.log("currentFlowColour", currentFlowColour);
+
     let pileHistory: pile_history[] = [];
+
+    if (
+      prevFlowColour &&
+      currentFlowColour &&
+      prevFlowColour !== currentFlowColour &&
+      currentActivity !== "🤝 in a Meeting"
+    ) {
+      console.log("flow changed, changing lights...");
+      setLightColor({
+        flow: data.flow,
+        deviceId: process.env.FLOOR_LAMP_DEVICE_ID || "",
+        model: "H6008",
+      });
+      setLightColor({
+        flow: data.flow,
+        deviceId: process.env.TABLE_LAMP_DEVICE_ID || "",
+        model: "H6008",
+      });
+    }
+
+    prevFlowColour = currentFlowColour;
 
     if (count >= interval) {
       // if (taskPile && prevTaskPileNumber !== 0) {
@@ -58,7 +94,7 @@ export async function GET(request: Request) {
     return new Response(
       JSON.stringify({
         data: {
-          ...data.data,
+          ...data,
           pileHistory,
           pileRefreshesLeft: interval - count,
         },
