@@ -1,0 +1,2 @@
+[phases.setup]
+nodejs_package_manager = "yarn"
