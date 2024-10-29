@@ -444,7 +444,7 @@ export default function Component() {
                         ) : flow > 1.5 ? (
                           <>
                             <img
-                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
+                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/blind-dp.png"
                               alt="flow"
                               className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
                               style={{
