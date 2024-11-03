@@ -87,14 +87,14 @@ export async function GET(request: Request) {
       },
     });
 
-    console.log("taskBacklog");
-    console.log(taskBacklog.slice(taskBacklog.length - 1));
+    console.log("taskBacklogHistory");
+    console.log(taskBacklogHistory.slice(taskBacklog.length - 1));
 
     return new Response(
       JSON.stringify({
         data: {
           ...data,
-          taskBacklog,
+          taskBacklogHistory,
           taskBacklogRefreshesLeft: interval - count,
         },
       }),
