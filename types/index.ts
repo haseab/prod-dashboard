@@ -92,6 +92,7 @@ export declare interface MetricsResponse {
   taskBacklogHistory: task_backlog[];
   taskBacklogRefreshesLeft: number;
   neutralActivity: boolean;
+  taskBacklogDetails: Record<string, string | number>[];
   // efficiencyList: (presumably an array of numbers or a specific object structure)
 }
 

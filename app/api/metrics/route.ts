@@ -2,6 +2,7 @@ import { setLightColor } from "@/app/lib/light-actions";
 import prisma from "@/app/lib/prisma";
 import { updateBacklogToDb } from "@/app/lib/server-utils";
 import { revalidateCache } from "@/lib/utils";
+import { MetricsResponse } from "@/types";
 import { task_backlog } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
@@ -24,7 +25,12 @@ export async function GET(request: Request) {
 
     const { data } = await fetchTimeData({ startDate, endDate });
 
-    const { taskBacklog, neutralActivity, currentActivity } = data;
+    const {
+      taskBacklog,
+      neutralActivity,
+      currentActivity,
+      taskBacklogDetails,
+    } = data as MetricsResponse;
     const currentFlowColour =
       data.flow > 2.5
         ? "red"
@@ -69,7 +75,7 @@ export async function GET(request: Request) {
 
     if (count >= interval) {
       console.log("time to update db");
-      await updateBacklogToDb(taskBacklog);
+      await updateBacklogToDb(taskBacklog, taskBacklogDetails);
       // }
       prevTaskBacklogNumber = taskBacklog;
       count = 0;
@@ -88,7 +94,7 @@ export async function GET(request: Request) {
     });
 
     console.log("taskBacklogHistory");
-    console.log(taskBacklogHistory.slice(taskBacklog.length - 1));
+    console.log(taskBacklogHistory.slice(taskBacklogHistory.length - 1));
 
     return new Response(
       JSON.stringify({
