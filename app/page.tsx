@@ -15,7 +15,7 @@ import {
   simpleMovingAverage,
   sumValues,
 } from "@/lib/utils";
-import { pile_history } from "@prisma/client";
+import { task_backlog } from "@prisma/client";
 import { Card, Title } from "@tremor/react";
 import cuid from "cuid";
 import { motion, useAnimation } from "framer-motion";
@@ -48,7 +48,7 @@ export default function Component() {
   const timeLeftRef = useRef(0);
   const lastFetchTimeRef = useRef(Date.now());
   const [showDialog, setShowDialog] = useState(false);
-  const [pileRefreshesLeft, setPileRefreshesLeft] = useState(0);
+  const [taskBacklogRefreshesLeft, setTaskBacklogRefreshesLeft] = useState(0);
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
     weekdays.map((day) => ({
       date: day,
@@ -99,7 +99,9 @@ export default function Component() {
   const [showOnlyRaw, setShowOnlyRaw] = useState(false);
   const [currentActivity, setCurrentActivity] = useState("Loading ...");
   const [currentActivityStartTime, setCurrentActivityStartTime] = useState("");
-  const [pileHistory, setPileHistory] = useState<pile_history[]>([]);
+  const [taskBacklogHistory, setTaskBacklogHistory] = useState<task_backlog[]>(
+    []
+  );
   const [neutralActivity, setNeutralActivity] = useState(false);
 
   const fetchData = async () => {
@@ -128,20 +130,20 @@ export default function Component() {
         efficiencyList,
         productiveList,
         flow,
-        taskPile,
+        taskBacklog,
         startDate,
         endDate,
         currentActivity,
         currentActivityStartTime,
-        pileRefreshesLeft,
-        pileHistory,
+        taskBacklogRefreshesLeft,
+        taskBacklogHistory,
         neutralActivity,
       } = unprocessedData;
 
-      setPileRefreshesLeft(pileRefreshesLeft);
-      setPileHistory([
-        ...pileHistory,
-        { id: cuid(), amount: taskPile, createdAt: new Date() },
+      setTaskBacklogRefreshesLeft(taskBacklogRefreshesLeft);
+      setTaskBacklogHistory([
+        ...taskBacklogHistory,
+        { id: cuid(), amount: taskBacklog, createdAt: new Date() },
       ]);
       setNeutralActivity(neutralActivity);
       setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
@@ -279,19 +281,6 @@ export default function Component() {
       }, 5000);
     }
   };
-
-  // useEffect(() => {
-  //   // if taskPileNumber has changed, show confetti
-  //   const triggerDbCall = async () => {
-  //     console.log("taskPileNumber", taskPileNumber);
-  //     console.log("prevTaskPileNumber", prevTaskPileNumber);
-  //     if (taskPileNumber !== prevTaskPileNumber && prevTaskPileNumber !== 0) {
-  //       await updatePileDb(taskPileNumber);
-  //     }
-  //   };
-
-  //   triggerDbCall();
-  // }, [taskPileNumber, prevTaskPileNumber]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -646,11 +635,11 @@ export default function Component() {
             <div className="p-5 space-y-8 hidden opacity-0 xs:block xs:opacity-100">
               <br></br>
               <AreaGraph
-                data={pileHistory.map((item, index) => ({
+                data={taskBacklogHistory.map((item, index) => ({
                   day: item.id,
                   "hours of planned tasks left": item.amount,
                   date:
-                    index === pileHistory.length - 1
+                    index === taskBacklogHistory.length - 1
                       ? "LIVE"
                       : `${new Date(item.createdAt).toLocaleDateString(
                           "en-US",
@@ -682,7 +671,7 @@ export default function Component() {
                     : ["blue", "slate"]
                 }
                 index={"date"}
-                minutesLeft={pileRefreshesLeft / 4}
+                minutesLeft={taskBacklogRefreshesLeft / 4}
                 timeUnits="minutes"
                 liveCategory="hours of planned tasks left"
                 neutralActivity={neutralActivity}
@@ -717,13 +706,6 @@ export default function Component() {
                 tooltip={
                   "This graph shows the historical productive flow hours I've had each week since January 2023. The gray graph is a 4 week moving average of the productive flow hours to show the trends.\nI track this because it's a good visual to see how much high quality hours I really am putting in week on week. You can see the progress this year from last year has been incredible."
                 }
-                // minutesLeft={
-                //   timeLeftRef.current === 0
-                //     ? refreshTime / 60
-                //     : (refreshTime - timeLeftRef.current) / 60
-                // }
-                // timeUnits="seconds"
-                // pileRefreshesLeft={pileRefreshesLeft}
               />
               <div className="mt-8 flex items-center justify-center space-x-4">
                 <button
