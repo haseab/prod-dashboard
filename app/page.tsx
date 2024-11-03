@@ -143,7 +143,7 @@ export default function Component() {
       setTaskBacklogRefreshesLeft(taskBacklogRefreshesLeft);
       setTaskBacklogHistory([
         ...taskBacklogHistory,
-        { id: cuid(), amount: taskBacklog, createdAt: new Date() },
+        { id: cuid(), amount: taskBacklog, createdAt: new Date(), details: {} },
       ]);
       setNeutralActivity(neutralActivity);
       setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
