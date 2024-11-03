@@ -1,11 +1,11 @@
 import { setLightColor } from "@/app/lib/light-actions";
 import prisma from "@/app/lib/prisma";
-import { updatePileDb } from "@/app/lib/server-utils";
+import { updateBacklogToDb } from "@/app/lib/server-utils";
 import { revalidateCache } from "@/lib/utils";
-import { pile_history } from "@prisma/client";
+import { task_backlog } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
-let prevTaskPileNumber = 0;
+let prevTaskBacklogNumber = 0;
 let prevFlowColour = "";
 let count = 0;
 let interval = 240;
@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
     const { data } = await fetchTimeData({ startDate, endDate });
 
-    const { taskPile, neutralActivity, currentActivity } = data;
+    const { taskBacklog, neutralActivity, currentActivity } = data;
     const currentFlowColour =
       data.flow > 2.5
         ? "red"
@@ -38,13 +38,13 @@ export async function GET(request: Request) {
 
     neutral = neutralActivity;
 
-    console.log("prevTaskPileNumber", prevTaskPileNumber);
-    console.log("taskPile", taskPile);
+    console.log("prevTaskBacklogNumber", prevTaskBacklogNumber);
+    console.log("taskBacklog", taskBacklog);
 
     console.log("prevFlowColour", prevFlowColour);
     console.log("currentFlowColour", currentFlowColour);
 
-    let pileHistory: pile_history[] = [];
+    let taskBacklogHistory: task_backlog[] = [];
 
     if (
       prevFlowColour &&
@@ -68,15 +68,14 @@ export async function GET(request: Request) {
     prevFlowColour = currentFlowColour;
 
     if (count >= interval) {
-      // if (taskPile && prevTaskPileNumber !== 0) {
       console.log("time to update db");
-      await updatePileDb(taskPile);
+      await updateBacklogToDb(taskBacklog);
       // }
-      prevTaskPileNumber = taskPile;
+      prevTaskBacklogNumber = taskBacklog;
       count = 0;
     }
 
-    pileHistory = await prisma.pile_history.findMany({
+    taskBacklogHistory = await prisma.task_backlog.findMany({
       // where: {
       //   createdAt: {
       //     gte: new Date(startDate as string),
@@ -88,15 +87,15 @@ export async function GET(request: Request) {
       },
     });
 
-    console.log("pileHistory");
-    console.log(pileHistory.slice(pileHistory.length - 1));
+    console.log("taskBacklog");
+    console.log(taskBacklog.slice(taskBacklog.length - 1));
 
     return new Response(
       JSON.stringify({
         data: {
           ...data,
-          pileHistory,
-          pileRefreshesLeft: interval - count,
+          taskBacklog,
+          taskBacklogRefreshesLeft: interval - count,
         },
       }),
       {

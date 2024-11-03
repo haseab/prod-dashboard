@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model pile_history {
+model task_backlog {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   amount    Float

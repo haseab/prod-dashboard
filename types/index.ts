@@ -1,4 +1,4 @@
-import { pile_history } from "@prisma/client";
+import { task_backlog } from "@prisma/client";
 
 export interface HistoricalWeeklyData {
   week: number;
@@ -88,9 +88,9 @@ export declare interface MetricsResponse {
   endDate: string;
   currentActivityStartTime: string;
   currentActivity: string;
-  taskPile: number;
-  pileHistory: pile_history[];
-  pileRefreshesLeft: number;
+  taskBacklog: number;
+  taskBacklogHistory: task_backlog[];
+  taskBacklogRefreshesLeft: number;
   neutralActivity: boolean;
   // efficiencyList: (presumably an array of numbers or a specific object structure)
 }

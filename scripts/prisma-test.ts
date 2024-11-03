@@ -5,12 +5,12 @@ const main = async () => {
   const random = 50;
 
   console.log(
-    "ABOUT TO UPDATE THE DB! WITH THE FOLLOWING PILE NUMBER: ",
+    "ABOUT TO UPDATE THE DB! WITH THE FOLLOWING TASK BACKLOG NUMBER: ",
     random
   );
 
   try {
-    await prisma.pile_history.create({
+    await prisma.task_backlog.create({
       data: {
         amount: random,
         createdAt: new Date(),
