@@ -99,9 +99,9 @@ export default function Component() {
   const [showOnlyRaw, setShowOnlyRaw] = useState(false);
   const [currentActivity, setCurrentActivity] = useState("Loading ...");
   const [currentActivityStartTime, setCurrentActivityStartTime] = useState("");
-  const [taskBacklogHistory, setTaskBacklogHistory] = useState<task_backlog[]>(
-    []
-  );
+  const [taskBacklogHistory, setTaskBacklogHistory] = useState<
+    Pick<task_backlog, "id" | "amount" | "createdAt">[]
+  >([]);
   const [neutralActivity, setNeutralActivity] = useState(false);
 
   const fetchData = async () => {
@@ -143,7 +143,7 @@ export default function Component() {
       setTaskBacklogRefreshesLeft(taskBacklogRefreshesLeft);
       setTaskBacklogHistory([
         ...taskBacklogHistory,
-        { id: cuid(), amount: taskBacklog, createdAt: new Date(), details: {} },
+        { id: cuid(), amount: taskBacklog, createdAt: new Date() },
       ]);
       setNeutralActivity(neutralActivity);
       setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
