@@ -3,7 +3,6 @@ import prisma from "@/app/lib/prisma";
 import { updateBacklogToDb } from "@/app/lib/server-utils";
 import { revalidateCache } from "@/lib/utils";
 import { MetricsResponse } from "@/types";
-import { task_backlog } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
 let prevTaskBacklogNumber = 0;
@@ -50,7 +49,7 @@ export async function GET(request: Request) {
     console.log("prevFlowColour", prevFlowColour);
     console.log("currentFlowColour", currentFlowColour);
 
-    let taskBacklogHistory: task_backlog[] = [];
+    let taskBacklogHistory;
 
     if (
       prevFlowColour &&
@@ -88,6 +87,11 @@ export async function GET(request: Request) {
       //     lte: new Date(endDate as string),
       //   },
       // },
+      select: {
+        id: true,
+        amount: true,
+        createdAt: true,
+      },
       orderBy: {
         createdAt: "asc",
       },
