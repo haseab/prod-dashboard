@@ -20,3 +20,20 @@ model keyboard_shortcuts {
   keyboard_shortcut String
   time              DateTime @default(now())
 }
+
+model Link {
+  id              Int      @id @default(autoincrement())
+  email           String?  @db.VarChar(255)
+  project         String   @db.VarChar(255)
+  campaign        String   @db.VarChar(255)
+  redirect        String   @db.VarChar(255)
+  button          String   @db.VarChar(255)
+  fbclid          String?  @db.VarChar(255)
+  browserType     String   @db.VarChar(255)
+  platformType    String   @db.VarChar(255)
+  operatingSystem String   @db.VarChar(255)
+  ip              String   @db.VarChar(255)
+  city            String   @db.VarChar(255)
+  country         String   @db.VarChar(255)
+  createdAt       DateTime @default(now())
+}
