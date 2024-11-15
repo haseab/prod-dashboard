@@ -18,7 +18,7 @@ import {
 import { task_backlog } from "@prisma/client";
 import { Card, Title } from "@tremor/react";
 import cuid from "cuid";
-import { motion, useAnimation } from "framer-motion";
+import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import { unstable_noStore } from "next/cache";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -37,6 +37,7 @@ const pollingInterval = 1000;
 const staleDataInterval = 30000; // 30 seconds
 const SERVER_ERROR_MESSAGE = "Server error: trying again in 30 seconds...";
 const STALE_DATA_ERROR_MESSAGE = "Data is outdated, please refresh the page.";
+const duration = 2;
 
 export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
@@ -387,99 +388,145 @@ export default function Component() {
                 <div className="flex z-10">
                   <Card className="flex flex-col sm:flex-row p-5 opacity-95">
                     <div className="flex flex-col items-center justify-center mx-10 space-y-2">
-                      <div className="relative w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem]">
-                        {/* <FlowImg
-                          className="absolute w-[30vh] h-[30vh] sm:w-[12rem] sm:h-[12rem]"
-                          flow={3}
-                          style={{
-                            zIndex: 0,
-                          }}
-                        /> */}
-                        <img
-                          src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/normal-eyes.jpg"
-                          alt="flow"
-                          className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
-                          style={{
-                            zIndex: 90,
-                          }}
-                        />
-                        {flow > 2.5 ? (
-                          <>
-                            <img
-                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/smiledp.png"
-                              alt="flow"
-                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
-                              style={{
-                                zIndex: 100,
-                              }}
-                            />
-                            <img
-                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/red-eyes.png"
-                              alt="flow"
-                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
-                              style={{
-                                zIndex: 100,
-                              }}
-                            />
-                            {/* <img
-                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/red-eyes.png"
-                              alt="flow"
-                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
-                              style={{
-                                zIndex: 100,
-                              }}
-                            /> */}
-                            <img
-                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
-                              alt="flow"
-                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
-                              style={{
-                                zIndex: 100,
-                              }}
-                            />
-                          </>
-                        ) : flow > 1.5 ? (
-                          <>
-                            <img
-                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/blind-dp.png"
-                              alt="flow"
-                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
-                              style={{
-                                zIndex: 100,
-                              }}
-                            />
-                            <img
-                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
-                              alt="flow"
-                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
-                              style={{
-                                zIndex: 100,
-                              }}
-                            />
-                            <img
-                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
-                              alt="flow"
-                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
-                              style={{
-                                zIndex: 100,
-                              }}
-                            />
-                          </>
-                        ) : flow > 0.4167 ? (
-                          <>
-                            <img
-                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/smiledp.png"
-                              alt="flow"
-                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
-                              style={{
-                                zIndex: 100,
-                              }}
-                            />
-                          </>
-                        ) : (
-                          <div></div>
-                        )}
-                      </div>
+                      <AnimatePresence mode="wait">
+                        <div className="relative w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] transition-all duration-300">
+                          <motion.img
+                            key="normal-eyes"
+                            src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/normal-eyes.jpg"
+                            alt="flow"
+                            className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                            style={{
+                              zIndex: 90,
+                            }}
+                          />
+                          {flow > 2.5 ? (
+                            <>
+                              <motion.img
+                                key="red-smile"
+                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/red-smile.JPG"
+                                alt="flow"
+                                className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                                style={{
+                                  zIndex: 100,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration }}
+                              />
+                              <motion.img
+                                key="blind-smile"
+                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/blind-dp.png"
+                                alt="flow"
+                                className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                                style={{
+                                  zIndex: 90,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration }}
+                              />
+                              <motion.img
+                                key="red-eyes"
+                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/red-eyes.png"
+                                alt="flow"
+                                className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
+                                style={{
+                                  zIndex: 100,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration }}
+                              />
+                              <motion.img
+                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
+                                key="white-eyes-1"
+                                alt="flow"
+                                className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                                style={{
+                                  zIndex: 100,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration }}
+                              />
+                            </>
+                          ) : flow > 1.5 ? (
+                            <>
+                              <motion.img
+                                key="blind-smile"
+                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/blind-dp.png"
+                                alt="flow"
+                                className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                                style={{
+                                  zIndex: 100,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration }}
+                              />
+                              <motion.img
+                                key="smiledp"
+                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/smiledp.png"
+                                alt="flow"
+                                className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                                style={{
+                                  zIndex: 90,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration }}
+                              />
+                              <motion.img
+                                key="white-eyes-1"
+                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
+                                alt="flow"
+                                className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
+                                style={{
+                                  zIndex: 100,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration }}
+                              />
+                              <motion.img
+                                key="white-eyes-2"
+                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
+                                alt="flow"
+                                className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
+                                style={{
+                                  zIndex: 100,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration }}
+                              />
+                            </>
+                          ) : flow > 0.4167 ? (
+                            <>
+                              <motion.img
+                                key="smiledp"
+                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/smiledp.png"
+                                alt="flow"
+                                className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                                style={{
+                                  zIndex: 100,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration }}
+                              />
+                            </>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                      </AnimatePresence>
                       <div>
                         <p>
                           <a
