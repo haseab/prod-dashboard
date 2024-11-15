@@ -400,7 +400,7 @@ export default function Component() {
                           alt="flow"
                           className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
                           style={{
-                            zIndex: 100,
+                            zIndex: 90,
                           }}
                         />
                         {flow > 2.5 ? (
