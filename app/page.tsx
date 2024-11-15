@@ -406,6 +406,14 @@ export default function Component() {
                         {flow > 2.5 ? (
                           <>
                             <img
+                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/smiledp.png"
+                              alt="flow"
+                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
+                              style={{
+                                zIndex: 100,
+                              }}
+                            />
+                            <img
                               src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/red-eyes.png"
                               alt="flow"
                               className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
@@ -452,6 +460,17 @@ export default function Component() {
                               src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/white-eyes.png"
                               alt="flow"
                               className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute animate-pulse-custom"
+                              style={{
+                                zIndex: 100,
+                              }}
+                            />
+                          </>
+                        ) : flow > 0.4167 ? (
+                          <>
+                            <img
+                              src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/smiledp.png"
+                              alt="flow"
+                              className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
                               style={{
                                 zIndex: 100,
                               }}
