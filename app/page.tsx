@@ -401,7 +401,7 @@ export default function Component() {
                           />
                           {flow > 2.5 ? (
                             <>
-                              <motion.img
+                              {/* <motion.img
                                 key="red-smile"
                                 src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/red-smile.JPG"
                                 alt="flow"
@@ -412,7 +412,7 @@ export default function Component() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration }}
-                              />
+                              /> */}
                               <motion.img
                                 key="blind-smile"
                                 src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/blind-dp.png"
