@@ -723,7 +723,7 @@ export default function Component() {
                         )}`,
                 }))}
                 className="h-[40vh]"
-                title={"Progress on Tasks Backlog (h)"}
+                title={"Hours of Planned Tasks Left (h)"}
                 categories={["hours of planned tasks left"]}
                 colors={
                   showOnlyMA
