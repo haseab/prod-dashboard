@@ -7,18 +7,20 @@ import { useEffect } from "react";
 
 if (
   typeof window !== "undefined" &&
-  (window as Window).self === (window as Window).top &&
-  process.env.NODE_ENV === "production"
+  (window as Window).self === (window as Window).top
 ) {
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_API_KEY!, {
-    api_host: "https://app.posthog.com",
+  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+    api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST!,
+    // api_host: "https://us.i.posthog.com",
     session_recording: {
       maskAllInputs: false,
     },
-    // Enable debug mode in development
-    // loaded: (posthog) => {
-    //   if (process.env.NODE_ENV === "development") posthog.debug();
-    // },
+    capture_pageview: true,
+    capture_pageleave: true,
+    autocapture: true,
+    loaded: (posthog) => {
+      if (process.env.NODE_ENV === "development") posthog.debug();
+    },
   });
 }
 
