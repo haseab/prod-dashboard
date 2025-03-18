@@ -81,12 +81,11 @@ export async function GET(request: Request) {
     }
 
     taskBacklogHistory = await prisma.task_backlog.findMany({
-      // where: {
-      //   createdAt: {
-      //     gte: new Date(startDate as string),
-      //     lte: new Date(endDate as string),
-      //   },
-      // },
+      where: {
+        createdAt: {
+          gte: new Date("2025-01-01"),
+        },
+      },
       select: {
         id: true,
         amount: true,
