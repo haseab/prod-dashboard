@@ -13,6 +13,8 @@ let neutral = false;
 
 export const revalidate = 15;
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     console.log("-----------------------");
