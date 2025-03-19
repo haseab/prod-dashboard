@@ -13,7 +13,7 @@ let neutral = false;
 
 export const revalidate = 15;
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {
@@ -85,7 +85,7 @@ export async function GET(request: Request) {
     taskBacklogHistory = await prisma.task_backlog.findMany({
       where: {
         createdAt: {
-          gte: new Date("2025-01-01"),
+          gte: new Date(new Date().setMonth(new Date().getMonth() - 6)),
         },
       },
       select: {
