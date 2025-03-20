@@ -7,7 +7,8 @@ import { useEffect } from "react";
 
 if (
   typeof window !== "undefined" &&
-  (window as Window).self === (window as Window).top
+  (window as Window).self === (window as Window).top &&
+  process.env.NODE_ENV === "production"
 ) {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST!,
@@ -19,7 +20,7 @@ if (
     capture_pageleave: true,
     autocapture: true,
     loaded: (posthog) => {
-      if (process.env.NODE_ENV === "development") posthog.debug();
+      // if (process.env.NODE_ENV === "development") posthog.debug();
     },
   });
 }

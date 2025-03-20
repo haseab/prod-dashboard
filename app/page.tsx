@@ -361,15 +361,6 @@ export default function Component() {
           style={{ width: "100%", height: "100vh" }}
         >
           <div className="container mx-auto px-6 py-2">
-            {/* {flow > 1.5 && (
-              <div>
-                <FlowImg top="16%" left="18%" flow={flow} />
-                <FlowImg top="16%" left="35%" flow={flow} />
-                <FlowImg top="16%" left="65%" flow={flow} />
-                <FlowImg top="16%" left="82%" flow={flow} />
-              </div>
-            )} */}
-
             <div className="grid md:grid-cols-1 lg:grid-cols-5 items-center p-2 lg:p-0">
               <Title className="grid col-span-3 w-full gap-6 text-center">
                 Refreshing in {refreshTime - timeLeftRef.current} seconds
@@ -401,18 +392,6 @@ export default function Component() {
                           />
                           {flow > 2.5 ? (
                             <>
-                              {/* <motion.img
-                                key="red-smile"
-                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/red-smile.JPG"
-                                alt="flow"
-                                className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
-                                style={{
-                                  zIndex: 100,
-                                }}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration }}
-                              /> */}
                               <motion.img
                                 key="blind-smile"
                                 src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/blind-dp.png"
@@ -545,22 +524,6 @@ export default function Component() {
                           </a>
                         </p>
                       </div>
-                      {/* {flow > 0.8834 && (
-                        <div className="flex items-center justify-center w-full">
-                          <div
-                            className={cx(
-                              "flex h-6 w-24 items-center justify-center rounded-md animate-pulse-custom",
-                              {
-                                "bg-green-600": flow > 0.8334,
-                                "bg-purple-500": flow > 1.5,
-                                "bg-red-500": flow > 2.5,
-                              }
-                            )}
-                          >
-                            <span className="font-mono text-xs">In Flow!</span>
-                          </div>
-                        </div>
-                      )} */}
                     </div>
                     <div className="flex items-center justify-center">
                       <div className="border-b w-60 mt-5 sm:border-r border-gray-700 sm:h-32 sm:w-0"></div>
