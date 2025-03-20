@@ -25,7 +25,7 @@ export default function Number({
   });
   return (
     <>
-      <animated.div>{number.to((num) => num.toFixed(3))}</animated.div>
+      <animated.span>{number.to((num) => num.toFixed(3))}</animated.span>
     </>
   );
 }
