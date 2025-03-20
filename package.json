@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "scan": "next dev & npx react-scan@latest localhost:3003",
     "migrate:prod": "npx dotenv -e .env -- npx prisma db push --skip-generate",
     "migrate:dev": "npx dotenv -e .env.local -- npx prisma db push --skip-generate"
   },
@@ -53,6 +54,7 @@
     "react-canvas-confetti": "^2.0.7",
     "react-day-picker": "8.10.1",
     "react-dom": "18.2.0",
+    "react-scan": "^0.3.2",
     "react-spring": "^9.7.3",
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.2.0",

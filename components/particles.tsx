@@ -73,7 +73,7 @@ const ParticlesComponent = (props: any) => {
             enable: true,
             area: 800, // Keep density at default
           },
-          value: 75, // More particles for a denser effect
+          value: 750, // More particles for a denser effect
         },
         opacity: {
           value: { min: 0.1, max: 1 }, // High opacity to keep particles bright
