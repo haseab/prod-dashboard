@@ -1,4 +1,5 @@
 import { PHProvider } from "@/components/posthog-provider";
+import { ReactScan } from "@/components/scan";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Head from "next/head";
@@ -53,6 +54,7 @@ export default function RootLayout({
         <link rel="canonical" href="https://timetracking.live" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <ReactScan />
       <body className={inter.className}>
         <PHProvider>{children}</PHProvider>
       </body>

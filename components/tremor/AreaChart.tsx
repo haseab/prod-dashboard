@@ -956,7 +956,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                         liveCategory === category
                       ) {
                         return (
-                          <>
+                          <React.Fragment key={index}>
                             {liveCategory == category && (
                               <Dot
                                 key={index + 50}
@@ -1005,9 +1005,10 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                                 )
                               )}
                             />
-                          </>
+                          </React.Fragment>
                         );
                       }
+
                       return <React.Fragment key={index}></React.Fragment>;
                     }}
                     key={category}

@@ -6,6 +6,7 @@ import AreaGraph from "@/components/area";
 import MetricComponent from "@/components/metric";
 import ParticlesComponent from "@/components/particles";
 import PingDot from "@/components/ping-dot";
+import TimerComponent from "@/components/timer";
 import { WhyITrackTimeDialog } from "@/components/whyitracktime";
 import {
   cx,
@@ -284,27 +285,6 @@ export default function Component() {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      timeLeftRef.current += 1; // Update ref
-      setTimeLeftState(timeLeftRef.current); // Update state to trigger re-render
-
-      if (timeLeftRef.current >= refreshTime) {
-        timeLeftRef.current = 0;
-        setTimeLeftState(0); // Reset the timer and state
-      }
-
-      // Check if the data is stale
-      if (Date.now() - lastFetchTimeRef.current > staleDataInterval) {
-        setError(STALE_DATA_ERROR_MESSAGE);
-      }
-    }, pollingInterval);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  useEffect(() => {
     if (timeLeftState === refreshTime || timeLeftState === 0) {
       try {
         fetchData();
@@ -363,7 +343,12 @@ export default function Component() {
           <div className="container mx-auto px-6 py-2">
             <div className="grid md:grid-cols-1 lg:grid-cols-5 items-center p-2 lg:p-0">
               <Title className="grid col-span-3 w-full gap-6 text-center">
-                Refreshing in {refreshTime - timeLeftRef.current} seconds
+                {/* Refresh in {refreshTime - timeLeftRef.current} seconds */}
+                <TimerComponent
+                  refreshTime={refreshTime}
+                  setError={setError}
+                  setTimeLeftState={setTimeLeftState}
+                />
               </Title>
               <div className="hidden lg:block text-lg text-gray-100 text-center xs:grid-cols-2 lg:col-span-2">
                 <p>Last 7 Days</p>
