@@ -1,6 +1,5 @@
 "use client";
 
-import { SERVER_ERROR_MESSAGE } from "@/app/page";
 import { useEffect, useRef, useState } from "react";
 
 const CountdownComponent = ({
@@ -17,6 +16,7 @@ const CountdownComponent = ({
   const pollingInterval = 1000;
   const staleDataInterval = 30000; // 30 seconds
   const STALE_DATA_ERROR_MESSAGE = "Data is outdated, please refresh the page.";
+  const SERVER_ERROR_MESSAGE = "Server error: trying again in 30 seconds...";
 
   useEffect(() => {
     const interval = setInterval(() => {
