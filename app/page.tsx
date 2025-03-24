@@ -3,6 +3,7 @@
 import { weeklyProductiveFlow } from "@/app/constant";
 import ActivityIndicator from "@/components/activity";
 import AreaGraph from "@/components/area";
+import CountdownComponent from "@/components/countdown";
 import MetricComponent from "@/components/metric";
 import ParticlesComponent from "@/components/particles";
 import PingDot from "@/components/ping-dot";
@@ -344,10 +345,9 @@ export default function Component() {
             <div className="grid md:grid-cols-1 lg:grid-cols-5 items-center p-2 lg:p-0">
               <Title className="grid col-span-3 w-full gap-6 text-center">
                 {/* Refresh in {refreshTime - timeLeftRef.current} seconds */}
-                <TimerComponent
+                <CountdownComponent
                   refreshTime={refreshTime}
                   setError={setError}
-                  setTimeLeftState={setTimeLeftState}
                 />
               </Title>
               <div className="hidden lg:block text-lg text-gray-100 text-center xs:grid-cols-2 lg:col-span-2">
@@ -521,23 +521,10 @@ export default function Component() {
                             currentActivity={currentActivity}
                             flow={flow}
                           />
-                          <div className="mt-2 text-xl block sm:hidden flex">
-                            <p
-                              className={cx(
-                                "flex text-blue-500 font-mono transition-colors duration-1000 ease-in-out",
-                                {
-                                  "text-green-500": flow > 0.8334,
-                                  "text-purple-500": flow > 1.5,
-                                  "text-red-500": flow > 2.5,
-                                }
-                              )}
-                            >
-                              {formatTimeDifference(
-                                new Date(currentActivityStartTime),
-                                new Date()
-                              )}
-                            </p>
-                          </div>
+                          <TimerComponent
+                            flow={flow}
+                            currentActivityStartTime={currentActivityStartTime}
+                          />
                         </div>
 
                         <div className="flex mt-5 sm:mt-0 sm:ml-5 items-center justify-center h-full">
