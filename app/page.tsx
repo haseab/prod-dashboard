@@ -35,8 +35,7 @@ import {
 
 const refreshTime = 30;
 const duration = 1;
-export const SERVER_ERROR_MESSAGE =
-  "Server error: trying again in 30 seconds...";
+const SERVER_ERROR_MESSAGE = "Server error: trying again in 30 seconds...";
 
 export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
