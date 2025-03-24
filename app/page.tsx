@@ -11,7 +11,6 @@ import TimerComponent from "@/components/timer";
 import { WhyITrackTimeDialog } from "@/components/whyitracktime";
 import {
   cx,
-  formatTimeDifference,
   getNewMetricsData,
   roundToThree,
   simpleMovingAverage,
@@ -35,11 +34,9 @@ import {
 } from "../types";
 
 const refreshTime = 30;
-const pollingInterval = 1000;
-const staleDataInterval = 30000; // 30 seconds
-const SERVER_ERROR_MESSAGE = "Server error: trying again in 30 seconds...";
-const STALE_DATA_ERROR_MESSAGE = "Data is outdated, please refresh the page.";
 const duration = 1;
+export const SERVER_ERROR_MESSAGE =
+  "Server error: trying again in 30 seconds...";
 
 export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
@@ -107,7 +104,7 @@ export default function Component() {
   >([]);
   const [neutralActivity, setNeutralActivity] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = async (errorMessage: string) => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/metrics`;
 
     try {
@@ -277,25 +274,13 @@ export default function Component() {
     } catch (err: any) {
       console.log("returning error");
       console.log(err);
-      setError(SERVER_ERROR_MESSAGE);
+      setError(errorMessage);
     } finally {
       await setTimeout(() => {
         setShowConfetti(false);
       }, 5000);
     }
   };
-
-  useEffect(() => {
-    if (timeLeftState === refreshTime || timeLeftState === 0) {
-      try {
-        fetchData();
-        setError("");
-      } catch (err) {
-        console.error("Returning error!", err);
-        setError(SERVER_ERROR_MESSAGE);
-      }
-    }
-  }, [timeLeftState]);
 
   useEffect(() => {
     const transitionSettings = {
@@ -324,6 +309,10 @@ export default function Component() {
     });
   }, [flow, controls]);
 
+  useEffect(() => {
+    fetchData(SERVER_ERROR_MESSAGE);
+  }, []);
+
   return (
     <div className="flex h-[100dvh] bg-gray-900">
       <div className="h-[100dvh] flex font-sans flex-col flex-1 w-full">
@@ -348,6 +337,9 @@ export default function Component() {
                 <CountdownComponent
                   refreshTime={refreshTime}
                   setError={setError}
+                  fetchData={(errorMessage: string) => {
+                    fetchData(errorMessage);
+                  }}
                 />
               </Title>
               <div className="hidden lg:block text-lg text-gray-100 text-center xs:grid-cols-2 lg:col-span-2">
@@ -524,6 +516,7 @@ export default function Component() {
                           <TimerComponent
                             flow={flow}
                             currentActivityStartTime={currentActivityStartTime}
+                            className={"mt-2 text-xl block sm:hidden flex"}
                           />
                         </div>
 
@@ -545,23 +538,11 @@ export default function Component() {
                           />
                         </div>
                       </div>
-                      <div className="hidden sm:block flex">
-                        <p
-                          className={cx(
-                            "flex text-2xl text-blue-500 font-mono transition-colors duration-1000 ease-in-out",
-                            {
-                              "text-green-500": flow > 0.8334,
-                              "text-purple-500": flow > 1.5,
-                              "text-red-500": flow > 2.5,
-                            }
-                          )}
-                        >
-                          {formatTimeDifference(
-                            new Date(currentActivityStartTime),
-                            new Date()
-                          )}
-                        </p>
-                      </div>
+                      <TimerComponent
+                        flow={flow}
+                        currentActivityStartTime={currentActivityStartTime}
+                        className={"hidden sm:block flex text-2xl"}
+                      />
                     </div>
                   </Card>
                 </div>
