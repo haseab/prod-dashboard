@@ -24,8 +24,8 @@ const CountdownComponent = ({
         const next = prev + 1;
 
         if (next === refreshTime || next === 0) {
-          fetchData(SERVER_ERROR_MESSAGE);
           setError("");
+          fetchData(SERVER_ERROR_MESSAGE);
         }
         // Reset countdown after hitting refresh time
         return next >= refreshTime ? 0 : next;
