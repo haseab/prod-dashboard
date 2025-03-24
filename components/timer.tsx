@@ -6,9 +6,11 @@ import { useEffect, useState } from "react";
 const TimerComponent = ({
   flow,
   currentActivityStartTime,
+  className,
 }: {
   flow: number;
   currentActivityStartTime: string;
+  className?: string;
 }) => {
   const [timeLeft, setTimeLeft] = useState(0);
 
@@ -23,7 +25,7 @@ const TimerComponent = ({
   }, []);
 
   return (
-    <div className="mt-2 text-xl block sm:hidden flex">
+    <div className={cx("", className)}>
       <p
         className={cx(
           "flex text-blue-500 font-mono transition-colors duration-1000 ease-in-out",

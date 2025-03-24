@@ -1,18 +1,21 @@
 "use client";
 
+import { SERVER_ERROR_MESSAGE } from "@/app/page";
 import { useEffect, useRef, useState } from "react";
 
 const CountdownComponent = ({
   refreshTime,
   setError,
+  fetchData,
 }: {
   refreshTime: number;
   setError: (error: string) => void;
+  fetchData: (errorMessage: string) => void;
 }) => {
   const [localTimeLeftState, setLocalTimeLeftState] = useState(0);
   const lastFetchTimeRef = useRef(Date.now());
   const pollingInterval = 1000;
-  const staleDataInterval = 300000; // 5 minutes
+  const staleDataInterval = 30000; // 30 seconds
   const STALE_DATA_ERROR_MESSAGE = "Data is outdated, please refresh the page.";
 
   useEffect(() => {
@@ -20,11 +23,10 @@ const CountdownComponent = ({
       setLocalTimeLeftState((prev) => {
         const next = prev + 1;
 
-        // Handle stale data error
-        if (Date.now() - lastFetchTimeRef.current > staleDataInterval) {
-          setError(STALE_DATA_ERROR_MESSAGE);
+        if (next === refreshTime || next === 0) {
+          fetchData(SERVER_ERROR_MESSAGE);
+          setError("");
         }
-
         // Reset countdown after hitting refresh time
         return next >= refreshTime ? 0 : next;
       });
@@ -35,7 +37,7 @@ const CountdownComponent = ({
     };
   }, [refreshTime, setError]);
 
-  return <div>Refreshing in {refreshTime - localTimeLeftState} seconds</div>;
+  return <span>Refreshing in {refreshTime - localTimeLeftState} seconds</span>;
 };
 
 export default CountdownComponent;
