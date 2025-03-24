@@ -1,45 +1,43 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { cx, formatTimeDifference } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 const TimerComponent = ({
-  refreshTime,
-  setError,
-  setTimeLeftState,
+  flow,
+  currentActivityStartTime,
 }: {
-  refreshTime: number;
-  setError: (error: string) => void;
-  setTimeLeftState: (timeLeftState: number) => void;
+  flow: number;
+  currentActivityStartTime: string;
 }) => {
-  const [localTimeLeftState, setLocalTimeLeftState] = useState(0);
-  const lastFetchTimeRef = useRef(Date.now());
-  const timeLeftRef = useRef(0);
-  const pollingInterval = 1000;
-  const staleDataInterval = 30000; // 30 seconds
-  const STALE_DATA_ERROR_MESSAGE = "Data is outdated, please refresh the page.";
+  const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      timeLeftRef.current += 1; // Update ref
-      setLocalTimeLeftState(timeLeftRef.current); // Update state to trigger re-render
-
-      if (timeLeftRef.current >= refreshTime) {
-        timeLeftRef.current = 0;
-        setTimeLeftState(0); // Reset the timer and state
-      }
-
-      // Check if the data is stale
-      if (Date.now() - lastFetchTimeRef.current > staleDataInterval) {
-        setError(STALE_DATA_ERROR_MESSAGE);
-      }
-    }, pollingInterval);
+      setTimeLeft((prevTime) => prevTime + 1);
+    }, 1000);
 
     return () => {
       clearInterval(interval);
     };
   }, []);
 
-  return <div>Refreshing in {refreshTime - timeLeftRef.current} seconds</div>;
+  return (
+    <div className="mt-2 text-xl block sm:hidden flex">
+      <p
+        className={cx(
+          "flex text-blue-500 font-mono transition-colors duration-1000 ease-in-out",
+          {
+            "text-green-500": flow > 0.8334,
+            "text-purple-500": flow > 1.5,
+            "text-red-500": flow > 2.5,
+          }
+        )}
+      >
+        {formatTimeDifference(new Date(currentActivityStartTime), new Date())}
+      </p>
+    </div>
+  );
 };
 
 export default TimerComponent;
