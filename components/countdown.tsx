@@ -12,7 +12,7 @@ const CountdownComponent = ({
   const [localTimeLeftState, setLocalTimeLeftState] = useState(0);
   const lastFetchTimeRef = useRef(Date.now());
   const pollingInterval = 1000;
-  const staleDataInterval = 30000; // 30 seconds
+  const staleDataInterval = 300000; // 5 minutes
   const STALE_DATA_ERROR_MESSAGE = "Data is outdated, please refresh the page.";
 
   useEffect(() => {
