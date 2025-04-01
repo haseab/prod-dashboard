@@ -13,9 +13,12 @@ import { loadSlim } from "@tsparticles/slim"; // if you are going to use `loadSl
 
 const ParticlesComponent = (props: any) => {
   const [init, setInit] = useState(false);
+  const [engine, setEngine] = useState<any>(null);
 
   // this should be run only once per application lifetime
   useEffect(() => {
+    let isMounted = true;
+
     initParticlesEngine(async (engine) => {
       // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
       // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
@@ -24,13 +27,26 @@ const ParticlesComponent = (props: any) => {
       //await loadFull(engine);
       await loadSlim(engine);
       //await loadBasic(engine);
+      if (isMounted) {
+        setEngine(engine);
+      }
     }).then(() => {
-      setInit(true);
+      if (isMounted) {
+        setInit(true);
+      }
     });
+
+    return () => {
+      isMounted = false;
+      // Clean up particles engine
+      if (engine) {
+        engine.destroy();
+      }
+    };
   }, []);
 
   const particlesLoaded = async (container?: Container): Promise<void> => {
-    console.log(container);
+    console.log("Particles container loaded", container);
   };
 
   const options: ISourceOptions = useMemo(
@@ -40,7 +56,7 @@ const ParticlesComponent = (props: any) => {
           value: "transparent", // Keep transparent background
         },
       },
-      fpsLimit: 120,
+      fpsLimit: 60,
       particles: {
         color: {
           value:
@@ -118,6 +134,7 @@ const ParticlesComponent = (props: any) => {
 };
 
 export default React.memo(ParticlesComponent, (prevProps, nextProps) => {
-  console.log("prev flow", prevProps.flow, "next flow", nextProps.flow);
-  return Math.abs(nextProps.flow - prevProps.flow) < 0.05;
+  // console.log("prev flow", prevProps.flow, "next flow", nextProps.flow);
+  // Only re-render if flow changes by at least 0.1
+  return Math.abs(nextProps.flow - prevProps.flow) < 0.1;
 });
