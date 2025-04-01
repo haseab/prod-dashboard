@@ -135,20 +135,19 @@ export default function Component() {
         currentActivity,
         currentActivityStartTime,
         taskBacklogRefreshesLeft,
-        taskBacklogHistory,
+        taskBacklogHistory: taskBacklogHistoryData,
         neutralActivity,
       } = unprocessedData;
 
       setTaskBacklogRefreshesLeft(taskBacklogRefreshesLeft);
       setTaskBacklogHistory([
-        ...taskBacklogHistory,
+        ...taskBacklogHistoryData,
         { id: cuid(), amount: taskBacklog, createdAt: new Date() },
       ]);
       setNeutralActivity(neutralActivity);
       setFlow(currentActivity === "😴 Sleeping" ? 0 : flow);
       setStartDate(startDate);
       setEndDate(endDate);
-      setCurrentActivity(currentActivity);
       setCurrentActivityStartTime(currentActivityStartTime);
 
       const data = {
