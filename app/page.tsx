@@ -149,6 +149,7 @@ export default function Component() {
       setStartDate(startDate);
       setEndDate(endDate);
       setCurrentActivityStartTime(currentActivityStartTime);
+      setCurrentActivity(currentActivity);
 
       const data = {
         productiveFlow: sumValues(productiveFlowList),
