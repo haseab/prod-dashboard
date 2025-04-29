@@ -359,7 +359,8 @@ export default function Component() {
                         <div className="relative w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] transition-all duration-300">
                           <motion.img
                             key="normal-eyes"
-                            src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/normal-eyes.jpg"
+                            // src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/normal-eyes.jpg"
+                            src="https://pbs.twimg.com/profile_images/1857647057214791680/6ZlE8DmL_400x400.png"
                             alt="flow"
                             className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
                             style={{
@@ -465,7 +466,8 @@ export default function Component() {
                             <>
                               <motion.img
                                 key="smiledp"
-                                src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/smiledp.png"
+                                // src="https://pub-7712ec77fabb4a6d996c607b226d98f0.r2.dev/smiledp.png"
+                                src="https://pbs.twimg.com/profile_images/1857647057214791680/6ZlE8DmL_400x400.png"
                                 alt="flow"
                                 className="w-[20vh] h-[20vh] sm:w-[8rem] sm:h-[8rem] rounded-full absolute"
                                 style={{
