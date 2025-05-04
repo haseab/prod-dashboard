@@ -1,4 +1,3 @@
-import { setLightColor } from "@/app/lib/light-actions";
 import prisma from "@/app/lib/prisma";
 import { updateBacklogToDb } from "@/app/lib/server-utils";
 import { revalidateCache } from "@/lib/utils";
@@ -53,24 +52,24 @@ export async function GET(request: Request) {
 
     let taskBacklogHistory;
 
-    if (
-      prevFlowColour &&
-      currentFlowColour &&
-      prevFlowColour !== currentFlowColour &&
-      currentActivity !== "🤝 in a Meeting"
-    ) {
-      console.log("flow changed, changing lights...");
-      setLightColor({
-        flow: data.flow,
-        deviceId: process.env.FLOOR_LAMP_DEVICE_ID || "",
-        model: "H6008",
-      });
-      setLightColor({
-        flow: data.flow,
-        deviceId: process.env.TABLE_LAMP_DEVICE_ID || "",
-        model: "H6008",
-      });
-    }
+    // if (
+    //   prevFlowColour &&
+    //   currentFlowColour &&
+    //   prevFlowColour !== currentFlowColour &&
+    //   currentActivity !== "🤝 in a Meeting"
+    // ) {
+    //   console.log("flow changed, changing lights...");
+    //   setLightColor({
+    //     flow: data.flow,
+    //     deviceId: process.env.FLOOR_LAMP_DEVICE_ID || "",
+    //     model: "H6008",
+    //   });
+    //   setLightColor({
+    //     flow: data.flow,
+    //     deviceId: process.env.TABLE_LAMP_DEVICE_ID || "",
+    //     model: "H6008",
+    //   });
+    // }
 
     prevFlowColour = currentFlowColour;
 
