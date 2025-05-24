@@ -207,7 +207,7 @@ export default function ProfileCard({
         <TimerComponent
           flow={flow}
           currentActivityStartTime={currentActivityStartTime}
-          className={"hidden sm:block flex text-2xl"}
+          className={"hidden sm:block text-2xl"}
         />
       </div>
     </Card>
