@@ -12,6 +12,11 @@ export const metadata: Metadata = {
   description: "See what Haseab is up to 24/7",
   keywords: "timetracking, haseab, live timetracking, haseab live",
   icons: "/favicon.ico",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "timetracking.live",
+  },
   openGraph: {
     type: "website",
     url: "https://timetracking.live",
