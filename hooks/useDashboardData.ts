@@ -257,7 +257,7 @@ export function useDashboardData() {
         setError(""); // Clear error on successful fetch
       } catch (err: any) {
         console.error("Error in fetchData (custom hook):", err);
-        setError(errorMessage || err.message || "An unknown error occurred");
+        setError(err.message || errorMessage || "An unknown error occurred");
       } finally {
         setTimeout(() => {
           setShowConfetti(false);

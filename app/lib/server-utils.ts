@@ -19,24 +19,39 @@ export const updateBacklogToDb = async (
 
 export const sendPushoverNotification = async (message: string, title: string = "timetracking.live Error") => {
   try {
-    const pushoverData = {
-      token: process.env.CAL_PUSHOVER_TOKEN,
-      user: process.env.CAL_PUSHOVER_USER,
+    console.log("Attempting to send Pushover notification...");
+    console.log("Token exists:", !!process.env.CAL_PUSHOVER_TOKEN);
+    console.log("User exists:", !!process.env.CAL_PUSHOVER_USER);
+    
+    if (!process.env.CAL_PUSHOVER_TOKEN || !process.env.CAL_PUSHOVER_USER) {
+      console.error("Missing Pushover environment variables");
+      return;
+    }
+
+    const pushoverData = new URLSearchParams({
+      token: process.env.CAL_PUSHOVER_TOKEN!,
+      user: process.env.CAL_PUSHOVER_USER!,
       message: message,
       title: title,
-      sound: "bike"
-    };
+      sound: "falling"
+    });
+
+    console.log("Sending Pushover data with sound:", { message, title, sound: "falling" });
 
     const response = await fetch("https://api.pushover.net/1/messages.json", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: JSON.stringify(pushoverData),
+      body: pushoverData,
     });
 
+    const responseText = await response.text();
+    console.log("Pushover response status:", response.status);
+    console.log("Pushover response body:", responseText);
+
     if (!response.ok) {
-      console.error("Failed to send Pushover notification:", response.statusText);
+      console.error("Failed to send Pushover notification:", response.statusText, responseText);
     } else {
       console.log("Pushover notification sent successfully");
     }
