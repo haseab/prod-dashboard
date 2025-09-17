@@ -88,6 +88,10 @@ export function useDashboardData() {
         const result = await response.json();
 
         if (!response.ok) {
+          const specificErrors = [401, 500];
+          if (specificErrors.includes(response.status)) {
+            throw new Error(result.error);
+          }
           throw new Error(
             result.error || `HTTP error! status: ${response.status}`
           );
