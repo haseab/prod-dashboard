@@ -25,6 +25,18 @@ export async function GET(request: Request) {
 
     const { data } = await fetchTimeData({ startDate, endDate });
 
+    if (!data) {
+      return new Response(
+        JSON.stringify({ 
+          error: "time entries are labeled incorrectly. check server logs" 
+        }),
+        { 
+          status: 500,
+          headers: { "content-type": "application/json" }
+        }
+      );
+    }
+
     const {
       taskBacklog,
       neutralActivity,
@@ -115,7 +127,15 @@ export async function GET(request: Request) {
   } catch (error) {
     console.log("returning server error");
     console.error(error);
-    return new Response("An error occurred", { status: 500 });
+    return new Response(
+      JSON.stringify({ 
+        error: "time entries are labeled incorrectly. check server logs" 
+      }),
+      { 
+        status: 500,
+        headers: { "content-type": "application/json" }
+      }
+    );
   }
 }
 
