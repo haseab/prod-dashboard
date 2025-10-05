@@ -29,21 +29,42 @@ export async function GET(request: Request) {
     const data = await fetchTimeData({ startDate, endDate });
 
     if (!data) {
-      //print the data returned
-      console.log("data", data);
-      // await sendPushoverNotification(
-      //   "Data is undefined - time entries are labeled incorrectly. Check server logs.",
-      //   "timetracking.live Error"
-      // );
-      // return new Response(
-      //   JSON.stringify({
-      //     error: "time entries are labeled incorrectly. check server logs",
-      //   }),
-      //   {
-      //     status: 500,
-      //     headers: { "content-type": "application/json" },
-      //   }
-      // );
+      await sendPushoverNotification(
+        "Data is undefined - Check server logs.",
+        "timetracking.live Error"
+      );
+      return new Response(
+        JSON.stringify({
+          error: "Data is undefined - Check server logs.",
+        }),
+        {
+          status: 500,
+          headers: { "content-type": "application/json" },
+        }
+      );
+    }
+
+    // Check if the response is an error
+    if (
+      data &&
+      typeof data === "object" &&
+      "error" in data &&
+      "status" in data
+    ) {
+      console.log("Server returned error:", data);
+      await sendPushoverNotification(
+        `Server error: ${data.error} (status: ${data.status})`,
+        "timetracking.live Error"
+      );
+      return new Response(
+        JSON.stringify({
+          error: `Server Error: ${data.error}`,
+        }),
+        {
+          status: data.status || 500,
+          headers: { "content-type": "application/json" },
+        }
+      );
     }
 
     const {
@@ -124,7 +145,7 @@ export async function GET(request: Request) {
     return new Response(
       JSON.stringify({
         data: {
-          ...data,
+          ...data.data,
           taskBacklogHistory,
           taskBacklogRefreshesLeft: interval - count,
         },
@@ -181,7 +202,7 @@ const fetchTimeData = unstable_cache(
       }
 
       const data = await response.json();
-      
+
       console.log("fetchTimeData response:", data);
       return data;
     } catch (error) {
