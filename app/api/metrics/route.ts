@@ -67,20 +67,16 @@ export async function GET(request: Request) {
       );
     }
 
-    const {
-      taskBacklog,
-      neutralActivity,
-      currentActivity,
-      taskBacklogDetails,
-    } = data as MetricsResponse;
+    const { taskBacklog, neutralActivity, taskBacklogDetails } =
+      data.data as MetricsResponse;
     const currentFlowColour =
-      data.flow > 2.5
+      data.data.flow > 2.5
         ? "red"
-        : data.flow > 1.5
+        : data.data.flow > 1.5
         ? "purple"
-        : data.flow > 0.8334
+        : data.data.flow > 0.8334
         ? "green"
-        : data.flow > 0.4167
+        : data.data.flow > 0.4167
         ? "blue"
         : "default";
 
