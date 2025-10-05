@@ -1,5 +1,8 @@
 import prisma from "@/app/lib/prisma";
-import { updateBacklogToDb, sendPushoverNotification } from "@/app/lib/server-utils";
+import {
+  sendPushoverNotification,
+  updateBacklogToDb,
+} from "@/app/lib/server-utils";
 import { revalidateCache } from "@/lib/utils";
 import { MetricsResponse } from "@/types";
 import { unstable_cache } from "next/cache";
@@ -26,19 +29,21 @@ export async function GET(request: Request) {
     const { data } = await fetchTimeData({ startDate, endDate });
 
     if (!data) {
-      await sendPushoverNotification(
-        "Data is undefined - time entries are labeled incorrectly. Check server logs.",
-        "timetracking.live Error"
-      );
-      return new Response(
-        JSON.stringify({ 
-          error: "time entries are labeled incorrectly. check server logs" 
-        }),
-        { 
-          status: 500,
-          headers: { "content-type": "application/json" }
-        }
-      );
+      //print the data returned
+      console.log("data", data);
+      // await sendPushoverNotification(
+      //   "Data is undefined - time entries are labeled incorrectly. Check server logs.",
+      //   "timetracking.live Error"
+      // );
+      // return new Response(
+      //   JSON.stringify({
+      //     error: "time entries are labeled incorrectly. check server logs",
+      //   }),
+      //   {
+      //     status: 500,
+      //     headers: { "content-type": "application/json" },
+      //   }
+      // );
     }
 
     const {
@@ -132,16 +137,16 @@ export async function GET(request: Request) {
     console.log("returning server error");
     console.error(error);
     await sendPushoverNotification(
-      `API Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      `API Error: ${error instanceof Error ? error.message : "Unknown error"}`,
       "timetracking.live Error"
     );
     return new Response(
-      JSON.stringify({ 
-        error: "time entries are labeled incorrectly. check server logs" 
+      JSON.stringify({
+        error: "time entries are labeled incorrectly. check server logs",
       }),
-      { 
+      {
         status: 500,
-        headers: { "content-type": "application/json" }
+        headers: { "content-type": "application/json" },
       }
     );
   }
