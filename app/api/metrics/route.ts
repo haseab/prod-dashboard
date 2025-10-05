@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     const startDate = url.searchParams.get("startDate");
     const endDate = url.searchParams.get("endDate");
 
-    const { data } = await fetchTimeData({ startDate, endDate });
+    const data = await fetchTimeData({ startDate, endDate });
 
     if (!data) {
       //print the data returned
@@ -181,7 +181,8 @@ const fetchTimeData = unstable_cache(
       }
 
       const data = await response.json();
-
+      
+      console.log("fetchTimeData response:", data);
       return data;
     } catch (error) {
       console.error("FetchTimeData error:", error);
