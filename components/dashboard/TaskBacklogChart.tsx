@@ -105,7 +105,7 @@ export default function TaskBacklogChart({
 
     const currentBacklog = baseData[baseData.length - 1]?.amount || 0;
     const currentTimestamp = baseData[baseData.length - 1].timestamp;
-    const idealBurndownRate = 8; // hours per day
+    const idealBurndownRate = 4; // hours per day
 
     // Calculate projected line using linear regression on last 7 days
     let projectedSlope = 0;
@@ -124,29 +124,20 @@ export default function TaskBacklogChart({
     }
 
     // Add burndown values to existing data points
-    const dataWithBurndown = baseData.map((item) => {
+    const dataWithBurndown = baseData.map((item, index) => {
       const daysFromCurrent =
         (item.timestamp - currentTimestamp) / (24 * 60 * 60 * 1000);
 
-      // Ideal: starts from current point, 8 hr/day
-      const idealValue =
-        daysFromCurrent >= 0
-          ? Math.max(0, currentBacklog - daysFromCurrent * idealBurndownRate)
-          : null;
-
-      // Projected: line of best fit from last 7 days
-      let projectedValue = null;
-      if (recentData.length >= 2) {
-        const recentFirstTimestamp = recentData[0].timestamp;
-        const daysFromRecentFirst =
-          (item.timestamp - recentFirstTimestamp) / (24 * 60 * 60 * 1000);
-        if (daysFromRecentFirst >= 0) {
-          projectedValue = Math.max(
-            0,
-            projectedSlope * daysFromRecentFirst + projectedIntercept
-          );
-        }
+      // Ideal: starts from current point, 4 hr/day
+      let idealValue = null;
+      if (daysFromCurrent >= 0) {
+        const calculated = currentBacklog - daysFromCurrent * idealBurndownRate;
+        idealValue = calculated > 0 ? calculated : null;
       }
+
+      // Projected: only show at the very last point, null for all historical data
+      const isLastPoint = index === baseData.length - 1;
+      const projectedValue = isLastPoint ? currentBacklog : null;
 
       return {
         ...item,
@@ -159,16 +150,13 @@ export default function TaskBacklogChart({
     const futurePoints = [];
     const lastTimestamp = baseData[baseData.length - 1].timestamp;
 
-    // Calculate how far to extend
+    // Calculate how far to extend - no limit, go until projected reaches 0
     const daysToZeroIdeal = currentBacklog / idealBurndownRate;
     const daysToZeroProjected =
       projectedSlope < 0
         ? -projectedIntercept / projectedSlope
-        : daysToZeroIdeal;
-    const maxDays = Math.min(
-      Math.ceil(Math.max(daysToZeroIdeal, daysToZeroProjected)),
-      60
-    );
+        : daysToZeroIdeal * 2; // If slope is positive, extend further
+    const maxDays = Math.ceil(Math.max(daysToZeroIdeal, daysToZeroProjected));
 
     // Generate future points at 4-hour intervals
     const maxFutureTimestamp = lastTimestamp + maxDays * 24 * 60 * 60 * 1000;
@@ -188,18 +176,15 @@ export default function TaskBacklogChart({
 
       const daysFromCurrent =
         (futureTimestamp - currentTimestamp) / (24 * 60 * 60 * 1000);
-      const idealValue = Math.max(
-        0,
-        currentBacklog - daysFromCurrent * idealBurndownRate
-      );
+      const idealCalculated =
+        currentBacklog - daysFromCurrent * idealBurndownRate;
+      const idealValue = idealCalculated > 0 ? idealCalculated : null;
 
-      const recentFirstTimestamp = recentData[0]?.timestamp || currentTimestamp;
-      const daysFromRecentFirst =
-        (futureTimestamp - recentFirstTimestamp) / (24 * 60 * 60 * 1000);
-      const projectedValue = Math.max(
-        0,
-        projectedSlope * daysFromRecentFirst + projectedIntercept
-      );
+      // Projected: extend from current backlog using the calculated slope
+      const projectedCalculated =
+        currentBacklog + projectedSlope * daysFromCurrent;
+      const projectedValue =
+        projectedCalculated > 0 ? projectedCalculated : null;
 
       futurePoints.push({
         day: `future-${intervalIndex}`,
@@ -211,8 +196,8 @@ export default function TaskBacklogChart({
         "projected burndown": projectedValue,
       });
 
-      // Stop if both lines reached zero
-      if (idealValue === 0 && projectedValue === 0) break;
+      // Stop if both lines reached zero (null)
+      if (idealValue === null && projectedValue === null) break;
 
       futureTimestamp += FOUR_HOURS;
       intervalIndex++;
@@ -220,6 +205,37 @@ export default function TaskBacklogChart({
 
     return [...dataWithBurndown, ...futurePoints];
   }, [taskBacklogHistory]);
+
+  // Calculate projected burndown color based on slope comparison
+  const projectedBurndownColor = useMemo(() => {
+    if (chartData.length < 2) return "gray";
+
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const recentData = chartData.filter(
+      (item) =>
+        item.timestamp >= sevenDaysAgo &&
+        item.amount !== null &&
+        item.amount !== undefined
+    );
+
+    if (recentData.length < 2) return "gray";
+
+    // Calculate projected slope (hours per day)
+    const firstPoint = recentData[0];
+    const lastPoint = recentData[recentData.length - 1];
+
+    if (!firstPoint.amount || !lastPoint.amount) return "gray";
+
+    const daysDiff =
+      (lastPoint.timestamp - firstPoint.timestamp) / (24 * 60 * 60 * 1000);
+    const projectedSlope = (lastPoint.amount - firstPoint.amount) / daysDiff;
+
+    const idealBurndownRate = -4; // negative because we want decline
+
+    // If projected slope is more negative (faster decline), it's better (green)
+    // If projected slope is less negative (slower decline), it's worse (red)
+    return projectedSlope < idealBurndownRate ? "emerald" : "red";
+  }, [chartData]);
 
   return (
     <AreaGraph
@@ -233,14 +249,14 @@ export default function TaskBacklogChart({
       ]}
       colors={
         showOnlyMA
-          ? ["slate", "gray", "zinc"]
+          ? ["slate", projectedBurndownColor, "zinc"]
           : flow > 2.5
-          ? ["red", "gray", "zinc"]
+          ? ["red", projectedBurndownColor, "zinc"]
           : flow > 1.5
-          ? ["fuchsia", "gray", "zinc"]
+          ? ["fuchsia", projectedBurndownColor, "zinc"]
           : flow > 0.8334
-          ? ["emerald", "gray", "zinc"]
-          : ["blue", "gray", "zinc"]
+          ? ["emerald", projectedBurndownColor, "zinc"]
+          : ["blue", projectedBurndownColor, "zinc"]
       }
       index={"date"}
       minutesLeft={taskBacklogRefreshesLeft / 4}

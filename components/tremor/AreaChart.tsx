@@ -872,6 +872,12 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                         ? 0.3
                         : 1
                     }
+                    strokeDasharray={
+                      category === "projected burndown" ||
+                      category === "ideal burndown"
+                        ? "5 5"
+                        : undefined
+                    }
                     activeDot={(props: any) => {
                       const {
                         cx: cxCoord,
