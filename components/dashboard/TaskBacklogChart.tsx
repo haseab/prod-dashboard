@@ -109,13 +109,13 @@ export default function TaskBacklogChart({
 
     if (baseData.length === 0) return baseData;
 
-    // Get data for linear regression (last 7 days if available, otherwise all available data)
+    // Get data for linear regression (last 3 days if available, otherwise all available data)
     const now = Date.now();
-    const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const threeDaysAgo = now - 3 * 24 * 60 * 60 * 1000;
     const firstDataTimestamp = baseData[0].timestamp;
 
-    // Use all available data if we have less than 7 days
-    const regressionStartTime = Math.max(sevenDaysAgo, firstDataTimestamp);
+    // Use all available data if we have less than 3 days
+    const regressionStartTime = Math.max(threeDaysAgo, firstDataTimestamp);
     const recentData = baseData.filter(
       (item) =>
         item.timestamp >= regressionStartTime &&
@@ -135,7 +135,7 @@ export default function TaskBacklogChart({
       return dailyRate / 6;
     };
 
-    // Calculate projected line using linear regression on last 7 days
+    // Calculate projected line using linear regression on last 3 days
     let projectedSlope = 0;
     let projectedIntercept = currentBacklog;
 
