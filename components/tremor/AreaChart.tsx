@@ -1111,7 +1111,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                 const height = viewBox?.height || 0;
                 
                 // Position at bottom of the chart
-                const labelY = y + height + 10;
+                const labelY = y + height + 20;
                 const labelX = x;
                 
                 // Text dimensions (approximate)
