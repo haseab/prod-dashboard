@@ -48,6 +48,10 @@ const LegendItem = ({
   activeLegend,
 }: LegendItemProps) => {
   const hasOnValueChange = !!onClick;
+  const isProjectedBurndown = name === "projected burndown";
+  const isIdealBurndown = name === "ideal burndown";
+  const shouldUseLine = isProjectedBurndown || isIdealBurndown;
+  
   return (
     <li
       className={cx(
@@ -62,14 +66,38 @@ const LegendItem = ({
         onClick?.(name, color);
       }}
     >
-      <span
-        className={cx(
-          "h-[3px] w-3.5 shrink-0 rounded-full",
-          getColorClassName(color, "bg"),
-          activeLegend && activeLegend !== name ? "opacity-40" : "opacity-100"
-        )}
-        aria-hidden={true}
-      />
+      {shouldUseLine ? (
+        <svg
+          width="14"
+          height="3"
+          className={cx(
+            "shrink-0",
+            activeLegend && activeLegend !== name ? "opacity-40" : "opacity-100"
+          )}
+          aria-hidden={true}
+        >
+          <line
+            x1="0"
+            y1="1.5"
+            x2="14"
+            y2="1.5"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeDasharray={isProjectedBurndown ? "1 3" : "4 2"}
+            strokeLinecap={isProjectedBurndown ? "round" : "butt"}
+            className={cx(getColorClassName(color, "text"))}
+          />
+        </svg>
+      ) : (
+        <span
+          className={cx(
+            "h-[3px] w-3.5 shrink-0 rounded-full",
+            getColorClassName(color, "bg"),
+            activeLegend && activeLegend !== name ? "opacity-40" : "opacity-100"
+          )}
+          aria-hidden={true}
+        />
+      )}
       <p
         className={cx(
           // base
@@ -876,9 +904,15 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                         : 1
                     }
                     strokeDasharray={
-                      category === "projected burndown" ||
-                      category === "ideal burndown"
+                      category === "projected burndown"
+                        ? "1 4"
+                        : category === "ideal burndown"
                         ? "5 5"
+                        : undefined
+                    }
+                    strokeLinecap={
+                      category === "projected burndown"
+                        ? "round"
                         : undefined
                     }
                     activeDot={(props: any) => {
@@ -1076,14 +1110,15 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                   x={line.x}
                   y={line.y}
                   stroke={line.color || "#ef4444"}
-                  strokeWidth={line.strokeWidth || 3}
+                  strokeWidth={line.strokeWidth || 2}
                   label={{
                     value: line.label || "",
                     position: "bottom",
                     fill: line.color || "#ef4444",
-                    fontSize: 14,
-                    fontWeight: "bold",
+                    fontSize: 11,
+                    fontWeight: 600,
                     dy: 10,
+                    opacity: 0.85,
                   }}
                 />
               );

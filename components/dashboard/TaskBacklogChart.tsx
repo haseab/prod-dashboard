@@ -387,7 +387,7 @@ export default function TaskBacklogChart({
       x: deadlineStr,
       label: "DEADLINE",
       color: "#ef4444",
-      strokeWidth: 3,
+      strokeWidth: 2,
     };
 
     console.log("TaskBacklogChart - Reference line config:", refLine);
