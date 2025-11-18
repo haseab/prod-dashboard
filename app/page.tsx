@@ -33,6 +33,7 @@ export default function Component() {
     currentActivityStartTime,
     taskBacklogHistory,
     neutralActivity,
+    dailyIdealBurndown,
     fetchData,
   } = useDashboardData();
 
@@ -114,6 +115,7 @@ export default function Component() {
                 showOnlyMA={showOnlyMA}
                 taskBacklogRefreshesLeft={taskBacklogRefreshesLeft}
                 neutralActivity={neutralActivity}
+                dailyIdealBurndown={dailyIdealBurndown}
               />
               <WeeklyProductiveFlowChart
                 weeklyProductiveFlowData={weeklyProductiveFlowData}

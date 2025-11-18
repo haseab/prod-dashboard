@@ -706,7 +706,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
               )}
               tickLine={false}
               axisLine={false}
-              minTickGap={tickGap}
+              minTickGap={80}
             >
               {xAxisLabel && (
                 <Label
@@ -872,6 +872,12 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                         ? 0.3
                         : 1
                     }
+                    strokeDasharray={
+                      category === "projected burndown" ||
+                      category === "ideal burndown"
+                        ? "5 5"
+                        : undefined
+                    }
                     activeDot={(props: any) => {
                       const {
                         cx: cxCoord,
@@ -951,10 +957,17 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                           />
                         );
                       }
-                      if (
-                        data.length - 1 === index &&
-                        liveCategory === category
-                      ) {
+                      // Check if this is the LIVE point: has non-null value for liveCategory
+                      // and is either last point OR next point has null for liveCategory
+                      const isLivePoint =
+                        liveCategory === category &&
+                        props.value !== null &&
+                        props.value !== undefined &&
+                        (index === data.length - 1 ||
+                          !data[index + 1]?.[category] ||
+                          data[index + 1]?.[category] === null);
+
+                      if (isLivePoint) {
                         return (
                           <React.Fragment key={index}>
                             {liveCategory == category && (
