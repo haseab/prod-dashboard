@@ -45,15 +45,6 @@ export default function TaskBacklogChart({
   const chartData = useMemo(() => {
     if (taskBacklogHistory.length === 0) return [];
 
-    console.log("📈 TaskBacklogChart Debug:");
-    console.log("  - Total history entries:", taskBacklogHistory.length);
-    console.log(
-      "  - Last 3 entries:",
-      taskBacklogHistory
-        .slice(-3)
-        .map((h) => ({ amount: h.amount, date: h.createdAt }))
-    );
-
     // Separate the LIVE point (last entry) from historical data
     const livePoint = taskBacklogHistory[taskBacklogHistory.length - 1];
     const historicalData = taskBacklogHistory.slice(0, -1);
@@ -143,15 +134,6 @@ export default function TaskBacklogChart({
       // Convert daily rate to 4-hour interval rate (1 day = 6 intervals of 4 hours)
       return dailyRate / 6;
     };
-
-    console.log("  - After 4hr aggregation, entries:", baseData.length);
-    console.log("  - Current backlog (last point):", currentBacklog);
-    console.log("  - Last aggregated point:", baseData[baseData.length - 1]);
-    console.log(
-      "  - Daily ideal burndown rates:",
-      Object.keys(dailyIdealBurndown).length,
-      "days"
-    );
 
     // Calculate projected line using linear regression on last 7 days
     let projectedSlope = 0;
@@ -271,9 +253,6 @@ export default function TaskBacklogChart({
     }
 
     const finalData = [...dataWithBurndown, ...futurePoints];
-    console.log("  - Final chart data length:", finalData.length);
-    console.log("  - Last data point:", finalData[finalData.length - 1]);
-    console.log("  - Second to last:", finalData[finalData.length - 2]);
 
     return finalData;
   }, [taskBacklogHistory, dailyIdealBurndown]);
