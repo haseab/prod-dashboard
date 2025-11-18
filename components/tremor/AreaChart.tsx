@@ -1067,8 +1067,6 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                     dataKey={category}
                     stroke=""
                     strokeWidth={2}
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
                     isAnimationActive={true}
                     connectNulls={connectNulls}
                     stackId={stacked ? "stack" : undefined}
@@ -1104,6 +1102,70 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
             {/* Reference lines */}
             {referenceLines.map((line, idx) => {
               console.log("AreaChart - Rendering reference line:", line);
+              
+              // Custom label component with backdrop blur
+              const CustomLabel = (props: any) => {
+                const { viewBox, value } = props;
+                const x = viewBox?.x || 0;
+                const y = viewBox?.y || 0;
+                const height = viewBox?.height || 0;
+                
+                // Position at bottom of the chart
+                const labelY = y + height + 10;
+                const labelX = x;
+                
+                // Text dimensions (approximate)
+                const text = value || "";
+                const charWidth = 6;
+                const textWidth = text.length * charWidth;
+                const padding = 6;
+                const rectWidth = textWidth + padding * 2;
+                const rectHeight = 18;
+                
+                return (
+                  <g>
+                    {/* Background rect with blur effect */}
+                    <defs>
+                      <filter id={`blur-${idx}`} x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+                      </filter>
+                    </defs>
+                    {/* Blurred background */}
+                    <rect
+                      x={labelX - rectWidth / 2}
+                      y={labelY - rectHeight / 2}
+                      width={rectWidth}
+                      height={rectHeight}
+                      fill="rgba(0, 0, 0, 0.7)"
+                      rx="4"
+                      filter={`url(#blur-${idx})`}
+                    />
+                    {/* Solid background on top for better contrast */}
+                    <rect
+                      x={labelX - rectWidth / 2}
+                      y={labelY - rectHeight / 2}
+                      width={rectWidth}
+                      height={rectHeight}
+                      fill="rgba(0, 0, 0, 0.5)"
+                      rx="4"
+                    />
+                    {/* Text */}
+                    <text
+                      x={labelX}
+                      y={labelY}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fill={line.color || "#ef4444"}
+                      fontSize={11}
+                      fontWeight={600}
+                      opacity={0.95}
+                    >
+                      {text}
+                    </text>
+                  </g>
+                );
+              };
+              
               return (
                 <ReferenceLine
                   key={`ref-line-${idx}`}
@@ -1111,15 +1173,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                   y={line.y}
                   stroke={line.color || "#ef4444"}
                   strokeWidth={line.strokeWidth || 2}
-                  label={{
-                    value: line.label || "",
-                    position: "bottom",
-                    fill: line.color || "#ef4444",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    dy: 10,
-                    opacity: 0.85,
-                  }}
+                  label={<CustomLabel value={line.label || ""} />}
                 />
               );
             })}
