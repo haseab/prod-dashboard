@@ -706,7 +706,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
               )}
               tickLine={false}
               axisLine={false}
-              minTickGap={tickGap}
+              minTickGap={80}
             >
               {xAxisLabel && (
                 <Label
