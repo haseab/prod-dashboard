@@ -5,7 +5,7 @@ import { task_backlog } from "@prisma/client";
 import { useMemo } from "react";
 
 interface TaskBacklogChartProps {
-  taskBacklogHistory: Pick<task_backlog, "id" | "amount" | "createdAt">[];
+  taskBacklogHistory: Pick<task_backlog, "id" | "amount" | "createdAt" | "deadline">[];
   flow: number;
   showOnlyMA: boolean;
   taskBacklogRefreshesLeft: number;
@@ -252,7 +252,57 @@ export default function TaskBacklogChart({
       intervalIndex++;
     }
 
-    const finalData = [...dataWithBurndown, ...futurePoints];
+    let finalData = [...dataWithBurndown, ...futurePoints];
+
+    // Insert deadline point if it exists
+    const deadlines = taskBacklogHistory
+      .map(item => item.deadline)
+      .filter((d): d is Date => d !== null && d !== undefined);
+
+    if (deadlines.length > 0) {
+      const latestTimestamp = Math.max(...deadlines.map(d => new Date(d).getTime()));
+      const deadlineDate = new Date(latestTimestamp);
+      const deadlineTimestamp = deadlineDate.getTime();
+
+      // Find where to insert the deadline in the data
+      const insertIndex = finalData.findIndex(item => item.timestamp > deadlineTimestamp);
+
+      if (insertIndex !== -1) {
+        const deadlineStr = `${deadlineDate.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })} ${deadlineDate.toLocaleTimeString("en-GB", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        })}`;
+
+        // Get interpolated values for the deadline point
+        const prevPoint = finalData[insertIndex - 1];
+        const nextPoint = finalData[insertIndex];
+
+        const deadlinePoint = {
+          day: `deadline-point`,
+          "hours of planned tasks left": null,
+          date: deadlineStr,
+          timestamp: deadlineTimestamp,
+          amount: null,
+          "ideal burndown": prevPoint && nextPoint ?
+            prevPoint["ideal burndown"] : null,
+          "projected burndown": prevPoint && nextPoint ?
+            prevPoint["projected burndown"] : null,
+        };
+
+        // Insert the deadline point
+        finalData = [
+          ...finalData.slice(0, insertIndex),
+          deadlinePoint,
+          ...finalData.slice(insertIndex)
+        ];
+
+        console.log("TaskBacklogChart - Inserted deadline point at index", insertIndex, deadlinePoint);
+      }
+    }
 
     return finalData;
   }, [taskBacklogHistory, dailyIdealBurndown]);
@@ -292,6 +342,58 @@ export default function TaskBacklogChart({
     return projectedSlope < idealBurndownRate ? "emerald" : "red";
   }, [chartData]);
 
+  // Find the latest deadline from the task backlog history
+  const latestDeadline = useMemo(() => {
+    console.log("TaskBacklogChart - taskBacklogHistory:", taskBacklogHistory);
+    const deadlines = taskBacklogHistory
+      .map(item => item.deadline)
+      .filter((d): d is Date => d !== null && d !== undefined);
+
+    console.log("TaskBacklogChart - filtered deadlines:", deadlines);
+
+    if (deadlines.length === 0) {
+      console.log("TaskBacklogChart - No deadlines found");
+      return null;
+    }
+
+    // Convert to timestamps and find the max
+    const latestTimestamp = Math.max(...deadlines.map(d => new Date(d).getTime()));
+    const deadline = new Date(latestTimestamp);
+    console.log("TaskBacklogChart - Latest deadline:", deadline);
+    return deadline;
+  }, [taskBacklogHistory]);
+
+  // Create reference line for deadline
+  const referenceLines = useMemo(() => {
+    if (!latestDeadline) {
+      console.log("TaskBacklogChart - No reference lines (no deadline)");
+      return [];
+    }
+
+    const deadlineDate = new Date(latestDeadline);
+    const deadlineStr = `${deadlineDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    })} ${deadlineDate.toLocaleTimeString("en-GB", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })}`;
+
+    console.log("TaskBacklogChart - Deadline string for chart:", deadlineStr);
+    console.log("TaskBacklogChart - Available chart dates:", chartData.map(d => d.date));
+
+    const refLine = {
+      x: deadlineStr,
+      label: "DEADLINE",
+      color: "#ef4444",
+      strokeWidth: 3,
+    };
+
+    console.log("TaskBacklogChart - Reference line config:", refLine);
+    return [refLine];
+  }, [latestDeadline, chartData]);
+
   return (
     <AreaGraph
       data={chartData}
@@ -318,6 +420,7 @@ export default function TaskBacklogChart({
       timeUnits="minutes"
       liveCategory="hours of planned tasks left"
       neutralActivity={neutralActivity}
+      referenceLines={referenceLines}
       tooltip={
         "This graph shows the status of how many hours of planned work is left on my to-do list. It refreshes every hour and if it goes down it means I'm completing more tasks than planning, and vice versa.\nI track this because this is single handedly the most useful metric for me to know if I'm moving the needle toward my goals. This is because my planned tasks are essentially my theory of the qucikest steps required to get closer to my goals, and if I can do what I say I will do, that's a good sign."
       }

@@ -73,7 +73,7 @@ export function useDashboardData() {
   const [currentActivity, setCurrentActivity] = useState("Loading ...");
   const [currentActivityStartTime, setCurrentActivityStartTime] = useState("");
   const [taskBacklogHistory, setTaskBacklogHistory] = useState<
-    Pick<task_backlog, "id" | "amount" | "createdAt">[]
+    Pick<task_backlog, "id" | "amount" | "createdAt" | "deadline">[]
   >([]);
   const [neutralActivity, setNeutralActivity] = useState(false);
   const [dailyIdealBurndown, setDailyIdealBurndown] = useState<{ [key: string]: number }>({});
@@ -126,7 +126,7 @@ export function useDashboardData() {
         setTaskBacklogRefreshesLeft(newTbRefreshesLeft);
         setTaskBacklogHistory([
           ...newTaskBacklogHistoryData,
-          { id: cuid(), amount: taskBacklog, createdAt: new Date() },
+          { id: cuid(), amount: taskBacklog, createdAt: new Date(), deadline: null },
         ]);
         setNeutralActivity(newNeutralActivity);
         setDailyIdealBurndown(newDailyIdealBurndown || {});

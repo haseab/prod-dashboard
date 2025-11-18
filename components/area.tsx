@@ -27,6 +27,7 @@ export default function AreaGraph({
   timeUnits,
   liveCategory,
   neutralActivity,
+  referenceLines,
 }: {
   data?:
     | ChartData[]
@@ -44,6 +45,7 @@ export default function AreaGraph({
   timeUnits?: string;
   liveCategory?: string;
   neutralActivity?: boolean;
+  referenceLines?: Array<{ x?: string | number; y?: number; label?: string; color?: string; strokeWidth?: number }>;
 }) {
   const [showDialog, setShowDialog] = useState(false);
 
@@ -89,6 +91,7 @@ export default function AreaGraph({
           categories={categories}
           colors={colors as AvailableChartColorsKeys[]}
           liveCategory={liveCategory}
+          referenceLines={referenceLines}
           // valueFormatter={valueFormatter}
         />
       </Card>

@@ -12,6 +12,7 @@ import {
   Line,
   AreaChart as RechartsAreaChart,
   Legend as RechartsLegend,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -507,6 +508,7 @@ interface AreaChartProps extends React.HTMLAttributes<HTMLDivElement> {
   liveCategory?: string;
   tooltipCallback?: (tooltipCallbackContent: TooltipProps) => void;
   customTooltip?: React.ComponentType<TooltipProps>;
+  referenceLines?: Array<{ x?: string | number; y?: number; label?: string; color?: string; strokeWidth?: number }>;
 }
 
 const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
@@ -542,6 +544,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
       tooltipCallback,
       customTooltip,
       liveCategory,
+      referenceLines = [],
       ...other
     } = props;
     const CustomTooltip = customTooltip;
@@ -1064,6 +1067,27 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                   />
                 ))
               : null}
+            {/* Reference lines */}
+            {referenceLines.map((line, idx) => {
+              console.log("AreaChart - Rendering reference line:", line);
+              return (
+                <ReferenceLine
+                  key={`ref-line-${idx}`}
+                  x={line.x}
+                  y={line.y}
+                  stroke={line.color || "#ef4444"}
+                  strokeWidth={line.strokeWidth || 3}
+                  label={{
+                    value: line.label || "",
+                    position: "bottom",
+                    fill: line.color || "#ef4444",
+                    fontSize: 14,
+                    fontWeight: "bold",
+                    dy: 10,
+                  }}
+                />
+              );
+            })}
           </RechartsAreaChart>
         </ResponsiveContainer>
       </div>

@@ -129,6 +129,7 @@ export async function GET(request: Request) {
         id: true,
         amount: true,
         createdAt: true,
+        deadline: true,
       },
       orderBy: {
         createdAt: "asc",
