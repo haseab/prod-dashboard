@@ -10,6 +10,7 @@ interface TaskBacklogChartProps {
   showOnlyMA: boolean;
   taskBacklogRefreshesLeft: number;
   neutralActivity: boolean;
+  dailyIdealBurndown?: { [key: string]: number };
 }
 
 // Calculate linear regression (line of best fit) from data points
@@ -39,6 +40,7 @@ export default function TaskBacklogChart({
   showOnlyMA,
   taskBacklogRefreshesLeft,
   neutralActivity,
+  dailyIdealBurndown = {},
 }: TaskBacklogChartProps) {
   const chartData = useMemo(() => {
     if (taskBacklogHistory.length === 0) return [];
@@ -132,11 +134,24 @@ export default function TaskBacklogChart({
 
     const currentBacklog = baseData[baseData.length - 1]?.amount || 0;
     const currentTimestamp = baseData[baseData.length - 1].timestamp;
-    const idealBurndownRate = 6; // hours per day
+
+    // Helper function to get ideal burndown rate for a given timestamp (4-hour interval)
+    const getIdealBurndownRate = (timestamp: number): number => {
+      const date = new Date(timestamp);
+      const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD format
+      const dailyRate = dailyIdealBurndown[dateStr] ?? 6; // Default to 6 if not found
+      // Convert daily rate to 4-hour interval rate (1 day = 6 intervals of 4 hours)
+      return dailyRate / 6;
+    };
 
     console.log("  - After 4hr aggregation, entries:", baseData.length);
     console.log("  - Current backlog (last point):", currentBacklog);
     console.log("  - Last aggregated point:", baseData[baseData.length - 1]);
+    console.log(
+      "  - Daily ideal burndown rates:",
+      Object.keys(dailyIdealBurndown).length,
+      "days"
+    );
 
     // Calculate projected line using linear regression on last 7 days
     let projectedSlope = 0;
@@ -159,11 +174,18 @@ export default function TaskBacklogChart({
       const daysFromCurrent =
         (item.timestamp - currentTimestamp) / (24 * 60 * 60 * 1000);
 
-      // Ideal: starts from current point, 6 hr/day
+      // Ideal: starts from current point, using 4-hour interval rates
       let idealValue = null;
       if (daysFromCurrent >= 0) {
-        const calculated = currentBacklog - daysFromCurrent * idealBurndownRate;
-        idealValue = calculated > 0 ? calculated : null;
+        let remainingBacklog = currentBacklog;
+        // Calculate number of 4-hour intervals from current point
+        const intervalCount = Math.floor((daysFromCurrent * 24) / 4);
+        for (let i = 0; i < intervalCount && remainingBacklog > 0; i++) {
+          const checkTimestamp = currentTimestamp + i * 4 * 60 * 60 * 1000;
+          const intervalRate = getIdealBurndownRate(checkTimestamp);
+          remainingBacklog = Math.max(0, remainingBacklog - intervalRate);
+        }
+        idealValue = remainingBacklog > 0 ? remainingBacklog : null;
       }
 
       // Projected: only show at the very last point, null for all historical data
@@ -181,8 +203,13 @@ export default function TaskBacklogChart({
     const futurePoints = [];
     const lastTimestamp = baseData[baseData.length - 1].timestamp;
 
-    // Calculate how far to extend - no limit, go until projected reaches 0
-    const daysToZeroIdeal = currentBacklog / idealBurndownRate;
+    // Calculate how far to extend - estimate based on average daily rate
+    const avgDailyRate =
+      Object.values(dailyIdealBurndown).length > 0
+        ? Object.values(dailyIdealBurndown).reduce((a, b) => a + b, 0) /
+          Object.values(dailyIdealBurndown).length
+        : 6; // Default to 6 if no rates available
+    const daysToZeroIdeal = currentBacklog / avgDailyRate;
     const daysToZeroProjected =
       projectedSlope < 0
         ? -projectedIntercept / projectedSlope
@@ -207,9 +234,18 @@ export default function TaskBacklogChart({
 
       const daysFromCurrent =
         (futureTimestamp - currentTimestamp) / (24 * 60 * 60 * 1000);
-      const idealCalculated =
-        currentBacklog - daysFromCurrent * idealBurndownRate;
-      const idealValue = idealCalculated > 0 ? idealCalculated : null;
+
+      // Calculate cumulative burndown using 4-hour interval rates for future points
+      let remainingBacklog = currentBacklog;
+      const intervalCount = Math.floor((daysFromCurrent * 24) / 4);
+
+      for (let i = 0; i < intervalCount && remainingBacklog > 0; i++) {
+        const checkTimestamp = currentTimestamp + i * 4 * 60 * 60 * 1000;
+        const intervalRate = getIdealBurndownRate(checkTimestamp);
+        remainingBacklog = Math.max(0, remainingBacklog - intervalRate);
+      }
+
+      const idealValue = remainingBacklog > 0 ? remainingBacklog : null;
 
       // Projected: extend from current backlog using the calculated slope
       const projectedCalculated =
@@ -240,7 +276,7 @@ export default function TaskBacklogChart({
     console.log("  - Second to last:", finalData[finalData.length - 2]);
 
     return finalData;
-  }, [taskBacklogHistory]);
+  }, [taskBacklogHistory, dailyIdealBurndown]);
 
   // Calculate projected burndown color based on slope comparison
   const projectedBurndownColor = useMemo(() => {

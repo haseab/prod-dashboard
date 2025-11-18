@@ -76,6 +76,7 @@ export function useDashboardData() {
     Pick<task_backlog, "id" | "amount" | "createdAt">[]
   >([]);
   const [neutralActivity, setNeutralActivity] = useState(false);
+  const [dailyIdealBurndown, setDailyIdealBurndown] = useState<{ [key: string]: number }>({});
 
   const fetchData = useCallback(
     async (errorMessage: string) => {
@@ -119,6 +120,7 @@ export function useDashboardData() {
           taskBacklogRefreshesLeft: newTbRefreshesLeft,
           taskBacklogHistory: newTaskBacklogHistoryData,
           neutralActivity: newNeutralActivity,
+          dailyIdealBurndown: newDailyIdealBurndown,
         } = unprocessedData;
 
         console.log("📊 Task Backlog Debug:");
@@ -132,6 +134,7 @@ export function useDashboardData() {
           { id: cuid(), amount: taskBacklog, createdAt: new Date() },
         ]);
         setNeutralActivity(newNeutralActivity);
+        setDailyIdealBurndown(newDailyIdealBurndown || {});
         setFlow(newCurrentActivity === "😴 Sleeping" ? 0 : newFlow);
         setStartDate(newStartDate);
         setEndDate(newEndDate);
@@ -294,6 +297,7 @@ export function useDashboardData() {
     currentActivityStartTime,
     taskBacklogHistory,
     neutralActivity,
+    dailyIdealBurndown,
     fetchData, // Exporting fetchData for CountdownComponent's refresh
   };
 }

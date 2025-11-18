@@ -93,6 +93,7 @@ export declare interface MetricsResponse {
   taskBacklogRefreshesLeft: number;
   neutralActivity: boolean;
   taskBacklogDetails: Record<string, string | number>[];
+  dailyIdealBurndown?: { [key: string]: number };
   // efficiencyList: (presumably an array of numbers or a specific object structure)
 }
 
