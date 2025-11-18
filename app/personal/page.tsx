@@ -32,6 +32,7 @@ export default function Component() {
     currentActivityStartTime,
     taskBacklogHistory,
     neutralActivity,
+    dailyIdealBurndown,
     fetchData,
   } = useDashboardData();
 
