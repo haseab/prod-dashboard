@@ -27,7 +27,6 @@ export default function AreaGraph({
   timeUnits,
   liveCategory,
   neutralActivity,
-  burndownLines,
 }: {
   data?:
     | ChartData[]
