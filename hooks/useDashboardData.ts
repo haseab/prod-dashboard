@@ -121,6 +121,11 @@ export function useDashboardData() {
           neutralActivity: newNeutralActivity,
         } = unprocessedData;
 
+        console.log("📊 Task Backlog Debug:");
+        console.log("  - taskBacklog from server:", taskBacklog);
+        console.log("  - taskBacklogHistory from DB:", newTaskBacklogHistoryData.slice(-3));
+        console.log("  - Creating LIVE point with amount:", taskBacklog);
+        
         setTaskBacklogRefreshesLeft(newTbRefreshesLeft);
         setTaskBacklogHistory([
           ...newTaskBacklogHistoryData,

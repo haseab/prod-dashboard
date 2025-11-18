@@ -43,14 +43,27 @@ export default function TaskBacklogChart({
   const chartData = useMemo(() => {
     if (taskBacklogHistory.length === 0) return [];
 
-    // Group data into 4-hour intervals and calculate averages
+    console.log("📈 TaskBacklogChart Debug:");
+    console.log("  - Total history entries:", taskBacklogHistory.length);
+    console.log(
+      "  - Last 3 entries:",
+      taskBacklogHistory
+        .slice(-3)
+        .map((h) => ({ amount: h.amount, date: h.createdAt }))
+    );
+
+    // Separate the LIVE point (last entry) from historical data
+    const livePoint = taskBacklogHistory[taskBacklogHistory.length - 1];
+    const historicalData = taskBacklogHistory.slice(0, -1);
+
+    // Group historical data into 4-hour intervals and calculate averages
     const FOUR_HOURS = 4 * 60 * 60 * 1000; // milliseconds in 4 hours
     const grouped = new Map<
       number,
       { amounts: number[]; timestamps: number[] }
     >();
 
-    taskBacklogHistory.forEach((item) => {
+    historicalData.forEach((item) => {
       const timestamp = new Date(item.createdAt).getTime();
       const intervalStart = Math.floor(timestamp / FOUR_HOURS) * FOUR_HOURS;
 
@@ -61,10 +74,10 @@ export default function TaskBacklogChart({
       grouped.get(intervalStart)!.timestamps.push(timestamp);
     });
 
-    // Convert to array and calculate averages
-    const baseData = Array.from(grouped.entries())
+    // Convert to array and calculate averages for historical data
+    const historicalBaseData = Array.from(grouped.entries())
       .sort(([a], [b]) => a - b)
-      .map(([intervalStart, data], index, array) => {
+      .map(([intervalStart, data]) => {
         const avgAmount =
           data.amounts.reduce((sum, val) => sum + val, 0) / data.amounts.length;
         const avgTimestamp =
@@ -75,21 +88,31 @@ export default function TaskBacklogChart({
         return {
           day: `interval-${intervalStart}`,
           "hours of planned tasks left": avgAmount,
-          date:
-            index === array.length - 1
-              ? "LIVE"
-              : `${date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })} ${date.toLocaleTimeString("en-GB", {
-                  hour: "numeric",
-                  minute: "2-digit",
-                  hour12: true,
-                })}`,
+          date: `${date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })} ${date.toLocaleTimeString("en-GB", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          })}`,
           timestamp: avgTimestamp,
           amount: avgAmount,
         };
       });
+
+    // Add the LIVE point as-is (not aggregated)
+    const liveTimestamp = new Date(livePoint.createdAt).getTime();
+    const baseData = [
+      ...historicalBaseData,
+      {
+        day: `live-${livePoint.id}`,
+        "hours of planned tasks left": livePoint.amount,
+        date: "LIVE",
+        timestamp: liveTimestamp,
+        amount: livePoint.amount,
+      },
+    ];
 
     if (baseData.length === 0) return baseData;
 
@@ -110,6 +133,10 @@ export default function TaskBacklogChart({
     const currentBacklog = baseData[baseData.length - 1]?.amount || 0;
     const currentTimestamp = baseData[baseData.length - 1].timestamp;
     const idealBurndownRate = 6; // hours per day
+
+    console.log("  - After 4hr aggregation, entries:", baseData.length);
+    console.log("  - Current backlog (last point):", currentBacklog);
+    console.log("  - Last aggregated point:", baseData[baseData.length - 1]);
 
     // Calculate projected line using linear regression on last 7 days
     let projectedSlope = 0;
@@ -207,7 +234,12 @@ export default function TaskBacklogChart({
       intervalIndex++;
     }
 
-    return [...dataWithBurndown, ...futurePoints];
+    const finalData = [...dataWithBurndown, ...futurePoints];
+    console.log("  - Final chart data length:", finalData.length);
+    console.log("  - Last data point:", finalData[finalData.length - 1]);
+    console.log("  - Second to last:", finalData[finalData.length - 2]);
+
+    return finalData;
   }, [taskBacklogHistory]);
 
   // Calculate projected burndown color based on slope comparison
