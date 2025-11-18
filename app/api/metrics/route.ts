@@ -122,7 +122,7 @@ export async function GET(request: Request) {
     taskBacklogHistory = await prisma.task_backlog.findMany({
       where: {
         createdAt: {
-          gte: new Date("2025-09-12T00:00:00Z"),
+          gte: new Date("2025-11-17T00:00:00Z"),
         },
       },
       select: {

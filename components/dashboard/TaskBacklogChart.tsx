@@ -93,19 +93,23 @@ export default function TaskBacklogChart({
 
     if (baseData.length === 0) return baseData;
 
-    // Get the last 7 days of data for linear regression
+    // Get data for linear regression (last 7 days if available, otherwise all available data)
     const now = Date.now();
     const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const firstDataTimestamp = baseData[0].timestamp;
+
+    // Use all available data if we have less than 7 days
+    const regressionStartTime = Math.max(sevenDaysAgo, firstDataTimestamp);
     const recentData = baseData.filter(
       (item) =>
-        item.timestamp >= sevenDaysAgo &&
+        item.timestamp >= regressionStartTime &&
         item.amount !== null &&
         item.amount !== undefined
     );
 
     const currentBacklog = baseData[baseData.length - 1]?.amount || 0;
     const currentTimestamp = baseData[baseData.length - 1].timestamp;
-    const idealBurndownRate = 4; // hours per day
+    const idealBurndownRate = 6; // hours per day
 
     // Calculate projected line using linear regression on last 7 days
     let projectedSlope = 0;
@@ -128,7 +132,7 @@ export default function TaskBacklogChart({
       const daysFromCurrent =
         (item.timestamp - currentTimestamp) / (24 * 60 * 60 * 1000);
 
-      // Ideal: starts from current point, 4 hr/day
+      // Ideal: starts from current point, 6 hr/day
       let idealValue = null;
       if (daysFromCurrent >= 0) {
         const calculated = currentBacklog - daysFromCurrent * idealBurndownRate;
@@ -210,10 +214,14 @@ export default function TaskBacklogChart({
   const projectedBurndownColor = useMemo(() => {
     if (chartData.length < 2) return "gray";
 
-    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const firstDataTimestamp = chartData[0].timestamp;
+    const regressionStartTime = Math.max(sevenDaysAgo, firstDataTimestamp);
+
     const recentData = chartData.filter(
       (item) =>
-        item.timestamp >= sevenDaysAgo &&
+        item.timestamp >= regressionStartTime &&
         item.amount !== null &&
         item.amount !== undefined
     );
@@ -230,7 +238,7 @@ export default function TaskBacklogChart({
       (lastPoint.timestamp - firstPoint.timestamp) / (24 * 60 * 60 * 1000);
     const projectedSlope = (lastPoint.amount - firstPoint.amount) / daysDiff;
 
-    const idealBurndownRate = -4; // negative because we want decline
+    const idealBurndownRate = -6; // negative because we want decline
 
     // If projected slope is more negative (faster decline), it's better (green)
     // If projected slope is less negative (slower decline), it's worse (red)
