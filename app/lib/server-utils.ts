@@ -148,7 +148,7 @@ export const sendPushoverCall = async (
 export const sendAlert = async (
   message: string,
   title: string = "timetracking.live Alert",
-  severity: "error" | "warning" | "critical" = "error",
+  priority: 0 | 1 | 2 = 0,
   metadata?: Record<string, any>
 ) => {
   try {
@@ -157,7 +157,7 @@ export const sendAlert = async (
       data: {
         message,
         title,
-        severity,
+        priority,
         metadata: metadata || {},
         sendCount: 1,
       },
@@ -167,18 +167,20 @@ export const sendAlert = async (
     const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.replace('/api', '') || "http://localhost:3003";
     const ackUrl = `${baseUrl}/ack/${notification.ackToken}`;
 
+    // Determine sound based on priority
+    const sound = priority === 1 ? "cosmic" : priority === 0 ? "bike" : "falling";
+
     // Send initial Pushover notification with acknowledgment URL
-    const priority = severity === "critical" ? 1 : 0;
     await sendPushoverNotification(
       message,
       title,
       priority,
-      "falling",
+      sound,
       ackUrl,
       "Acknowledge Alert"
     );
 
-    console.log(`Alert created with acknowledgment URL: ${ackUrl}`);
+    console.log(`Alert created with priority ${priority} and acknowledgment URL: ${ackUrl}`);
 
     return notification;
   } catch (error) {

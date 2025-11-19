@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { message, title, severity, metadata } = body;
+    const { message, title, priority, metadata } = body;
 
     if (!message) {
       return new Response(
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     const notification = await sendAlert(
       message,
       title || "timetracking.live Alert",
-      severity || "error",
+      priority || 0,
       metadata
     );
 

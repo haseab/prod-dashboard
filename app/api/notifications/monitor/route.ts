@@ -43,75 +43,84 @@ export async function GET() {
       const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.replace('/api', '') || "http://localhost:3003";
       const ackUrl = `${baseUrl}/ack/${notification.ackToken}`;
 
-      // Check if we should escalate to emergency call
-      if (
-        timeSinceCreation >= ESCALATION_TIME_MS &&
-        !notification.escalatedToCall
-      ) {
-        console.log(
-          `🚨 ESCALATING notification ${notification.id} to emergency call!`
-        );
+      // Only process priority 2 (emergency) notifications
+      if (notification.priority === 2) {
+        // Check if we should escalate to emergency call
+        if (
+          timeSinceCreation >= ESCALATION_TIME_MS &&
+          !notification.escalatedToCall
+        ) {
+          console.log(
+            `🚨 ESCALATING notification ${notification.id} to emergency call!`
+          );
 
-        const success = await sendPushoverCall(
-          `URGENT: ${notification.message}\n\n[Unacknowledged for ${Math.floor(timeSinceCreation / 60000)} minutes]`,
-          `🚨 ${notification.title}`,
-          ackUrl,
-          "Acknowledge Alert"
-        );
+          const success = await sendPushoverCall(
+            `URGENT: ${notification.message}\n\n[Unacknowledged for ${Math.floor(timeSinceCreation / 60000)} minutes]`,
+            `🚨 ${notification.title}`,
+            ackUrl,
+            "Acknowledge Alert"
+          );
 
-        if (success) {
-          await prisma.notifications.update({
-            where: { id: notification.id },
-            data: {
-              escalatedToCall: true,
-              lastSentAt: now,
-              sendCount: notification.sendCount + 1,
-            },
-          });
+          if (success) {
+            await prisma.notifications.update({
+              where: { id: notification.id },
+              data: {
+                escalatedToCall: true,
+                lastSentAt: now,
+                sendCount: notification.sendCount + 1,
+              },
+            });
 
-          results.push({
-            id: notification.id,
-            action: "escalated_to_call",
-            success: true,
-          });
+            results.push({
+              id: notification.id,
+              action: "escalated_to_call",
+              success: true,
+            });
+          }
         }
-      }
-      // Check if we should send a retry notification
-      else if (timeSinceLastSent >= RETRY_INTERVAL_MS) {
-        console.log(`🔔 Resending notification ${notification.id}`);
+        // Check if we should send a retry notification
+        else if (timeSinceLastSent >= RETRY_INTERVAL_MS) {
+          console.log(`🔔 Resending priority 2 notification ${notification.id}`);
 
-        const priority = notification.severity === "critical" ? 1 : 0;
-        const success = await sendPushoverNotification(
-          `${notification.message}\n\n[Reminder ${notification.sendCount + 1}]`,
-          notification.title,
-          priority,
-          "persistent",
-          ackUrl,
-          "Acknowledge Alert"
-        );
+          const success = await sendPushoverNotification(
+            `${notification.message}\n\n[Reminder ${notification.sendCount + 1}]`,
+            notification.title,
+            2,
+            "persistent",
+            ackUrl,
+            "Acknowledge Alert"
+          );
 
-        if (success) {
-          await prisma.notifications.update({
-            where: { id: notification.id },
-            data: {
-              lastSentAt: now,
+          if (success) {
+            await prisma.notifications.update({
+              where: { id: notification.id },
+              data: {
+                lastSentAt: now,
+                sendCount: notification.sendCount + 1,
+              },
+            });
+
+            results.push({
+              id: notification.id,
+              action: "resent",
               sendCount: notification.sendCount + 1,
-            },
-          });
-
+            });
+          }
+        } else {
           results.push({
             id: notification.id,
-            action: "resent",
-            sendCount: notification.sendCount + 1,
+            action: "no_action_needed",
+            nextActionIn: Math.floor(
+              (RETRY_INTERVAL_MS - timeSinceLastSent) / 1000
+            ) + "s",
           });
         }
       } else {
+        // Priority 0 and 1 don't get resent - just log that they exist
         results.push({
           id: notification.id,
-          action: "no_action_needed",
-          nextActionIn: Math.floor(
-            (RETRY_INTERVAL_MS - timeSinceLastSent) / 1000
-          ) + "s",
+          action: "no_action_needed_priority_0_or_1",
+          priority: notification.priority,
         });
       }
     }

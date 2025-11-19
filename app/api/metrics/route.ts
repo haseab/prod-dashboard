@@ -32,7 +32,7 @@ export async function GET(request: Request) {
       await sendAlert(
         "Data is undefined - Check server logs.",
         "timetracking.live Error",
-        "critical"
+        0
       );
       return new Response(
         JSON.stringify({
@@ -56,7 +56,7 @@ export async function GET(request: Request) {
       await sendAlert(
         `Server error: ${data.error} (status: ${data.status})`,
         "timetracking.live Error",
-        "critical"
+        0
       );
       return new Response(
         JSON.stringify({
@@ -159,7 +159,7 @@ export async function GET(request: Request) {
     await sendAlert(
       `API Error: ${error instanceof Error ? error.message : "Unknown error"}`,
       "timetracking.live Error",
-      "critical"
+      0
     );
     return new Response(
       JSON.stringify({
