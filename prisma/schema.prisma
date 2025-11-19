@@ -22,6 +22,21 @@ model keyboard_shortcuts {
   time              DateTime @default(now())
 }
 
+model notifications {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now()) @db.Timestamptz(6)
+  message        String
+  title          String
+  severity       String   @default("error") // error, warning, critical
+  acknowledged   Boolean  @default(false)
+  acknowledgedAt DateTime? @db.Timestamptz(6)
+  escalatedToCall Boolean @default(false)
+  lastSentAt     DateTime @default(now()) @db.Timestamptz(6)
+  sendCount      Int      @default(0)
+  metadata       Json?    @default("{}")
+  ackToken       String   @unique @default(cuid()) // Token for URL-based acknowledgment
+}
+
 model Link {
   id              Int      @id @default(autoincrement())
   email           String?  @db.VarChar(255)
