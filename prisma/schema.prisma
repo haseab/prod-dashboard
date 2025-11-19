@@ -27,7 +27,7 @@ model notifications {
   createdAt      DateTime @default(now()) @db.Timestamptz(6)
   message        String
   title          String
-  severity       String   @default("error") // error, warning, critical
+  priority       Int      @default(0) // 0: normal, 1: high, 2: emergency
   acknowledged   Boolean  @default(false)
   acknowledgedAt DateTime? @db.Timestamptz(6)
   escalatedToCall Boolean @default(false)
