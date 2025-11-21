@@ -337,9 +337,10 @@ export default function TaskBacklogChart({
 
     const idealBurndownRate = -6; // negative because we want decline
 
+    // If projected slope is positive (backlog growing), it's red
     // If projected slope is more negative (faster decline), it's better (green)
     // If projected slope is less negative (slower decline), it's worse (red)
-    return projectedSlope < idealBurndownRate ? "emerald" : "red";
+    return projectedSlope >= 0 || projectedSlope >= idealBurndownRate ? "red" : "emerald";
   }, [chartData]);
 
   // Find the latest deadline from the task backlog history
