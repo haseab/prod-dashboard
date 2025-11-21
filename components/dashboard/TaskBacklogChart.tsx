@@ -312,9 +312,9 @@ export default function TaskBacklogChart({
     if (chartData.length < 2) return "gray";
 
     const now = Date.now();
-    const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const threeDaysAgo = now - 3 * 24 * 60 * 60 * 1000;
     const firstDataTimestamp = chartData[0].timestamp;
-    const regressionStartTime = Math.max(sevenDaysAgo, firstDataTimestamp);
+    const regressionStartTime = Math.max(threeDaysAgo, firstDataTimestamp);
 
     const recentData = chartData.filter(
       (item) =>
@@ -363,36 +363,160 @@ export default function TaskBacklogChart({
     return deadline;
   }, [taskBacklogHistory]);
 
-  // Create reference line for deadline
+  // Create reference line for deadline and zero intersections
   const referenceLines = useMemo(() => {
-    if (!latestDeadline) {
-      console.log("TaskBacklogChart - No reference lines (no deadline)");
-      return [];
+    console.log("TaskBacklogChart - Computing reference lines");
+    console.log("TaskBacklogChart - Chart data length:", chartData.length);
+
+    const lines: Array<{ x?: string | number; y?: number; label?: string; color?: string; strokeWidth?: number }> = [];
+
+    // Add deadline reference line
+    if (latestDeadline) {
+      const deadlineDate = new Date(latestDeadline);
+      const deadlineStr = `${deadlineDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })} ${deadlineDate.toLocaleTimeString("en-GB", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      })}`;
+
+      console.log("TaskBacklogChart - Deadline string for chart:", deadlineStr);
+      console.log("TaskBacklogChart - Available chart dates:", chartData.map(d => d.date));
+
+      lines.push({
+        x: deadlineStr,
+        label: "DEADLINE",
+        color: "#ef4444",
+        strokeWidth: 2,
+      });
+
+      console.log("TaskBacklogChart - Reference line config:", lines[0]);
     }
 
-    const deadlineDate = new Date(latestDeadline);
-    const deadlineStr = `${deadlineDate.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    })} ${deadlineDate.toLocaleTimeString("en-GB", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    })}`;
+    // Find where projected burndown hits zero
+    console.log("TaskBacklogChart - Looking for projected zero point");
 
-    console.log("TaskBacklogChart - Deadline string for chart:", deadlineStr);
-    console.log("TaskBacklogChart - Available chart dates:", chartData.map(d => d.date));
+    // Log some sample values to understand the data
+    const projectedValues = chartData
+      .filter(item => item["projected burndown"] !== null && item["projected burndown"] !== undefined)
+      .slice(-10);
+    console.log("TaskBacklogChart - Last 10 projected burndown values:",
+      projectedValues.map(item => ({ date: item.date, value: item["projected burndown"] }))
+    );
 
-    const refLine = {
-      x: deadlineStr,
-      label: "DEADLINE",
-      color: "#ef4444",
-      strokeWidth: 2,
-    };
+    const projectedZeroPoint = chartData.find((item, index) => {
+      if (index === 0) return false;
+      const prev = chartData[index - 1];
 
-    console.log("TaskBacklogChart - Reference line config:", refLine);
-    return [refLine];
-  }, [latestDeadline, chartData]);
+      // Check if previous had a positive value and current is null (line stopped because it hit zero)
+      const crossesViaNull = (
+        prev?.["projected burndown"] !== null &&
+        prev?.["projected burndown"] !== undefined &&
+        prev?.["projected burndown"] > 0 &&
+        (item?.["projected burndown"] === null || item?.["projected burndown"] === undefined)
+      );
+
+      // Check if it explicitly crosses zero (value goes from positive to zero/negative)
+      const crossesExplicitly = (
+        prev?.["projected burndown"] !== null &&
+        prev?.["projected burndown"] !== undefined &&
+        prev?.["projected burndown"] > 0 &&
+        item?.["projected burndown"] !== null &&
+        item?.["projected burndown"] !== undefined &&
+        item?.["projected burndown"] <= 0
+      );
+
+      const crosses = crossesViaNull || crossesExplicitly;
+
+      if (crosses) {
+        console.log("TaskBacklogChart - Found projected zero at:", item.date, "prev value:", prev["projected burndown"], "current value:", item["projected burndown"]);
+      }
+
+      return crosses;
+    });
+
+    // Find where ideal burndown hits zero
+    console.log("TaskBacklogChart - Looking for ideal zero point");
+
+    // Log some sample values to understand the data
+    const idealValues = chartData
+      .filter(item => item["ideal burndown"] !== null && item["ideal burndown"] !== undefined)
+      .slice(-10);
+    console.log("TaskBacklogChart - Last 10 ideal burndown values:",
+      idealValues.map(item => ({ date: item.date, value: item["ideal burndown"] }))
+    );
+
+    const idealZeroPoint = chartData.find((item, index) => {
+      if (index === 0) return false;
+      const prev = chartData[index - 1];
+
+      // Check if previous had a positive value and current is null (line stopped because it hit zero)
+      const crossesViaNull = (
+        prev?.["ideal burndown"] !== null &&
+        prev?.["ideal burndown"] !== undefined &&
+        prev?.["ideal burndown"] > 0 &&
+        (item?.["ideal burndown"] === null || item?.["ideal burndown"] === undefined)
+      );
+
+      // Check if it explicitly crosses zero (value goes from positive to zero/negative)
+      const crossesExplicitly = (
+        prev?.["ideal burndown"] !== null &&
+        prev?.["ideal burndown"] !== undefined &&
+        prev?.["ideal burndown"] > 0 &&
+        item?.["ideal burndown"] !== null &&
+        item?.["ideal burndown"] !== undefined &&
+        item?.["ideal burndown"] <= 0
+      );
+
+      const crosses = crossesViaNull || crossesExplicitly;
+
+      if (crosses) {
+        console.log("TaskBacklogChart - Found ideal zero at:", item.date, "prev value:", prev["ideal burndown"], "current value:", item["ideal burndown"]);
+      }
+
+      return crosses;
+    });
+
+    console.log("TaskBacklogChart - Projected zero point:", projectedZeroPoint);
+    console.log("TaskBacklogChart - Ideal zero point:", idealZeroPoint);
+
+    // Add projected zero intersection label (no vertical line)
+    if (projectedZeroPoint) {
+      // Find the point right before this one (the last positive value)
+      const projectedIndex = chartData.indexOf(projectedZeroPoint);
+      const lastPositivePoint = projectedIndex > 0 ? chartData[projectedIndex - 1] : projectedZeroPoint;
+
+      console.log("TaskBacklogChart - Adding projected reference line at x:", lastPositivePoint.date);
+      lines.push({
+        x: lastPositivePoint.date,
+        label: lastPositivePoint.date,
+        color: projectedBurndownColor === "emerald" ? "#10b981" : "#ef4444",
+        strokeWidth: 0, // No vertical line
+      });
+    }
+
+    // Add ideal zero intersection label (no vertical line)
+    if (idealZeroPoint) {
+      // Find the point right before this one (the last positive value)
+      const idealIndex = chartData.indexOf(idealZeroPoint);
+      const lastPositivePoint = idealIndex > 0 ? chartData[idealIndex - 1] : idealZeroPoint;
+
+      console.log("TaskBacklogChart - Adding ideal reference line at x:", lastPositivePoint.date);
+      lines.push({
+        x: lastPositivePoint.date,
+        label: lastPositivePoint.date,
+        color: "#71717a",
+        strokeWidth: 0, // No vertical line
+      });
+    }
+
+    console.log("TaskBacklogChart - Total reference lines:", lines.length);
+    console.log("TaskBacklogChart - Reference lines:", lines);
+
+    return lines;
+  }, [latestDeadline, chartData, projectedBurndownColor]);
 
   return (
     <AreaGraph
