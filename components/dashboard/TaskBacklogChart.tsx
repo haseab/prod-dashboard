@@ -400,10 +400,10 @@ export default function TaskBacklogChart({
 
     // Log some sample values to understand the data
     const projectedValues = chartData
-      .filter(item => item["projected burndown"] !== null && item["projected burndown"] !== undefined)
+      .filter(item => "projected burndown" in item && item["projected burndown"] !== null && item["projected burndown"] !== undefined)
       .slice(-10);
     console.log("TaskBacklogChart - Last 10 projected burndown values:",
-      projectedValues.map(item => ({ date: item.date, value: item["projected burndown"] }))
+      projectedValues.map(item => ({ date: item.date, value: "projected burndown" in item ? item["projected burndown"] : null }))
     );
 
     const projectedZeroPoint = chartData.find((item, index) => {
@@ -412,26 +412,32 @@ export default function TaskBacklogChart({
 
       // Check if previous had a positive value and current is null (line stopped because it hit zero)
       const crossesViaNull = (
-        prev?.["projected burndown"] !== null &&
-        prev?.["projected burndown"] !== undefined &&
-        prev?.["projected burndown"] > 0 &&
-        (item?.["projected burndown"] === null || item?.["projected burndown"] === undefined)
+        "projected burndown" in prev &&
+        prev["projected burndown"] !== null &&
+        prev["projected burndown"] !== undefined &&
+        prev["projected burndown"] > 0 &&
+        (!("projected burndown" in item) || item["projected burndown"] === null || item["projected burndown"] === undefined)
       );
 
       // Check if it explicitly crosses zero (value goes from positive to zero/negative)
       const crossesExplicitly = (
-        prev?.["projected burndown"] !== null &&
-        prev?.["projected burndown"] !== undefined &&
-        prev?.["projected burndown"] > 0 &&
-        item?.["projected burndown"] !== null &&
-        item?.["projected burndown"] !== undefined &&
-        item?.["projected burndown"] <= 0
+        "projected burndown" in prev &&
+        prev["projected burndown"] !== null &&
+        prev["projected burndown"] !== undefined &&
+        prev["projected burndown"] > 0 &&
+        "projected burndown" in item &&
+        item["projected burndown"] !== null &&
+        item["projected burndown"] !== undefined &&
+        item["projected burndown"] <= 0
       );
 
       const crosses = crossesViaNull || crossesExplicitly;
 
       if (crosses) {
-        console.log("TaskBacklogChart - Found projected zero at:", item.date, "prev value:", prev["projected burndown"], "current value:", item["projected burndown"]);
+        console.log("TaskBacklogChart - Found projected zero at:", item.date, "prev value:",
+          "projected burndown" in prev ? prev["projected burndown"] : null,
+          "current value:",
+          "projected burndown" in item ? item["projected burndown"] : null);
       }
 
       return crosses;
@@ -442,10 +448,10 @@ export default function TaskBacklogChart({
 
     // Log some sample values to understand the data
     const idealValues = chartData
-      .filter(item => item["ideal burndown"] !== null && item["ideal burndown"] !== undefined)
+      .filter(item => "ideal burndown" in item && item["ideal burndown"] !== null && item["ideal burndown"] !== undefined)
       .slice(-10);
     console.log("TaskBacklogChart - Last 10 ideal burndown values:",
-      idealValues.map(item => ({ date: item.date, value: item["ideal burndown"] }))
+      idealValues.map(item => ({ date: item.date, value: "ideal burndown" in item ? item["ideal burndown"] : null }))
     );
 
     const idealZeroPoint = chartData.find((item, index) => {
@@ -454,26 +460,32 @@ export default function TaskBacklogChart({
 
       // Check if previous had a positive value and current is null (line stopped because it hit zero)
       const crossesViaNull = (
-        prev?.["ideal burndown"] !== null &&
-        prev?.["ideal burndown"] !== undefined &&
-        prev?.["ideal burndown"] > 0 &&
-        (item?.["ideal burndown"] === null || item?.["ideal burndown"] === undefined)
+        "ideal burndown" in prev &&
+        prev["ideal burndown"] !== null &&
+        prev["ideal burndown"] !== undefined &&
+        prev["ideal burndown"] > 0 &&
+        (!("ideal burndown" in item) || item["ideal burndown"] === null || item["ideal burndown"] === undefined)
       );
 
       // Check if it explicitly crosses zero (value goes from positive to zero/negative)
       const crossesExplicitly = (
-        prev?.["ideal burndown"] !== null &&
-        prev?.["ideal burndown"] !== undefined &&
-        prev?.["ideal burndown"] > 0 &&
-        item?.["ideal burndown"] !== null &&
-        item?.["ideal burndown"] !== undefined &&
-        item?.["ideal burndown"] <= 0
+        "ideal burndown" in prev &&
+        prev["ideal burndown"] !== null &&
+        prev["ideal burndown"] !== undefined &&
+        prev["ideal burndown"] > 0 &&
+        "ideal burndown" in item &&
+        item["ideal burndown"] !== null &&
+        item["ideal burndown"] !== undefined &&
+        item["ideal burndown"] <= 0
       );
 
       const crosses = crossesViaNull || crossesExplicitly;
 
       if (crosses) {
-        console.log("TaskBacklogChart - Found ideal zero at:", item.date, "prev value:", prev["ideal burndown"], "current value:", item["ideal burndown"]);
+        console.log("TaskBacklogChart - Found ideal zero at:", item.date, "prev value:",
+          "ideal burndown" in prev ? prev["ideal burndown"] : null,
+          "current value:",
+          "ideal burndown" in item ? item["ideal burndown"] : null);
       }
 
       return crosses;
@@ -485,7 +497,7 @@ export default function TaskBacklogChart({
     // Add projected zero intersection label (no vertical line)
     if (projectedZeroPoint) {
       // Find the point right before this one (the last positive value)
-      const projectedIndex = chartData.indexOf(projectedZeroPoint);
+      const projectedIndex = chartData.findIndex(item => item === projectedZeroPoint);
       const lastPositivePoint = projectedIndex > 0 ? chartData[projectedIndex - 1] : projectedZeroPoint;
 
       console.log("TaskBacklogChart - Adding projected reference line at x:", lastPositivePoint.date);
@@ -500,7 +512,7 @@ export default function TaskBacklogChart({
     // Add ideal zero intersection label (no vertical line)
     if (idealZeroPoint) {
       // Find the point right before this one (the last positive value)
-      const idealIndex = chartData.indexOf(idealZeroPoint);
+      const idealIndex = chartData.findIndex(item => item === idealZeroPoint);
       const lastPositivePoint = idealIndex > 0 ? chartData[idealIndex - 1] : idealZeroPoint;
 
       console.log("TaskBacklogChart - Adding ideal reference line at x:", lastPositivePoint.date);
