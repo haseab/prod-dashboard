@@ -163,24 +163,38 @@ export const sendAlert = async (
       },
     });
 
-    // Generate acknowledgment URL with the token
-    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.replace('/api', '') || "http://localhost:3003";
-    const ackUrl = `${baseUrl}/ack/${notification.ackToken}`;
-
     // Determine sound based on priority
     const sound = priority === 1 ? "cosmic" : priority === 0 ? "bike" : "falling";
 
-    // Send initial Pushover notification with acknowledgment URL
-    await sendPushoverNotification(
-      message,
-      title,
-      priority,
-      sound,
-      ackUrl,
-      "Acknowledge Alert"
-    );
+    // Only add acknowledgment URL for priority 2 (emergency) notifications
+    if (priority === 2) {
+      const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.replace('/api', '') || "http://localhost:3003";
+      const ackUrl = `${baseUrl}/ack/${notification.ackToken}`;
 
-    console.log(`Alert created with priority ${priority} and acknowledgment URL: ${ackUrl}`);
+      await sendPushoverNotification(
+        message,
+        title,
+        priority,
+        sound,
+        ackUrl,
+        "Acknowledge Alert"
+      );
+    } else {
+      await sendPushoverNotification(
+        message,
+        title,
+        priority,
+        sound
+      );
+    }
+
+    if (priority === 2) {
+      const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.replace('/api', '') || "http://localhost:3003";
+      const ackUrl = `${baseUrl}/ack/${notification.ackToken}`;
+      console.log(`Alert created with priority ${priority} and acknowledgment URL: ${ackUrl}`);
+    } else {
+      console.log(`Alert created with priority ${priority}`);
+    }
 
     return notification;
   } catch (error) {
