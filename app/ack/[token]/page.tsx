@@ -7,7 +7,8 @@ interface Notification {
   id: string;
   message: string;
   title: string;
-  severity: string;
+  severity?: string;
+  priority?: number;
   createdAt: string;
   sendCount: number;
   ackToken: string;
@@ -88,7 +89,10 @@ export default function AcknowledgeByTokenPage() {
     }
   };
 
-  const getSeverityColor = (severity: string) => {
+  const getSeverityColor = (notification: Notification) => {
+    // Map priority to severity if severity is not present
+    const severity = notification.severity || (notification.priority === 2 ? "critical" : notification.priority === 1 ? "warning" : "info");
+
     switch (severity) {
       case "critical":
         return "bg-red-500";
@@ -99,6 +103,11 @@ export default function AcknowledgeByTokenPage() {
       default:
         return "bg-blue-500";
     }
+  };
+
+  const getSeverityLabel = (notification: Notification) => {
+    // Map priority to severity if severity is not present
+    return notification.severity || (notification.priority === 2 ? "critical" : notification.priority === 1 ? "warning" : "info");
   };
 
   const getTimeSince = (dateString: string) => {
@@ -169,9 +178,9 @@ export default function AcknowledgeByTokenPage() {
                   className="bg-gray-800 rounded-lg p-4 border-l-4"
                   style={{
                     borderLeftColor:
-                      notification.severity === "critical"
+                      getSeverityLabel(notification) === "critical"
                         ? "#ef4444"
-                        : notification.severity === "error"
+                        : getSeverityLabel(notification) === "error"
                         ? "#f97316"
                         : "#eab308",
                   }}
@@ -181,10 +190,10 @@ export default function AcknowledgeByTokenPage() {
                       <div className="flex items-center gap-2 mb-1">
                         <span
                           className={`px-2 py-1 rounded text-xs font-semibold text-white ${getSeverityColor(
-                            notification.severity
+                            notification
                           )}`}
                         >
-                          {notification.severity.toUpperCase()}
+                          {getSeverityLabel(notification).toUpperCase()}
                         </span>
                         <span className="text-xs text-gray-400">
                           {getTimeSince(notification.createdAt)}
