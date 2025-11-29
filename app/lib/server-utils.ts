@@ -53,10 +53,11 @@ export const sendPushoverNotification = async (
     }
 
     // For emergency priority (2), require acknowledgment
-    if (priority === 2) {
-      pushoverData.retry = "30"; // Retry every 30 seconds
-      pushoverData.expire = "300"; // Stop after 5 minutes
-    }
+    // Note: Pushover retry disabled - Cloudflare cron monitor handles retries
+    // if (priority === 2) {
+    //   pushoverData.retry = "30"; // Retry every 30 seconds
+    //   pushoverData.expire = "300"; // Stop after 5 minutes
+    // }
 
     console.log("Sending Pushover data:", {
       message,
@@ -109,14 +110,15 @@ export const sendPushoverCall = async (
 
     console.log("ESCALATING TO CALL - Sending emergency priority notification");
 
+    // Note: Pushover retry disabled - Cloudflare cron monitor handles retries
     const pushoverData: Record<string, string> = {
       token: process.env.CAL_PUSHOVER_TOKEN!,
       user: process.env.CAL_PUSHOVER_USER!,
       message: message,
       title: title,
       priority: "2", // Emergency - requires acknowledgment
-      retry: "30", // Retry every 30 seconds
-      expire: "300", // Stop after 5 minutes
+      // retry: "30", // Retry every 30 seconds (disabled - cron handles this)
+      // expire: "300", // Stop after 5 minutes (disabled - cron handles this)
       sound: "siren",
     };
 
