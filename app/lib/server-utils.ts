@@ -52,12 +52,8 @@ export const sendPushoverNotification = async (
       }
     }
 
-    // For emergency priority (2), require acknowledgment
-    // Note: Pushover retry disabled - Cloudflare cron monitor handles retries
-    // if (priority === 2) {
-    //   pushoverData.retry = "30"; // Retry every 30 seconds
-    //   pushoverData.expire = "300"; // Stop after 5 minutes
-    // }
+    // Never use Pushover's retry mechanism - our cron monitor handles all retries
+    // Priority is stored in DB and determines our retry behavior, not Pushover's
 
     console.log("Sending Pushover data:", {
       message,
@@ -108,17 +104,14 @@ export const sendPushoverCall = async (
       return false;
     }
 
-    console.log("ESCALATING TO CALL - Sending emergency priority notification");
+    console.log("ESCALATING TO CALL - Sending high priority notification with siren sound");
 
-    // Note: Pushover retry disabled - Cloudflare cron monitor handles retries
     const pushoverData: Record<string, string> = {
       token: process.env.CAL_PUSHOVER_TOKEN!,
       user: process.env.CAL_PUSHOVER_USER!,
       message: message,
       title: title,
-      priority: "2", // Emergency - requires acknowledgment
-      // retry: "30", // Retry every 30 seconds (disabled - cron handles this)
-      // expire: "300", // Stop after 5 minutes (disabled - cron handles this)
+      priority: "1", // High priority (no Pushover retry)
       sound: "siren",
     };
 
@@ -166,37 +159,26 @@ export const sendAlert = async (
     });
 
     // Determine sound based on priority
-    const sound = priority === 1 ? "cosmic" : priority === 0 ? "bike" : "falling";
+    const sound = priority === 2 ? "falling" : priority === 1 ? "cosmic" : "bike";
 
-    // Only add acknowledgment URL for priority 2 (emergency) notifications
-    if (priority === 2) {
-      const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.replace('/api', '') || "http://localhost:3003";
-      const ackUrl = `${baseUrl}/ack/${notification.ackToken}`;
+    // Always send with Pushover priority 0 or 1 (never 2)
+    // Our DB priority determines retry behavior via cron
+    const pushoverPriority = priority === 2 ? 1 : priority; // Use high priority (1) for critical alerts
 
-      await sendPushoverNotification(
-        message,
-        title,
-        priority,
-        sound,
-        ackUrl,
-        "Acknowledge Alert"
-      );
-    } else {
-      await sendPushoverNotification(
-        message,
-        title,
-        priority,
-        sound
-      );
-    }
+    // Always include acknowledgment URL for priority 2 notifications
+    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.replace('/api', '') || "http://localhost:3003";
+    const ackUrl = `${baseUrl}/ack/${notification.ackToken}`;
 
-    if (priority === 2) {
-      const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.replace('/api', '') || "http://localhost:3003";
-      const ackUrl = `${baseUrl}/ack/${notification.ackToken}`;
-      console.log(`Alert created with priority ${priority} and acknowledgment URL: ${ackUrl}`);
-    } else {
-      console.log(`Alert created with priority ${priority}`);
-    }
+    await sendPushoverNotification(
+      message,
+      title,
+      pushoverPriority,
+      sound,
+      ackUrl,
+      "Acknowledge Alert"
+    );
+
+    console.log(`Alert created with DB priority ${priority}, sent to Pushover as priority ${pushoverPriority}, ack URL: ${ackUrl}`);
 
     return notification;
   } catch (error) {
