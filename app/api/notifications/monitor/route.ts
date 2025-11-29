@@ -85,7 +85,7 @@ export async function GET() {
           const success = await sendPushoverNotification(
             `${notification.message}\n\n[Reminder ${notification.sendCount + 1}]`,
             notification.title,
-            2,
+            1, // Use high priority (1), not emergency (2)
             "persistent",
             ackUrl,
             "Acknowledge Alert"
