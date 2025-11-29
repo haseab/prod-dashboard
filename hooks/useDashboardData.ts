@@ -89,6 +89,11 @@ export function useDashboardData() {
         const result = await response.json();
 
         if (!response.ok) {
+          // Handle maintenance mode with a friendly message
+          if (response.status === 503) {
+            throw new Error("Toggl is currently in maintenance mode. Data will refresh automatically when available.");
+          }
+
           const specificErrors = [401, 500];
           if (specificErrors.includes(response.status)) {
             throw new Error(result.error);

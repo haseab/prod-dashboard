@@ -53,11 +53,18 @@ export async function GET(request: Request) {
       "status" in data
     ) {
       console.log("Server returned error:", data);
-      await sendAlert(
-        `Server error: ${data.error} (status: ${data.status})`,
-        "timetracking.live Error",
-        0
-      );
+
+      // Don't send alert for maintenance mode
+      if (data.status !== 503) {
+        await sendAlert(
+          `Server error: ${data.error} (status: ${data.status})`,
+          "timetracking.live Error",
+          0
+        );
+      } else {
+        console.log("Toggl is in maintenance mode - no alert sent");
+      }
+
       return new Response(
         JSON.stringify({
           error: `Server Error: ${data.error}`,
