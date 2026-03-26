@@ -1,17 +1,15 @@
-import prisma from "@/app/lib/prisma";
-import {
-  sendAlert,
-  updateBacklogToDb,
-} from "@/app/lib/server-utils";
+// import prisma from "@/app/lib/prisma"; // TEMPORARILY DISABLED - see taskBacklogHistory comment
+// import { updateBacklogToDb } from "@/app/lib/server-utils";
+import { sendAlert } from "@/app/lib/server-utils";
 import { revalidateCache } from "@/lib/utils";
 import { MetricsResponse } from "@/types";
 import { unstable_cache } from "next/cache";
 
-let prevTaskBacklogNumber = 0;
-let prevFlowColour = "";
-let count = 0;
-let interval = 240;
-let neutral = false;
+// let prevTaskBacklogNumber = 0;
+// let prevFlowColour = "";
+// let count = 0;
+// let interval = 240;
+// let neutral = false;
 
 export const revalidate = 15;
 
@@ -76,84 +74,72 @@ export async function GET(request: Request) {
       );
     }
 
-    const { taskBacklog, neutralActivity, taskBacklogDetails } =
-      data.data as MetricsResponse;
-    const currentFlowColour =
-      data.data.flow > 2.5
-        ? "red"
-        : data.data.flow > 1.5
-        ? "purple"
-        : data.data.flow > 0.8334
-        ? "green"
-        : data.data.flow > 0.4167
-        ? "blue"
-        : "default";
-
-    neutral = neutralActivity;
-
-    console.log("prevTaskBacklogNumber", prevTaskBacklogNumber);
-    console.log("taskBacklog", taskBacklog);
-
-    console.log("prevFlowColour", prevFlowColour);
-    console.log("currentFlowColour", currentFlowColour);
-
-    let taskBacklogHistory;
-
-    // if (
-    //   prevFlowColour &&
-    //   currentFlowColour &&
-    //   prevFlowColour !== currentFlowColour &&
-    //   currentActivity !== "🤝 in a Meeting"
-    // ) {
-    //   console.log("flow changed, changing lights...");
-    //   setLightColor({
-    //     flow: data.flow,
-    //     deviceId: process.env.FLOOR_LAMP_DEVICE_ID || "",
-    //     model: "H6008",
-    //   });
-    //   setLightColor({
-    //     flow: data.flow,
-    //     deviceId: process.env.TABLE_LAMP_DEVICE_ID || "",
-    //     model: "H6008",
-    //   });
+    // Backlog fields intentionally not consumed while the Python payload is disabled.
+    // const { taskBacklog, neutralActivity, taskBacklogDetails, scope, adjustedAmount } =
+    //   data.data as MetricsResponse;
+    // const currentFlowColour =
+    //   data.data.flow > 2.5
+    //     ? "red"
+    //     : data.data.flow > 1.5
+    //     ? "purple"
+    //     : data.data.flow > 0.8334
+    //     ? "green"
+    //     : data.data.flow > 0.4167
+    //     ? "blue"
+    //     : "default";
+    // neutral = neutralActivity;
+    // console.log("prevTaskBacklogNumber", prevTaskBacklogNumber);
+    // console.log("taskBacklog", taskBacklog);
+    // console.log("scope", scope);
+    // console.log("adjustedAmount", adjustedAmount);
+    // console.log("prevFlowColour", prevFlowColour);
+    // console.log("currentFlowColour", currentFlowColour);
+    // prevFlowColour = currentFlowColour;
+    // if (count >= interval) {
+    //   console.log("time to update db");
+    //   await updateBacklogToDb(taskBacklog, taskBacklogDetails, scope, adjustedAmount);
+    //   prevTaskBacklogNumber = taskBacklog;
+    //   count = 0;
     // }
 
-    prevFlowColour = currentFlowColour;
-
-    if (count >= interval) {
-      console.log("time to update db");
-      await updateBacklogToDb(taskBacklog, taskBacklogDetails);
-      // }
-      prevTaskBacklogNumber = taskBacklog;
-      count = 0;
-    }
-
-    taskBacklogHistory = await prisma.task_backlog.findMany({
-      where: {
-        createdAt: {
-          gte: new Date("2025-11-17T00:00:00Z"),
-        },
-      },
-      select: {
-        id: true,
-        amount: true,
-        createdAt: true,
-        deadline: true,
-      },
-      orderBy: {
-        createdAt: "asc",
-      },
-    });
-
-    console.log("taskBacklogHistory");
-    console.log(taskBacklogHistory.slice(taskBacklogHistory.length - 1));
+    const {
+      unplannedTimeList,
+      totalFlowList,
+      productiveFlowList,
+      n1HUTList,
+      nw1HUTList,
+      w1HUTList,
+      unproductiveList,
+      hoursFreeList,
+      distractionCountList,
+      efficiencyList,
+      productiveList,
+      flow,
+      startDate: responseStartDate,
+      endDate: responseEndDate,
+      currentActivity,
+      currentActivityStartTime,
+    } = data.data as MetricsResponse;
 
     return new Response(
       JSON.stringify({
         data: {
-          ...data.data,
-          taskBacklogHistory,
-          taskBacklogRefreshesLeft: interval - count,
+          unplannedTimeList,
+          totalFlowList,
+          productiveFlowList,
+          n1HUTList,
+          nw1HUTList,
+          w1HUTList,
+          unproductiveList,
+          hoursFreeList,
+          distractionCountList,
+          efficiencyList,
+          productiveList,
+          flow,
+          startDate: responseStartDate,
+          endDate: responseEndDate,
+          currentActivity,
+          currentActivityStartTime,
         },
       }),
       {
@@ -229,16 +215,16 @@ function startRevalidating() {
     try {
       await revalidateCache(["time"]);
       console.log("Revalidated time tag");
-      if (!neutral) {
-        count++;
-        console.log("non neutral, counting up to", count);
-      } else {
-        console.log("neutral activity detected, not counting");
-      }
+      // if (!neutral) {
+      //   count++;
+      //   console.log("non neutral, counting up to", count);
+      // } else {
+      //   console.log("neutral activity detected, not counting");
+      // }
     } catch (error) {
       console.error("Error revalidating time tag", error);
     }
-  }, 15000); // Revalidate every 30 seconds
+  }, 15000);
 }
 
 // Start the revalidation process

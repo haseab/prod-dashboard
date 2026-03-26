@@ -17,8 +17,6 @@ import {
   publicMetrics,
   weekdays,
 } from "@/types";
-import { task_backlog } from "@prisma/client";
-import cuid from "cuid";
 import { unstable_noStore } from "next/cache";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -30,7 +28,6 @@ export function useDashboardData() {
   const [flow, setFlow] = useState(0);
   const [error, setError] = useState("");
   const lastFetchTimeRef = useRef(Date.now());
-  const [taskBacklogRefreshesLeft, setTaskBacklogRefreshesLeft] = useState(0);
 
   const [efficiencyData, setEfficiencyData] = useState<EfficiencyData[]>(
     weekdays.map((day) => ({
@@ -72,11 +69,6 @@ export function useDashboardData() {
   const [endDate, setEndDate] = useState("");
   const [currentActivity, setCurrentActivity] = useState("Loading ...");
   const [currentActivityStartTime, setCurrentActivityStartTime] = useState("");
-  const [taskBacklogHistory, setTaskBacklogHistory] = useState<
-    Pick<task_backlog, "id" | "amount" | "createdAt" | "deadline">[]
-  >([]);
-  const [neutralActivity, setNeutralActivity] = useState(false);
-  const [dailyIdealBurndown, setDailyIdealBurndown] = useState<{ [key: string]: number }>({});
 
   const fetchData = useCallback(
     async (errorMessage: string) => {
@@ -117,24 +109,12 @@ export function useDashboardData() {
           efficiencyList,
           productiveList,
           flow: newFlow,
-          taskBacklog,
           startDate: newStartDate,
           endDate: newEndDate,
           currentActivity: newCurrentActivity,
           currentActivityStartTime: newCurrentActivityStartTime,
-          taskBacklogRefreshesLeft: newTbRefreshesLeft,
-          taskBacklogHistory: newTaskBacklogHistoryData,
-          neutralActivity: newNeutralActivity,
-          dailyIdealBurndown: newDailyIdealBurndown,
         } = unprocessedData;
 
-        setTaskBacklogRefreshesLeft(newTbRefreshesLeft);
-        setTaskBacklogHistory([
-          ...newTaskBacklogHistoryData,
-          { id: cuid(), amount: taskBacklog, createdAt: new Date(), deadline: null },
-        ]);
-        setNeutralActivity(newNeutralActivity);
-        setDailyIdealBurndown(newDailyIdealBurndown || {});
         setFlow(newCurrentActivity === "😴 Sleeping" ? 0 : newFlow);
         setStartDate(newStartDate);
         setEndDate(newEndDate);
@@ -284,7 +264,6 @@ export function useDashboardData() {
     flow,
     error,
     setError, // Exporting setError for CountdownComponent
-    taskBacklogRefreshesLeft,
     efficiencyData,
     distractionData,
     unplannedData,
@@ -295,9 +274,6 @@ export function useDashboardData() {
     endDate,
     currentActivity,
     currentActivityStartTime,
-    taskBacklogHistory,
-    neutralActivity,
-    dailyIdealBurndown,
     fetchData, // Exporting fetchData for CountdownComponent's refresh
   };
 }

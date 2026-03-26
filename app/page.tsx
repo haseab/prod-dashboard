@@ -4,7 +4,6 @@ import CountdownComponent from "@/components/countdown";
 import DualAreaCharts from "@/components/dashboard/DualAreaCharts";
 import MetricsGrid from "@/components/dashboard/MetricsGrid";
 import ProfileCard from "@/components/dashboard/ProfileCard";
-import TaskBacklogChart from "@/components/dashboard/TaskBacklogChart";
 import WeeklyProductiveFlowChart from "@/components/dashboard/WeeklyProductiveFlowChart";
 import ParticlesComponent from "@/components/particles";
 import { WhyITrackTimeDialog } from "@/components/whyitracktime";
@@ -22,7 +21,6 @@ export default function Component() {
     flow,
     error,
     setError,
-    taskBacklogRefreshesLeft,
     efficiencyData,
     dailyProductiveFlowData,
     metricsData,
@@ -31,9 +29,6 @@ export default function Component() {
     endDate,
     currentActivity,
     currentActivityStartTime,
-    taskBacklogHistory,
-    neutralActivity,
-    dailyIdealBurndown,
     fetchData,
   } = useDashboardData();
 
@@ -109,14 +104,7 @@ export default function Component() {
             </div>
 
             <div className="p-5 space-y-8 hidden opacity-0 xs:block xs:opacity-100">
-              <TaskBacklogChart
-                taskBacklogHistory={taskBacklogHistory}
-                flow={flow}
-                showOnlyMA={showOnlyMA}
-                taskBacklogRefreshesLeft={taskBacklogRefreshesLeft}
-                neutralActivity={neutralActivity}
-                dailyIdealBurndown={dailyIdealBurndown}
-              />
+              {/* TaskBacklogChart disabled for now to keep the backlog payload out of the client path. */}
               <WeeklyProductiveFlowChart
                 weeklyProductiveFlowData={weeklyProductiveFlowData}
                 flow={flow}

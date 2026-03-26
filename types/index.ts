@@ -1,5 +1,3 @@
-import { task_backlog } from "@prisma/client";
-
 export interface HistoricalWeeklyData {
   week: number;
   date: string;
@@ -88,13 +86,14 @@ export declare interface MetricsResponse {
   endDate: string;
   currentActivityStartTime: string;
   currentActivity: string;
-  taskBacklog: number;
-  taskBacklogHistory: task_backlog[];
-  taskBacklogRefreshesLeft: number;
-  neutralActivity: boolean;
-  taskBacklogDetails: Record<string, string | number>[];
-  dailyIdealBurndown?: { [key: string]: number };
-  // efficiencyList: (presumably an array of numbers or a specific object structure)
+  // taskBacklog: number;
+  // scope?: number;
+  // adjustedAmount?: number;
+  // taskBacklogHistory: task_backlog[];
+  // taskBacklogRefreshesLeft: number;
+  // neutralActivity: boolean;
+  // taskBacklogDetails: Record<string, string | number>[];
+  // dailyIdealBurndown?: { [key: string]: number };
 }
 
 export type TremorColors =
