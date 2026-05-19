@@ -2,7 +2,19 @@ import prisma from "@/app/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-// GET - Retrieve all unacknowledged notifications (any token grants access to all)
+const MAX_NOTIFICATIONS = 25;
+
+const notificationSelect = {
+  id: true,
+  message: true,
+  title: true,
+  priority: true,
+  createdAt: true,
+  sendCount: true,
+  ackToken: true,
+};
+
+// GET - Retrieve a capped list of actionable emergency notifications (any token grants access)
 export async function GET(
   request: Request,
   { params }: { params: { token: string } }
@@ -28,19 +40,33 @@ export async function GET(
       );
     }
 
-    // Token is valid - return ALL unacknowledged notifications
-    const notifications = await prisma.notifications.findMany({
-      where: {
-        acknowledged: false,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const [notifications, totalUnacknowledged] = await Promise.all([
+      prisma.notifications.findMany({
+        where: {
+          acknowledged: false,
+          priority: 2,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: MAX_NOTIFICATIONS,
+        select: notificationSelect,
+      }),
+      prisma.notifications.count({
+        where: {
+          acknowledged: false,
+          priority: 2,
+        },
+      }),
+    ]);
 
     return new Response(
       JSON.stringify({
         notifications,
+        totalUnacknowledged,
+        returnedCount: notifications.length,
+        maxReturned: MAX_NOTIFICATIONS,
+        hasMore: totalUnacknowledged > notifications.length,
       }),
       {
         headers: { "content-type": "application/json" },

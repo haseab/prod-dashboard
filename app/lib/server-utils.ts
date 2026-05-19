@@ -147,6 +147,22 @@ export const sendAlert = async (
   metadata?: Record<string, any>
 ) => {
   try {
+    if (priority !== 2) {
+      const sound = priority === 1 ? "cosmic" : "bike";
+      const sent = await sendPushoverNotification(
+        message,
+        title,
+        priority,
+        sound
+      );
+
+      console.log(
+        `Non-emergency alert sent without DB persistence, priority ${priority}, sent: ${sent}`
+      );
+
+      return null;
+    }
+
     // Create notification record in database (ackToken is auto-generated)
     const notification = await prisma.notifications.create({
       data: {
@@ -158,14 +174,13 @@ export const sendAlert = async (
       },
     });
 
-    // Determine sound based on priority
-    const sound = priority === 2 ? "falling" : priority === 1 ? "cosmic" : "bike";
+    const sound = "falling";
 
-    // Always send with Pushover priority 0 or 1 (never 2)
-    // Our DB priority determines retry behavior via cron
-    const pushoverPriority = priority === 2 ? 1 : priority; // Use high priority (1) for critical alerts
+    // Always send with Pushover priority 1, not emergency retry.
+    // Our DB priority determines retry/escalation behavior via cron.
+    const pushoverPriority = 1;
 
-    // Always include acknowledgment URL for priority 2 notifications
+    // Include acknowledgment URL for priority 2 notifications.
     const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.replace('/api', '') || "http://localhost:3003";
     const ackUrl = `${baseUrl}/ack/${notification.ackToken}`;
 

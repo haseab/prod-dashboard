@@ -3,6 +3,18 @@ import { sendAlert } from "@/app/lib/server-utils";
 
 export const dynamic = "force-dynamic";
 
+const MAX_NOTIFICATIONS = 25;
+
+const notificationSelect = {
+  id: true,
+  message: true,
+  title: true,
+  priority: true,
+  createdAt: true,
+  sendCount: true,
+  ackToken: true,
+};
+
 // POST - Create a new alert notification
 export async function POST(request: Request) {
   try {
@@ -47,21 +59,36 @@ export async function POST(request: Request) {
   }
 }
 
-// GET - Retrieve all unacknowledged notifications
+// GET - Retrieve a capped list of actionable emergency notifications
 export async function GET() {
   try {
-    const notifications = await prisma.notifications.findMany({
-      where: {
-        acknowledged: false,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const [notifications, totalUnacknowledged] = await Promise.all([
+      prisma.notifications.findMany({
+        where: {
+          acknowledged: false,
+          priority: 2,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: MAX_NOTIFICATIONS,
+        select: notificationSelect,
+      }),
+      prisma.notifications.count({
+        where: {
+          acknowledged: false,
+          priority: 2,
+        },
+      }),
+    ]);
 
     return new Response(
       JSON.stringify({
         notifications,
+        totalUnacknowledged,
+        returnedCount: notifications.length,
+        maxReturned: MAX_NOTIFICATIONS,
+        hasMore: totalUnacknowledged > notifications.length,
       }),
       {
         headers: { "content-type": "application/json" },
